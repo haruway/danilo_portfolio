@@ -1,0 +1,1519 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Danilo Mariani — Design gráfico, aplicação de marca e produção de imagem · Maringá, PR</title>
+<meta name="description" content="Sua marca precisa virar fachada, embalagem, vídeo e post. Normalmente isso passa por quatro fornecedores — aqui passa por um. Design gráfico, aplicação de marca e arte-final em Maringá, PR.">
+<meta name="author" content="Danilo Mariani">
+<meta name="theme-color" content="#FFBE57">
+<link rel="canonical" href="https://danilomariani.netlify.app/">
+
+<!-- ⚠️ TROCAR O DOMÍNIO ABAIXO quando o domínio definitivo existir.
+     og:image e og:url PRECISAM ser URL absoluta — LinkedIn e WhatsApp ignoram caminho relativo. -->
+<meta property="og:type" content="website">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:site_name" content="Danilo Mariani">
+<meta property="og:url" content="https://danilomariani.netlify.app/">
+<meta property="og:title" content="Danilo Mariani — Design gráfico, aplicação de marca e produção de imagem">
+<meta property="og:description" content="Sua marca precisa virar fachada, embalagem, vídeo e post. Normalmente isso passa por quatro fornecedores — aqui passa por um.">
+<meta property="og:image" content="https://danilomariani.netlify.app/assets/img/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Danilo Mariani — design gráfico, aplicação de marca e produção de imagem, Maringá-PR">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Danilo Mariani — Design gráfico, aplicação de marca e produção de imagem">
+<meta name="twitter:description" content="Sua marca precisa virar fachada, embalagem, vídeo e post. Normalmente isso passa por quatro fornecedores — aqui passa por um.">
+<meta name="twitter:image" content="https://danilomariani.netlify.app/assets/img/og.jpg">
+
+<link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32.png">
+<link rel="icon" type="image/png" sizes="512x512" href="assets/img/favicon-512.png">
+<link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;1,9..40,400&display=swap" rel="stylesheet">
+<link rel="preload" href="assets/fonts/Relaxe.ttf" as="font" type="font/ttf" crossorigin>
+<link rel="preload" href="assets/fonts/smart-sans-std-bold.otf" as="font" type="font/otf" crossorigin>
+
+<style>
+/* ═══════════════════════════════════════════════════════════════
+   FONTES LOCAIS
+   Os dois @font-face de Smart Sans apontam pro MESMO arquivo de
+   propósito: o arquivo é um "Std Medium", então declarar só
+   font-weight:bold fazia o navegador NÃO casar em peso normal e
+   cair pra sans-serif genérica. Declarando 400 e 700 sempre casa.
+   ═══════════════════════════════════════════════════════════════ */
+@font-face{
+  font-family:'Relaxe';
+  src:url('assets/fonts/Relaxe.ttf') format('truetype');
+  font-weight:400; font-style:normal; font-display:swap;
+}
+@font-face{
+  font-family:'Smart Sans';
+  src:url('assets/fonts/smart-sans-std-bold.otf') format('opentype');
+  font-weight:400; font-style:normal; font-display:swap;
+}
+@font-face{
+  font-family:'Smart Sans';
+  src:url('assets/fonts/smart-sans-std-bold.otf') format('opentype');
+  font-weight:700; font-style:normal; font-display:swap;
+}
+
+/* ── TOKENS ─────────────────────────────────────────────────── */
+:root{
+  --dark:#080706;
+  --gold:#FFBE57;
+  --cream:#EDE5D4;
+  --white:#FFFFFF;
+
+  --ink:#1A1008;            /* texto escuro sobre dourado/branco */
+  --ink-70:rgba(26,16,8,.72);
+  --ink-55:rgba(26,16,8,.58);
+  --cream-75:rgba(237,229,212,.78);
+  --cream-55:rgba(237,229,212,.62);
+  --line-d:rgba(237,229,212,.16);
+  --line-l:rgba(26,16,8,.16);
+
+  --otb-green:#194B46;
+  --otb-caramel:#6B3F1E;
+  --otb-off:#F5F0E4;
+  --otb-dark:#1A1008;
+
+  --pad:clamp(1.25rem,5vw,4rem);
+  --disp:'Relaxe',Impact,sans-serif;
+  --ui:'Smart Sans','DM Sans',sans-serif;
+  --body:'DM Sans',system-ui,sans-serif;
+}
+
+/* ── RESET ──────────────────────────────────────────────────── */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+/* Lenis assume o controle quando carrega; sem ele o smooth nativo continua valendo */
+html.lenis,html.lenis body{height:auto}
+.lenis.lenis-smooth{scroll-behavior:auto!important}
+.lenis.lenis-smooth [data-lenis-prevent]{overscroll-behavior:contain}
+.lenis.lenis-stopped{overflow:hidden}
+body{
+  background:var(--dark);
+  color:var(--cream);
+  font-family:var(--body);
+  font-size:16px;
+  line-height:1.65;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+a{color:inherit;text-decoration:none}
+img{display:block;max-width:100%}
+::selection{background:var(--gold);color:var(--ink)}
+:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+
+/* cursor custom só entra se o JS rodar — sem JS o cursor do SO fica */
+html.has-cursor body,
+html.has-cursor a,
+html.has-cursor button{cursor:none}
+
+.sr-only{
+  position:absolute;width:1px;height:1px;padding:0;overflow:hidden;
+  clip:rect(0 0 0 0);white-space:nowrap;border:0;
+}
+
+/* ── GRAIN (só transform anima; nada de repaint de layout) ──── */
+.grain{
+  position:fixed;
+  inset:-20%;
+  width:140%;height:140%;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.1' numOctaves='2' stitchTiles='stitch' seed='4'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size:170px 170px;
+  pointer-events:none;
+  z-index:900;
+  opacity:.15;
+  mix-blend-mode:overlay;
+  will-change:transform;
+  animation:grain 1.2s steps(6) infinite;
+}
+@keyframes grain{
+  0%{transform:translate3d(0,0,0)}
+  16%{transform:translate3d(-4%,-3%,0)}
+  33%{transform:translate3d(3%,-5%,0)}
+  50%{transform:translate3d(-5%,4%,0)}
+  66%{transform:translate3d(4%,3%,0)}
+  83%{transform:translate3d(-3%,-4%,0)}
+  100%{transform:translate3d(0,0,0)}
+}
+
+/* ── CURSOR ─────────────────────────────────────────────────── */
+.cur,.cur-r{
+  position:fixed;top:0;left:0;pointer-events:none;
+  transform:translate(-50%,-50%);z-index:9999;
+  opacity:0;transition:opacity .3s;
+}
+/* só aparece depois do primeiro movimento — senão pisca no canto 0,0 */
+html.has-cursor.cursor-live .cur,
+html.has-cursor.cursor-live .cur-r{opacity:1}
+.cur{
+  width:8px;height:8px;border-radius:50%;
+  background:var(--ink);
+  transition:width .18s,height .18s,background .3s,opacity .3s;
+}
+.cur-r{
+  width:34px;height:34px;border-radius:50%;
+  border:1px solid rgba(26,16,8,.42);
+  z-index:9998;
+  transition:width .25s,height .25s,border-color .3s,opacity .3s;
+}
+body[data-theme="dark"] .cur{background:var(--cream)}
+body[data-theme="dark"] .cur-r{border-color:rgba(237,229,212,.45)}
+.cur.hov{width:13px;height:13px}
+.cur-r.hov{width:56px;height:56px}
+
+/* ── NAV ────────────────────────────────────────────────────── */
+nav{
+  --nav-c:var(--ink);
+  position:fixed;top:0;left:0;right:0;z-index:5000;
+  display:flex;align-items:center;justify-content:space-between;
+  gap:1rem;
+  padding:1.35rem var(--pad);
+  pointer-events:none;
+  transition:color .35s ease;
+  mix-blend-mode:normal;
+}
+nav[data-theme="dark"]{--nav-c:var(--cream)}
+.nav-logo{
+  font-family:var(--ui);
+  font-size:.875rem;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--nav-c);pointer-events:auto;
+  transition:color .35s ease;
+}
+.nav-links{display:flex;gap:1.9rem;list-style:none;pointer-events:auto}
+.nav-links a{
+  font-family:var(--ui);
+  font-size:.8125rem;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--nav-c);position:relative;
+  transition:color .35s ease,opacity .25s;
+}
+.nav-links a::after{
+  content:'';position:absolute;left:0;bottom:-4px;
+  width:0;height:1.5px;background:currentColor;transition:width .3s ease;
+}
+.nav-links a:hover::after,.nav-links a:focus-visible::after{width:100%}
+
+/* ── DIVIDER ────────────────────────────────────────────────── */
+.divider{
+  position:relative;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;gap:1rem;
+  padding:.85rem var(--pad);
+  background:var(--dark);color:var(--cream-55);
+  font-family:var(--ui);
+  font-size:.75rem;letter-spacing:.2em;text-transform:uppercase;
+  border-top:1px solid var(--line-d);
+  border-bottom:1px solid var(--line-d);
+}
+.divider .c{color:rgba(237,229,212,.42)}
+
+/* ── SEÇÃO BASE ─────────────────────────────────────────────── */
+section{position:relative}
+.sec{padding:clamp(4.5rem,10vw,9rem) var(--pad)}
+.sec--light{background:var(--white);color:var(--ink)}
+.sec--dark{background:var(--dark);color:var(--cream)}
+.sec--gold{background:var(--gold);color:var(--ink)}
+
+.eyebrow{
+  font-family:var(--ui);
+  font-size:.8125rem;letter-spacing:.2em;text-transform:uppercase;
+  margin-bottom:1.1rem;
+}
+.sec--light .eyebrow,.sec--gold .eyebrow{color:var(--ink-55)}
+.sec--dark .eyebrow{color:var(--gold)}
+
+.display{
+  font-family:var(--disp);
+  font-size:clamp(2.75rem,8.5vw,7.5rem);
+  line-height:.92;letter-spacing:.005em;
+}
+.lead{
+  font-family:var(--body);
+  font-size:clamp(1rem,1.4vw,1.1875rem);
+  line-height:1.7;max-width:56ch;
+}
+.sec--light .lead,.sec--gold .lead{color:var(--ink-70)}
+.sec--dark .lead{color:var(--cream-75)}
+
+/* ── 01 HERO ────────────────────────────────────────────────── */
+#hero{
+  background:var(--gold);color:var(--ink);
+  min-height:100vh;
+  min-height:100svh;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:7rem var(--pad) 10rem;
+  overflow:hidden;
+}
+.hero-name{
+  font-family:var(--disp);
+  font-size:clamp(3.5rem,18.5vw,20rem);
+  line-height:.84;letter-spacing:.012em;
+  color:var(--ink);
+  text-align:center;user-select:none;width:100%;
+}
+.hero-name .row{display:flex;justify-content:center;flex-wrap:nowrap}
+.hero-letter{
+  display:inline-block;
+  transition:transform .35s cubic-bezier(.2,.85,.4,1.275),color .35s;
+  will-change:transform;
+}
+.hero-thesis{
+  margin-top:clamp(2rem,4vw,3.25rem);
+  font-family:var(--body);
+  font-size:clamp(1.0625rem,1.9vw,1.6rem);
+  line-height:1.5;
+  color:var(--ink);
+  text-align:center;
+  max-width:52ch;
+}
+.hero-thesis span{display:block}
+.hero-thesis strong{font-weight:500}
+.hero-thesis .punch{
+  display:block;margin-top:.4em;
+  font-family:var(--ui);
+  letter-spacing:.02em;
+  font-size:1.06em;
+}
+.hero-meta{
+  position:absolute;left:var(--pad);right:var(--pad);bottom:clamp(1.5rem,3vw,2.5rem);
+  display:flex;align-items:flex-end;justify-content:space-between;gap:1.5rem;
+  border-top:1px solid rgba(26,16,8,.22);
+  padding-top:1.1rem;
+  font-family:var(--ui);
+}
+.hero-sub{
+  font-size:.8125rem;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--ink-70);
+}
+.hero-scroll{
+  font-size:.75rem;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--ink-55);display:flex;align-items:center;gap:.6rem;white-space:nowrap;
+}
+.hero-scroll::before{content:'';width:26px;height:1px;background:rgba(26,16,8,.45)}
+
+/* ── 02 O QUE EU FAÇO ───────────────────────────────────────── */
+.faz-head{margin-bottom:clamp(3rem,6vw,5rem);max-width:52rem}
+.faz-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:1px;
+  background:var(--line-d);
+  border-top:1px solid var(--line-d);
+  border-bottom:1px solid var(--line-d);
+}
+.faz-item{
+  background:var(--dark);
+  padding:clamp(2rem,3.2vw,3rem) clamp(1.5rem,2.4vw,2.4rem);
+  display:flex;flex-direction:column;gap:1rem;
+  transition:background .35s ease;
+}
+.faz-item:hover{background:#0f0d0b}
+.faz-num{
+  font-family:var(--ui);
+  font-size:.75rem;letter-spacing:.22em;color:var(--gold);
+}
+.faz-title{
+  font-family:var(--ui);
+  font-size:clamp(1.3rem,2.1vw,1.75rem);
+  line-height:1.2;color:var(--cream);
+}
+.faz-body{
+  font-size:1rem;line-height:1.7;color:var(--cream-75);
+}
+
+/* ── 03 TRABALHO ────────────────────────────────────────────── */
+.tr-block{padding:clamp(4rem,9vw,8rem) var(--pad)}
+.tr-cliente{background:var(--white);color:var(--ink)}
+.tr-conceito{background:var(--dark);color:var(--cream)}
+
+.tr-head{
+  display:flex;align-items:flex-end;justify-content:space-between;
+  gap:2rem;flex-wrap:wrap;
+  margin-bottom:clamp(2.5rem,5vw,4rem);
+  padding-bottom:1.4rem;
+}
+.tr-cliente .tr-head{border-bottom:1px solid var(--line-l)}
+.tr-conceito .tr-head{border-bottom:1px solid var(--line-d)}
+.tr-kind{
+  font-family:var(--disp);
+  font-size:clamp(2.25rem,6vw,5rem);line-height:.9;
+}
+.tr-count{
+  font-family:var(--ui);
+  font-size:.8125rem;letter-spacing:.2em;text-transform:uppercase;
+}
+.tr-cliente .tr-count{color:var(--ink-55)}
+.tr-conceito .tr-count{color:var(--cream-55)}
+
+/* case principal */
+.case-feature{
+  display:grid;
+  grid-template-columns:1.15fr .85fr;
+  gap:clamp(1.5rem,3vw,3rem);
+  align-items:stretch;
+  margin-bottom:clamp(2.5rem,5vw,4.5rem);
+}
+.case-media{
+  position:relative;overflow:hidden;
+  background:#efeae1;
+  min-height:clamp(300px,44vw,560px);
+  border:1px solid var(--line-l);
+}
+.case-media img{
+  width:100%;height:100%;object-fit:cover;position:absolute;inset:0;
+  transition:transform .8s cubic-bezier(.22,1,.36,1);
+}
+.case-feature:hover .case-media img{transform:scale(1.035)}
+img.is-missing{display:none}
+/* estado quando a imagem ainda não foi entregue — segue desenhado, não quebrado */
+.media-fallback{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:.9rem;text-align:center;padding:2rem;
+  background:
+    repeating-linear-gradient(135deg,transparent 0 22px,rgba(26,16,8,.045) 22px 23px),
+    #efeae1;
+}
+.media-fallback .mf-mark{
+  font-family:var(--disp);
+  font-size:clamp(2.5rem,6vw,4.5rem);line-height:.9;color:rgba(26,16,8,.28);
+}
+.media-fallback .mf-note{
+  font-family:var(--ui);
+  font-size:.75rem;letter-spacing:.18em;text-transform:uppercase;color:rgba(26,16,8,.42);
+}
+.tr-conceito .media-fallback{
+  background:
+    repeating-linear-gradient(135deg,transparent 0 22px,rgba(237,229,212,.05) 22px 23px),
+    #100e0c;
+}
+.tr-conceito .media-fallback .mf-mark{color:rgba(237,229,212,.22)}
+.tr-conceito .media-fallback .mf-note{color:rgba(237,229,212,.4)}
+
+.case-info{display:flex;flex-direction:column;justify-content:center;gap:1.15rem}
+.case-client{
+  font-family:var(--ui);
+  font-size:.8125rem;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-55);
+}
+.case-title{
+  font-family:var(--ui);
+  font-size:clamp(1.6rem,3.2vw,2.6rem);line-height:1.1;color:var(--ink);
+}
+.case-text{font-size:1.0625rem;line-height:1.7;color:var(--ink-70);max-width:46ch}
+.case-tools{
+  display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.4rem;
+}
+.tool{
+  font-family:var(--ui);
+  font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;
+  border:1px solid var(--line-l);padding:.42rem .85rem;color:var(--ink-55);
+}
+.tr-conceito .tool{border-color:var(--line-d);color:var(--cream-55)}
+
+/* comparação original × vetorizado */
+.compare-wrap{margin-bottom:clamp(2.5rem,5vw,4.5rem)}
+.compare-intro{
+  display:flex;align-items:flex-end;justify-content:space-between;
+  gap:2rem;flex-wrap:wrap;margin-bottom:1.5rem;
+}
+.compare{
+  position:relative;
+  width:100%;
+  /* 3/2 casa exatamente com o canvas dos dois arquivos do brasão,
+     então não sobra tarja de letterbox em volta da arte */
+  aspect-ratio:3/2;
+  overflow:hidden;
+  border:1px solid var(--line-l);
+  background:#fff;
+  user-select:none;
+  touch-action:pan-y;
+}
+.compare img{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:contain;
+  background:#fff;
+}
+.compare .after-pane{
+  position:absolute;inset:0;
+  clip-path:inset(0 0 0 50%);
+  will-change:clip-path;
+}
+.compare-handle{
+  position:absolute;top:0;bottom:0;left:50%;
+  width:2px;background:var(--ink);
+  transform:translateX(-1px);
+  z-index:3;pointer-events:none;
+}
+.compare-handle::after{
+  content:'';
+  position:absolute;top:50%;left:50%;
+  width:44px;height:44px;
+  transform:translate(-50%,-50%);
+  border:2px solid var(--ink);border-radius:50%;
+  background:var(--white);
+}
+.compare-handle::before{
+  content:'◀ ▶';
+  position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  z-index:4;
+  font-size:.6875rem;letter-spacing:.02em;color:var(--ink);
+  font-family:var(--ui);
+}
+.compare-tag{
+  position:absolute;bottom:1rem;z-index:4;
+  font-family:var(--ui);
+  font-size:.75rem;letter-spacing:.16em;text-transform:uppercase;
+  background:rgba(255,255,255,.9);color:var(--ink);
+  padding:.4rem .8rem;border:1px solid var(--line-l);
+}
+.compare-tag.l{left:1rem}
+.compare-tag.r{right:1rem}
+.compare input[type=range]{
+  position:absolute;inset:0;width:100%;height:100%;
+  opacity:0;cursor:ew-resize;z-index:5;margin:0;
+  touch-action:pan-y;
+}
+html.has-cursor .compare input[type=range]{cursor:none}
+/* sem as duas imagens o slider não significa nada — some o controle */
+.compare.no-media .compare-handle,
+.compare.no-media .compare-tag,
+.compare.no-media input[type=range]{display:none}
+
+/* ── OS 3 VÍDEOS DO CASE JORIK ─────────────────────────────── */
+.vid-row{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:clamp(.75rem,1.5vw,1.25rem);
+  margin-bottom:clamp(2.5rem,5vw,4.5rem);
+}
+.vid{position:relative;display:block;overflow:hidden;background:var(--ink)}
+.vid img{
+  width:100%;aspect-ratio:4/5;object-fit:cover;display:block;
+  transition:transform .5s ease,filter .4s ease;
+  filter:brightness(.86) saturate(.94);
+}
+.vid:hover img,.vid:focus-visible img{transform:scale(1.04);filter:brightness(1) saturate(1)}
+.vid-play{
+  position:absolute;top:1rem;right:1rem;z-index:3;
+  width:38px;height:38px;border-radius:50%;
+  border:1px solid rgba(237,229,212,.7);
+  display:flex;align-items:center;justify-content:center;
+}
+.vid-play::after{
+  content:'';border-style:solid;border-width:5px 0 5px 8px;
+  border-color:transparent transparent transparent var(--cream);margin-left:2px;
+}
+.vid-meta{
+  position:absolute;inset:auto 0 0 0;z-index:2;
+  display:flex;flex-direction:column;gap:.3rem;
+  padding:1.5rem 1.1rem 1.1rem;
+  background:linear-gradient(transparent,rgba(8,7,6,.55) 32%,rgba(8,7,6,.94));
+  text-align:center;
+}
+.vid-step{
+  font-family:var(--ui);font-size:.75rem;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--gold);
+}
+.vid-name{
+  font-family:var(--ui);font-size:1.05rem;line-height:1.2;color:var(--cream);
+}
+.vid-desc{
+  font-size:.85rem;line-height:1.5;color:rgba(237,229,212,.78);
+  max-width:30ch;margin:0 auto;
+}
+
+/* bloco Dzigna — placeholder estrutural, não card vazio */
+.dz{
+  border-top:1px solid var(--line-l);
+  padding-top:clamp(2rem,3.5vw,3rem);
+  display:grid;grid-template-columns:1fr 1.4fr;gap:clamp(1.5rem,3vw,3rem);
+  align-items:start;
+}
+.dz-title{
+  font-family:var(--ui);
+  font-size:clamp(1.25rem,2.2vw,1.65rem);line-height:1.2;color:var(--ink);
+}
+.dz-note{
+  font-family:var(--ui);
+  font-size:.75rem;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--ink-55);margin-top:.6rem;
+}
+.dz-text{font-size:1rem;line-height:1.7;color:var(--ink-70);margin-bottom:1.2rem;max-width:52ch}
+.dz-surfaces{display:flex;flex-wrap:wrap;gap:.4rem}
+.dz-surface{
+  font-family:var(--ui);
+  font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;
+  border:1px dashed rgba(26,16,8,.28);padding:.42rem .85rem;color:var(--ink-55);
+}
+
+/* CONCEITO */
+.badge{
+  display:inline-block;
+  font-family:var(--ui);
+  font-size:.75rem;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--gold);
+  border:1px solid rgba(255,190,87,.45);
+  background:rgba(255,190,87,.1);
+  padding:.34rem .75rem;
+}
+.otb{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:clamp(1.5rem,3vw,3rem);align-items:center;
+  margin-bottom:clamp(3rem,6vw,5rem);
+}
+.otb-board{background:var(--otb-dark);border:1px solid var(--line-d)}
+.otb-mark{
+  aspect-ratio:16/10;
+  background:var(--otb-green);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.5rem;
+}
+.otb-mark .wordmark{
+  font-family:var(--ui);
+  font-size:clamp(1.6rem,3.4vw,2.6rem);letter-spacing:.06em;color:var(--otb-off);
+}
+.otb-mark .sub{
+  font-family:var(--ui);
+  font-size:.75rem;letter-spacing:.24em;text-transform:uppercase;color:rgba(245,240,228,.6);
+}
+/* logo real substitui o letreiro tipográfico assim que o arquivo existir */
+.otb-mark img.otb-logo{max-width:62%;max-height:56%;width:auto;height:auto;object-fit:contain}
+.otb-mark img.otb-logo.is-missing{display:none}
+.otb-mark.has-img .wordmark,.otb-mark.has-img .sub{display:none}
+
+/* fileira de aplicações — só existe se pelo menos um arquivo carregar */
+/* flex, não grid: com 1 ou 2 arquivos as imagens dividem a linha
+   inteira em vez de deixar célula vazia */
+.otb-apps{display:none;gap:4px}
+.otb-apps.has-any{display:flex}
+.otb-apps img{flex:1 1 0;min-width:0;aspect-ratio:1;object-fit:cover;background:#100e0c}
+.otb-apps img.is-missing{display:none}
+
+.otb-swatches{display:grid;grid-template-columns:repeat(4,1fr)}
+.otb-sw{aspect-ratio:1;display:flex;flex-direction:column;justify-content:flex-end;padding:.85rem}
+.otb-sw span{
+  font-family:var(--ui);
+  font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;display:block;
+}
+.otb-sw .hex{opacity:.7;font-size:.75rem;letter-spacing:.06em;text-transform:none}
+.otb-info{display:flex;flex-direction:column;gap:1.1rem}
+.otb-title{
+  font-family:var(--disp);
+  font-size:clamp(2.25rem,5vw,4rem);line-height:.92;color:var(--cream);
+}
+.otb-text{font-size:1.0625rem;line-height:1.7;color:var(--cream-75);max-width:46ch}
+
+.films-label{
+  display:flex;align-items:baseline;justify-content:space-between;gap:1.5rem;flex-wrap:wrap;
+  border-top:1px solid var(--line-d);padding-top:1.4rem;margin-bottom:1.6rem;
+}
+.films-label h4{
+  font-family:var(--ui);
+  font-size:1.0625rem;letter-spacing:.02em;font-weight:400;color:var(--cream);
+}
+.films-label p{
+  font-family:var(--ui);
+  font-size:.75rem;letter-spacing:.18em;text-transform:uppercase;color:var(--cream-55);
+}
+.films{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;
+}
+.film{
+  position:relative;display:block;overflow:hidden;
+  background:#100e0c;border:1px solid var(--line-d);
+  aspect-ratio:9/16;
+}
+.film img{
+  width:100%;height:100%;object-fit:cover;
+  filter:grayscale(20%) brightness(.86);
+  transition:transform .7s cubic-bezier(.22,1,.36,1),filter .4s ease;
+}
+.film:hover img,.film:focus-visible img{transform:scale(1.06);filter:grayscale(0) brightness(1)}
+.film-shade{
+  position:absolute;inset:0;
+  background:linear-gradient(transparent 32%,rgba(8,7,6,.94));
+  display:flex;flex-direction:column;justify-content:flex-end;
+  padding:1.1rem;gap:.5rem;
+}
+.film-name{
+  font-family:var(--ui);
+  font-size:1rem;line-height:1.2;color:var(--cream);
+}
+.film-desc{font-size:.875rem;line-height:1.55;color:var(--cream-75)}
+.film-play{
+  position:absolute;top:1rem;right:1rem;
+  width:34px;height:34px;border-radius:50%;
+  border:1px solid rgba(237,229,212,.55);
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(8,7,6,.35);
+}
+.film-play::after{
+  content:'';width:0;height:0;border-style:solid;
+  border-width:5px 0 5px 8px;
+  border-color:transparent transparent transparent var(--cream);
+  margin-left:2px;
+}
+
+/* ── 04 COMO FUNCIONA ───────────────────────────────────────── */
+.pr-head{margin-bottom:clamp(2.5rem,5vw,4rem)}
+.pr-steps{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:1px;background:rgba(26,16,8,.18);
+  border-top:1px solid rgba(26,16,8,.18);
+  border-bottom:1px solid rgba(26,16,8,.18);
+}
+.pr-step{
+  background:var(--gold);
+  padding:clamp(1.75rem,3vw,2.75rem) clamp(1.25rem,2vw,2rem);
+  display:flex;flex-direction:column;gap:.85rem;
+}
+.pr-n{
+  font-family:var(--disp);
+  font-size:clamp(2.5rem,4.5vw,4rem);line-height:.85;color:rgba(26,16,8,.3);
+}
+.pr-t{
+  font-family:var(--ui);
+  font-size:1.125rem;letter-spacing:.02em;color:var(--ink);
+}
+.pr-d{font-size:1rem;line-height:1.65;color:var(--ink-70)}
+.pr-foot{
+  margin-top:2rem;
+  font-family:var(--ui);
+  font-size:.8125rem;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-55);
+}
+
+/* ── 05 QUEM SOU ────────────────────────────────────────────── */
+#sobre{
+  background:var(--white);color:var(--ink);
+  display:grid;grid-template-columns:.85fr 1.15fr;gap:0;align-items:stretch;
+}
+.sobre-photo{
+  position:relative;overflow:hidden;background:#eae3d8;min-height:clamp(360px,58vw,720px);
+}
+.sobre-photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.sobre-body{
+  padding:clamp(3.5rem,7vw,7rem) var(--pad);
+  display:flex;flex-direction:column;justify-content:center;gap:1.4rem;
+}
+.sobre-title{
+  font-family:var(--disp);
+  font-size:clamp(3rem,8vw,7rem);line-height:.9;color:var(--ink);margin-bottom:.6rem;
+}
+.sobre-p{font-size:clamp(1rem,1.35vw,1.125rem);line-height:1.75;color:var(--ink-70);max-width:48ch}
+.sobre-now{
+  margin-top:1rem;padding-top:1.2rem;border-top:1px solid var(--line-l);
+  font-family:var(--ui);
+  font-size:.8125rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-55);
+}
+
+/* ── 06 CONTATO ─────────────────────────────────────────────── */
+#contato{
+  background:var(--dark);color:var(--cream);
+  padding:clamp(5rem,11vw,10rem) var(--pad);
+  position:relative;overflow:hidden;
+}
+.ct-deco{
+  position:absolute;left:0;right:0;bottom:-3.5vw;
+  font-family:var(--disp);
+  font-size:clamp(7rem,26vw,20rem);line-height:.9;
+  color:rgba(237,229,212,.045);
+  text-align:center;pointer-events:none;white-space:nowrap;user-select:none;
+}
+.ct-inner{position:relative;z-index:2;max-width:60rem}
+.ct-title{
+  font-family:var(--disp);
+  font-size:clamp(3rem,10vw,8.5rem);line-height:.9;color:var(--cream);
+  margin-bottom:1.5rem;
+}
+.ct-sub{
+  font-size:clamp(1.0625rem,1.7vw,1.375rem);line-height:1.6;
+  color:var(--cream-75);max-width:44ch;margin-bottom:2.6rem;
+}
+.ct-row{display:flex;flex-wrap:wrap;gap:.75rem}
+.btn{
+  font-family:var(--ui);
+  font-size:.875rem;letter-spacing:.12em;text-transform:uppercase;
+  border:1px solid rgba(237,229,212,.3);
+  padding:1rem 1.9rem;color:var(--cream);
+  background:transparent;display:inline-block;
+  transition:background .25s,color .25s,border-color .25s;
+}
+.btn:hover,.btn:focus-visible{background:var(--cream);color:var(--dark);border-color:var(--cream)}
+.btn--primary{background:var(--gold);border-color:var(--gold);color:var(--ink)}
+.btn--primary:hover,.btn--primary:focus-visible{background:var(--cream);border-color:var(--cream);color:var(--ink)}
+
+/* ── FOOTER ─────────────────────────────────────────────────── */
+footer{
+  position:relative;z-index:100;
+  background:var(--dark);border-top:1px solid var(--line-d);
+  padding:1.5rem var(--pad);
+  display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;
+  font-family:var(--ui);
+  font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;
+  color:rgba(237,229,212,.42);
+}
+
+/* ── REVEAL ─────────────────────────────────────────────────── */
+.rev{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s cubic-bezier(.22,1,.36,1)}
+.rev.on{opacity:1;transform:none}
+.rev-1{transition-delay:.08s}
+.rev-2{transition-delay:.16s}
+.rev-3{transition-delay:.24s}
+
+/* ═══ EIXO CENTRAL ═══════════════════════════════════════════
+   Todo o conteúdo editorial roda no eixo central da página.
+   O que fica de fora, de propósito: nav, dividers, rodapé e a
+   régua do hero — são moldura, não texto; centralizar essas
+   barras tira a âncora das bordas e o layout perde estrutura. */
+.faz-head,.tr-head,.case-info,.compare-intro,.dz,.otb-info,
+.pr-head,.pr-step,.pr-foot,.ct-inner,.films-label,.eyebrow,
+.hero-thesis,.case-text,.faz-item,.sobre-p,.sobre-now{
+  text-align:center;
+}
+
+/* blocos com medida de leitura passam a se centrar sozinhos.
+   max-width em ch mantém a linha legível: texto centralizado
+   com 120 caracteres por linha o olho não consegue seguir.   */
+.case-text,.faz-body,.hero-thesis,.otb-text,.sobre-body,
+.ct-sub,.dz-text,.film-desc,.pr-d,.sobre-p{
+  margin-left:auto;margin-right:auto;
+}
+.faz-body,.dz-text,.otb-text,.sobre-body,.sobre-p{max-width:54ch}
+.ct-sub{max-width:46ch}
+.faz-head,.pr-head{margin-left:auto;margin-right:auto}
+
+/* linhas que eram "extremo a extremo" viram pilha centrada */
+.tr-head,.compare-intro{
+  flex-direction:column;align-items:center;justify-content:center;
+  gap:.75rem;text-align:center;
+}
+.case-info{align-items:center}
+.case-tools,.films-label,.ct-row,.dz-surfaces,.pr-steps{
+  justify-content:center;
+}
+
+/* blocos que eram duas colunas viram uma só, empilhada no eixo.
+   Lado a lado, um dos dois lados sempre encosta na borda — que é
+   exatamente o que a centralização veio resolver.               */
+.case-feature,.dz,.otb{grid-template-columns:1fr}
+.case-feature .case-media{max-width:min(100%,68rem);margin:0 auto;width:100%}
+.case-feature .case-info{max-width:52rem;margin:0 auto}
+.otb-board{max-width:min(100%,54rem);margin:0 auto;width:100%}
+.otb-info{max-width:52rem;margin:0 auto}
+.dz{justify-items:center}
+
+/* legendas dos filmes acompanham o eixo */
+.film-shade{align-items:center;text-align:center}
+.film-desc{max-width:34ch}
+
+/* ═══ BREAKPOINTS: 1440 / 1024 / 768 / 480 ═══════════════════ */
+@media (max-width:1440px){
+  .nav-links{gap:1.5rem}
+  .films{gap:.85rem}
+}
+
+@media (max-width:1024px){
+  .nav-links{gap:1.15rem}
+  .nav-links a{font-size:.75rem;letter-spacing:.1em}
+  .faz-grid{grid-template-columns:1fr}
+  .case-feature{grid-template-columns:1fr}
+  .case-media{min-height:min(70vw,420px)}
+  .dz{grid-template-columns:1fr}
+  .otb{grid-template-columns:1fr}
+  .films{grid-template-columns:repeat(2,1fr)}
+  .pr-steps{grid-template-columns:repeat(2,1fr)}
+  #sobre{grid-template-columns:1fr}
+  /* empilhado a foto vira faixa larga e cortaria o rosto — segura a altura
+     e joga o enquadramento pra cima */
+  .sobre-photo{min-height:0;height:clamp(380px,80vw,620px)}
+  .sobre-photo img{object-position:50% 18%}
+}
+
+@media (max-width:768px){
+  html.has-cursor body,html.has-cursor a,html.has-cursor button{cursor:auto}
+  .cur,.cur-r{display:none}
+  .nav-links{display:none}
+  nav{padding:1rem var(--pad)}
+  .divider{font-size:.75rem;letter-spacing:.14em}
+  .divider .r{display:none}
+  #hero{padding:6rem var(--pad) 9rem;min-height:92svh}
+  .hero-meta{flex-direction:column;align-items:flex-start;gap:.5rem}
+  .vid-row{grid-template-columns:1fr;max-width:26rem;margin-inline:auto}
+  .otb-swatches{grid-template-columns:repeat(2,1fr)}
+  .ct-deco{display:none}   /* atrás dos botões em tela estreita vira sujeira */
+  footer{flex-direction:column;gap:.4rem}
+}
+
+@media (max-width:480px){
+  .divider .c{display:none}
+  .films{grid-template-columns:1fr}
+  .pr-steps{grid-template-columns:1fr}
+  .case-tools,.dz-surfaces{gap:.35rem}
+  .hero-thesis{font-size:1.0625rem;max-width:30ch}
+  .compare-tag{font-size:.75rem;padding:.3rem .55rem}
+  .compare-handle::after{width:36px;height:36px}
+}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  .grain{animation:none}
+  .rev{opacity:1;transform:none}
+  html{scroll-behavior:auto}
+}
+</style>
+</head>
+<body>
+
+<div class="grain" aria-hidden="true"></div>
+<div class="cur" id="cur" aria-hidden="true"></div>
+<div class="cur-r" id="curR" aria-hidden="true"></div>
+
+<a href="#trabalho" class="sr-only">Pular para o trabalho</a>
+
+<nav id="nav">
+  <a class="nav-logo" href="#hero">DM — Danilo Mariani</a>
+  <ul class="nav-links">
+    <li><a href="#faco">O que eu faço</a></li>
+    <li><a href="#trabalho">Trabalho</a></li>
+    <li><a href="#processo">Como funciona</a></li>
+    <li><a href="#sobre">Quem sou</a></li>
+    <li><a href="#contato">Contato</a></li>
+  </ul>
+</nav>
+
+<!-- ═══ 01 · HERO ═══════════════════════════════════════════ -->
+<section id="hero">
+  <h1 class="hero-name" id="heroName" aria-label="Danilo Mariani">
+    <span class="row" data-word="DANILO" aria-hidden="true"></span>
+    <span class="row" data-word="MARIANI" aria-hidden="true"></span>
+  </h1>
+
+  <p class="hero-thesis">
+    <span>Sua marca precisa virar fachada, embalagem, vídeo e post.</span>
+    <span>Normalmente isso passa por quatro fornecedores.</span>
+    <strong class="punch">Aqui passa por um.</strong>
+  </p>
+
+  <div class="hero-meta">
+    <span class="hero-sub">Design gráfico · Aplicação de marca · Produção de imagem — Maringá, PR</span>
+    <span class="hero-scroll">Role</span>
+  </div>
+</section>
+
+<div class="divider" data-nav-theme="dark">
+  <span>◆ Danilo Mariani</span>
+  <span class="c">Maringá · PR</span>
+  <span class="r">↓ O que eu resolvo</span>
+</div>
+
+<!-- ═══ 02 · O QUE EU FAÇO ══════════════════════════════════ -->
+<section id="faco" class="sec sec--dark" data-nav-theme="dark">
+  <div class="faz-head">
+    <p class="eyebrow rev">O que eu resolvo</p>
+    <h2 class="display rev rev-1" style="color:var(--cream)">Três coisas,<br>bem feitas</h2>
+  </div>
+
+  <div class="faz-grid">
+    <article class="faz-item rev">
+      <p class="faz-num">01</p>
+      <h3 class="faz-title">Aplicação de marca</h3>
+      <p class="faz-body">Sua identidade já existe. Eu faço ela funcionar em fachada, embalagem, uniforme, impresso e digital — com o arquivo fechado do jeito que a gráfica precisa: corte, sangria, cor e vetor.</p>
+    </article>
+    <article class="faz-item rev rev-1">
+      <p class="faz-num">02</p>
+      <h3 class="faz-title">Imagem e vídeo</h3>
+      <p class="faz-body">Foto de produto, lifestyle e filme publicitário sem set, sem equipe e sem diária. Produzido digitalmente e dirigido por mim, do roteiro ao corte final.</p>
+    </article>
+    <article class="faz-item rev rev-2">
+      <p class="faz-num">03</p>
+      <h3 class="faz-title">Design e arte-final</h3>
+      <p class="faz-body">Ilustração vetorial, composição e layout impresso. Do rascunho ao arquivo pronto pra produção — sem intermediário, sem retrabalho.</p>
+    </article>
+  </div>
+</section>
+
+<div class="divider" data-nav-theme="dark">
+  <span>◆ Trabalho</span>
+  <span class="c">Cliente · Conceito</span>
+  <span class="r">↓ Selecionados</span>
+</div>
+
+<!-- ═══ 03 · TRABALHO ═══════════════════════════════════════ -->
+<section id="trabalho">
+
+  <!-- ── CLIENTE ──────────────────────────────────────────── -->
+  <div class="tr-block tr-cliente">
+    <header class="tr-head rev">
+      <h2 class="tr-kind">Cliente</h2>
+      <p class="tr-count">Trabalho comissionado</p>
+    </header>
+
+    <!-- case principal -->
+    <article class="case-feature rev">
+      <div class="case-media">
+        <img src="assets/img/jorik-copa.jpg" alt="Campanha de Copa do Mundo para a Jorik Têxtil — patch termotransferível com o brasão da Seleção" loading="lazy" data-fallback>
+        <div class="media-fallback" data-fallback-box>
+          <span class="mf-mark">Copa<br>2026</span>
+          <span class="mf-note">Jorik Têxtil · Campanha</span>
+        </div>
+      </div>
+      <div class="case-info">
+        <p class="case-client">Jorik Têxtil</p>
+        <h3 class="case-title">Campanha Copa do Mundo</h3>
+        <p class="case-text">Campanha de Copa para uma fabricante de termocolantes. O brasão da Seleção foi redesenhado em vetor para aplicação em patch termotransferível — e o filme mostra o produto aplicado, não um conceito abstrato. Vetorização, direção e produção do vídeo.</p>
+        <div class="case-tools">
+          <span class="tool">Illustrator</span>
+          <span class="tool">CorelDRAW</span>
+          <span class="tool">Produção de vídeo</span>
+        </div>
+      </div>
+    </article>
+
+    <!-- os 3 vídeos: processo → produto real → campanha -->
+    <div class="vid-row rev">
+      <a class="vid" href="https://www.youtube.com/watch?v=MsWmy33hne0" target="_blank" rel="noopener">
+        <img src="assets/img/jorik-v-timelapse.jpg" alt="Timelapse do fechamento do brasão no Illustrator" loading="lazy">
+        <span class="vid-play" aria-hidden="true"></span>
+        <span class="vid-meta">
+          <span class="vid-step">01 · Processo</span>
+          <span class="vid-name">Fechamento do brasão</span>
+          <span class="vid-desc">Timelapse da texturização no Illustrator, do traçado à malha fechada.</span>
+        </span>
+      </a>
+      <a class="vid" href="https://www.youtube.com/shorts/mc_2QHz4hEc" target="_blank" rel="noopener">
+        <img src="assets/img/jorik-v-produto.jpg" alt="Patch termotransferível aplicado no tecido" loading="lazy">
+        <span class="vid-play" aria-hidden="true"></span>
+        <span class="vid-meta">
+          <span class="vid-step">02 · Produto</span>
+          <span class="vid-name">Aplicado no tecido</span>
+          <span class="vid-desc">Amostra física do termocolante já aplicado. Sem render, sem mockup.</span>
+        </span>
+      </a>
+      <a class="vid" href="https://www.youtube.com/shorts/4gHfMzC_gzs" target="_blank" rel="noopener">
+        <img src="assets/img/jorik-v-filme.jpg" alt="Filme publicitário da campanha de Copa da Jorik Têxtil" loading="lazy">
+        <span class="vid-play" aria-hidden="true"></span>
+        <span class="vid-meta">
+          <span class="vid-step">03 · Campanha</span>
+          <span class="vid-name">Filme publicitário</span>
+          <span class="vid-desc">Peça final: direção, produção de imagem e corte no Premiere.</span>
+        </span>
+      </a>
+    </div>
+
+    <!-- comparação original × vetorizado -->
+    <div class="compare-wrap rev">
+      <div class="compare-intro">
+        <div>
+          <p class="case-client">Jorik Têxtil</p>
+          <h3 class="case-title">Brasão Brasil — vetorizado × fechado</h3>
+        </div>
+        <p class="tr-count">Arraste para comparar</p>
+      </div>
+
+      <div class="compare" id="compare">
+        <img src="assets/img/brasao-vetor.jpg" alt="Brasão da Seleção redesenhado em vetor, traçado limpo" loading="lazy" data-fallback>
+        <div class="after-pane" id="afterPane">
+          <img src="assets/img/brasao-fechado.jpg" alt="Brasão fechado, com a texturização para aplicação têxtil" loading="lazy" data-fallback>
+        </div>
+        <div class="media-fallback" data-fallback-box>
+          <span class="mf-mark">Vetor<br>×<br>Fechado</span>
+          <span class="mf-note">Comparação · alta resolução</span>
+        </div>
+        <span class="compare-tag l">Vetorizado</span>
+        <span class="compare-tag r">Fechado</span>
+        <div class="compare-handle" id="compareHandle"></div>
+        <input type="range" min="0" max="100" value="50" step="0.1" id="compareRange"
+               aria-label="Comparar o vetor limpo e o brasão fechado">
+      </div>
+
+      <p class="case-text" style="margin-top:1.4rem">Recriação vetorial do brasão da Seleção a partir de referência fotográfica, para aplicação têxtil termotransferível. À esquerda o traçado limpo; à direita o arquivo fechado, com a texturização que a produção exige. É esse segundo passo que separa um vetor bonito de um arquivo que a máquina aceita.</p>
+      <div class="case-tools" style="margin-top:1rem">
+        <span class="tool">Illustrator</span>
+        <span class="tool">CorelDRAW</span>
+        <span class="tool">Arte-final</span>
+      </div>
+    </div>
+
+    <!-- Dzigna — placeholder estrutural -->
+    <div class="dz rev">
+      <div>
+        <h3 class="dz-title">Dzigna</h3>
+        <p class="dz-note">Sob liberação do cliente</p>
+      </div>
+      <div>
+        <p class="dz-text">Atualmente na Dzigna, agência de branding em Maringá. O trabalho feito lá cobre a marca inteira em campo — organizado por superfície, não por cliente:</p>
+        <div class="dz-surfaces">
+          <span class="dz-surface">Fachada</span>
+          <span class="dz-surface">Embalagem</span>
+          <span class="dz-surface">Vidro</span>
+          <span class="dz-surface">Impresso</span>
+          <span class="dz-surface">Digital</span>
+          <span class="dz-surface">Vídeo</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── CONCEITO ─────────────────────────────────────────── -->
+  <div class="tr-block tr-conceito" data-nav-theme="dark">
+    <header class="tr-head rev">
+      <h2 class="tr-kind" style="color:var(--cream)">Conceito</h2>
+      <p class="tr-count">Não comissionado · projeto próprio</p>
+    </header>
+
+    <!-- Old Town -->
+    <article class="otb rev">
+      <div class="otb-board">
+        <div class="otb-mark" data-optional-host>
+          <img class="otb-logo" src="assets/img/otb-logo.png" alt="Marca Old Town Barber &amp; Coffee" loading="lazy" data-optional>
+          <span class="wordmark">OLD TOWN</span>
+          <span class="sub">Barber &amp; Coffee</span>
+        </div>
+        <div class="otb-swatches">
+          <div class="otb-sw" style="background:var(--otb-green)">
+            <span style="color:var(--otb-off)">Verde</span>
+            <span class="hex" style="color:var(--otb-off)">#194B46</span>
+          </div>
+          <div class="otb-sw" style="background:var(--otb-caramel)">
+            <span style="color:var(--otb-off)">Caramelo</span>
+            <span class="hex" style="color:var(--otb-off)">#6B3F1E</span>
+          </div>
+          <div class="otb-sw" style="background:var(--otb-off)">
+            <span style="color:var(--otb-dark)">Off-white</span>
+            <span class="hex" style="color:var(--otb-dark)">#F5F0E4</span>
+          </div>
+          <div class="otb-sw" style="background:var(--otb-dark)">
+            <span style="color:var(--otb-off)">Preto quente</span>
+            <span class="hex" style="color:var(--otb-off)">#1A1008</span>
+          </div>
+        </div>
+        <div class="otb-apps" data-optional-row>
+          <img src="assets/img/otb-app-1.jpg" alt="Aplicação da marca Old Town" loading="lazy" data-optional>
+          <img src="assets/img/otb-app-2.jpg" alt="Aplicação da marca Old Town" loading="lazy" data-optional>
+          <img src="assets/img/otb-app-3.jpg" alt="Aplicação da marca Old Town" loading="lazy" data-optional>
+        </div>
+      </div>
+      <div class="otb-info">
+        <span class="badge">Conceito · não comissionado</span>
+        <h3 class="otb-title">Old Town<br>Barber &amp; Coffee</h3>
+        <p class="otb-text">Marca conceitual para uma barbearia com cafeteria — dois rituais que compartilham o mesmo senso de tempo e comunidade. O posicionamento e o desenho da marca são meus; a exploração visual e as aplicações foram produzidas com IA generativa.</p>
+        <div class="case-tools">
+          <span class="tool">Identidade</span>
+          <span class="tool">Paleta</span>
+          <span class="tool">Aplicações</span>
+        </div>
+      </div>
+    </article>
+
+    <!-- 4 filmes — faixa secundária -->
+    <div class="films-label rev">
+      <h4>Estudos de direção</h4>
+      <p>Conceito · não comissionado · 04 filmes</p>
+    </div>
+
+    <div class="films">
+      <a class="film rev" href="https://youtube.com/shorts/kT4SD2l2B6Y" target="_blank" rel="noopener">
+        <img src="assets/img/case-carnan.jpg" alt="Estudo de direção — Carnan × Copacabana Palace" loading="lazy">
+        <span class="film-play" aria-hidden="true"></span>
+        <span class="film-shade">
+          <span class="film-name">Carnan × Copacabana Palace</span>
+          <span class="film-desc">Estudo de direção para moda — luz de fim de tarde no Rio, ouro e mármore como textura de luxo. Exercício de elegância e ritmo lento. Produzido integralmente com IA generativa.</span>
+        </span>
+      </a>
+
+      <a class="film rev rev-1" href="https://youtube.com/shorts/bxw81_XwQ-w" target="_blank" rel="noopener">
+        <img src="assets/img/case-camaro.jpg" alt="Estudo de direção — Chevrolet Camaro ZL1" loading="lazy">
+        <span class="film-play" aria-hidden="true"></span>
+        <span class="film-shade">
+          <span class="film-name">Chevrolet Camaro ZL1</span>
+          <span class="film-desc">Estudo de direção automotiva — close extremo no farol, flare estourado sobre areia de deserto. Exercício de agressividade e escala. Produzido integralmente com IA generativa.</span>
+        </span>
+      </a>
+
+      <a class="film rev rev-2" href="https://www.youtube.com/shorts/zyrbPcLW2kg" target="_blank" rel="noopener">
+        <img src="assets/img/case-arden.jpg" alt="Estudo de direção — Arden Spa" loading="lazy">
+        <span class="film-play" aria-hidden="true"></span>
+        <span class="film-shade">
+          <span class="film-name">Arden Spa</span>
+          <span class="film-desc">Estudo de direção para bem-estar — vapor, pele e luz baixa em plano fechado. Exercício de calor e intimidade. Produzido integralmente com IA generativa.</span>
+        </span>
+      </a>
+
+      <a class="film rev rev-3" href="https://youtube.com/shorts/zE9DktyO51Q" target="_blank" rel="noopener">
+        <img src="assets/img/case-guarana.jpg" alt="Estudo de direção — Guaraná Antarctica" loading="lazy">
+        <span class="film-play" aria-hidden="true"></span>
+        <span class="film-shade">
+          <span class="film-name">Guaraná Antarctica</span>
+          <span class="film-desc">Estudo de direção para bebida — respingo congelado, cor saturada e sol de verão. Exercício de frescor e brasilidade. Produzido integralmente com IA generativa.</span>
+        </span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<div class="divider" data-nav-theme="dark">
+  <span>◆ Como funciona</span>
+  <span class="c">Do primeiro contato ao arquivo final</span>
+  <span class="r">↓ 04 etapas</span>
+</div>
+
+<!-- ═══ 04 · COMO FUNCIONA ══════════════════════════════════ -->
+<section id="processo" class="sec sec--gold">
+  <div class="pr-head">
+    <p class="eyebrow rev">Do primeiro contato ao arquivo final</p>
+    <h2 class="display rev rev-1">Como<br>funciona</h2>
+  </div>
+
+  <div class="pr-steps">
+    <article class="pr-step rev">
+      <p class="pr-n">01</p>
+      <h3 class="pr-t">Conversa</h3>
+      <p class="pr-d">Você me conta o que a marca precisa.</p>
+    </article>
+    <article class="pr-step rev rev-1">
+      <p class="pr-n">02</p>
+      <h3 class="pr-t">Briefing</h3>
+      <p class="pr-d">Eu volto com escopo, prazo e valor fechado.</p>
+    </article>
+    <article class="pr-step rev rev-2">
+      <p class="pr-n">03</p>
+      <h3 class="pr-t">Produção</h3>
+      <p class="pr-d">Você acompanha. Ajuste faz parte, não é extra.</p>
+    </article>
+    <article class="pr-step rev rev-3">
+      <p class="pr-n">04</p>
+      <h3 class="pr-t">Entrega</h3>
+      <p class="pr-d">Arquivo aberto, arquivo fechado e o que a gráfica pedir.</p>
+    </article>
+  </div>
+
+  <p class="pr-foot rev">Valor sai depois do briefing — nunca antes de entender o que você precisa.</p>
+</section>
+
+<div class="divider" data-nav-theme="dark">
+  <span>◆ Quem sou</span>
+  <span class="c">Maringá · PR</span>
+  <span class="r">↓ Sobre</span>
+</div>
+
+<!-- ═══ 05 · QUEM SOU ═══════════════════════════════════════ -->
+<section id="sobre">
+  <div class="sobre-photo rev">
+    <img src="assets/img/danilo.jpg" alt="Retrato de Danilo Mariani" loading="lazy">
+  </div>
+  <div class="sobre-body">
+    <p class="eyebrow rev">Quem sou</p>
+    <h2 class="sobre-title rev rev-1">Danilo<br>Mariani</h2>
+    <p class="sobre-p rev rev-2">Designer gráfico em Maringá. Trabalho com aplicação de marca, arte-final e produção de imagem — na agência durante a semana, em projetos próprios fora dela.</p>
+    <p class="sobre-p rev rev-2">Aprendi a fechar arquivo antes de aprender a dirigir campanha, e é por isso que o que eu entrego chega pronto. Uso IA como ferramenta de produção, e digo abertamente onde uso.</p>
+    <p class="sobre-now rev rev-3">Atualmente na Dzigna, agência de branding em Maringá</p>
+  </div>
+</section>
+
+<div class="divider" data-nav-theme="dark">
+  <span>◆ Contato</span>
+  <span class="c">Vamos conversar</span>
+  <span class="r">↓ Final</span>
+</div>
+
+<!-- ═══ 06 · CONTATO ════════════════════════════════════════ -->
+<section id="contato" data-nav-theme="dark">
+  <span class="ct-deco" aria-hidden="true">Fale</span>
+  <div class="ct-inner">
+    <p class="eyebrow rev">Contato</p>
+    <h2 class="ct-title rev rev-1">Vamos<br>conversar</h2>
+    <p class="ct-sub rev rev-2">Me conta o que sua marca precisa. Eu respondo com escopo, prazo e valor.</p>
+    <div class="ct-row rev rev-3">
+      <a class="btn btn--primary" href="https://wa.me/5544991802812" target="_blank" rel="noopener">WhatsApp ↗</a>
+      <!-- ⚠️ E-MAIL PROFISSIONAL — descomente e troque quando o endereço existir.
+           Não reativar o endereço antigo (ver CLAUDE.md, pendência 3).
+      <a class="btn" href="mailto:contato@danilomariani.com">contato@danilomariani.com</a>
+      -->
+      <a class="btn" href="https://www.linkedin.com/in/danilo-mariani-24101936b/" target="_blank" rel="noopener">LinkedIn ↗</a>
+      <a class="btn" href="https://www.behance.net/danmariani" target="_blank" rel="noopener">Behance ↗</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span>© 2026 Danilo Mariani</span>
+  <span>Maringá, PR — Freelance e projetos remotos</span>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.3.11/dist/lenis.min.js" defer></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  'use strict';
+
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var fine   = window.matchMedia('(pointer: fine)').matches;
+
+  /* ── IMAGENS AUSENTES ────────────────────────────────────────
+     Cada [data-fallback] que não carregar some e revela o bloco
+     desenhado. Assim, o dia que o arquivo entrar em /assets/img
+     o site passa a mostrar sozinho — sem editar HTML.          */
+  (function () {
+    /* Regra: TODO OU NADA por bloco. O comparador do brasão precisa das
+       duas imagens — com só uma ele mostraria metade da tela vazia. Se
+       faltar qualquer uma, o bloco inteiro cai pro estado desenhado. */
+    document.querySelectorAll('.case-media, .compare').forEach(function (host) {
+      var imgs = Array.prototype.slice.call(host.querySelectorAll('img[data-fallback]'));
+      if (!imgs.length) return;
+      var pending = imgs.length, failed = 0;
+
+      function settle() {
+        if (pending > 0) return;
+        var box = host.querySelector('[data-fallback-box]');
+        if (failed > 0) {
+          host.classList.add('no-media');
+          imgs.forEach(function (i) { i.classList.add('is-missing'); });
+          if (box) box.style.display = '';
+        } else if (box) {
+          box.style.display = 'none';
+        }
+      }
+
+      imgs.forEach(function (img) {
+        function done(bad) { if (bad) failed++; pending--; settle(); }
+        if (img.complete) { done(img.naturalWidth === 0); }
+        else {
+          img.addEventListener('error', function () { done(true); });
+          img.addEventListener('load',  function () { done(false); });
+        }
+      });
+    });
+
+    /* imagens opcionais (logo Old Town, aplicações): se o arquivo não
+       existe, a imagem some e a fileira inteira nem aparece — nada de
+       caixa vazia no ar. Quando o arquivo entra, aparece sozinho.      */
+    document.querySelectorAll('img[data-optional]').forEach(function (img) {
+      function fail() { img.classList.add('is-missing'); }
+      function ok() {
+        var row  = img.closest('[data-optional-row]');
+        var host = img.closest('[data-optional-host]');
+        if (row)  row.classList.add('has-any');
+        if (host) host.classList.add('has-img');
+      }
+      if (img.complete) { img.naturalWidth === 0 ? fail() : ok(); }
+      else { img.addEventListener('error', fail); img.addEventListener('load', ok); }
+    });
+  })();
+
+  /* ── HERO: split em letras ──────────────────────────────── */
+  var heroName = document.getElementById('heroName');
+  var letters  = [];
+
+  function splitHero() {
+    document.querySelectorAll('#heroName .row').forEach(function (row) {
+      var word = row.dataset.word || row.textContent.trim();
+      if (!word) return;
+      row.innerHTML = word.split('').map(function (c) {
+        return '<span class="hero-letter">' + c + '</span>';
+      }).join('');
+    });
+    letters = Array.prototype.slice.call(document.querySelectorAll('.hero-letter'));
+    cacheRects();
+  }
+
+  /* rects cacheados — nada de getBoundingClientRect por letra por frame */
+  var rects = [], heroTopAtCache = 0;
+  function cacheRects() {
+    heroTopAtCache = window.scrollY;
+    rects = letters.map(function (el) {
+      var r = el.getBoundingClientRect();
+      return { cx: r.left + r.width / 2, cy: r.top + r.height / 2 };
+    });
+  }
+
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(splitHero).catch(splitHero);
+  } else {
+    splitHero();
+  }
+
+  var rt;
+  window.addEventListener('resize', function () {
+    clearTimeout(rt);
+    rt = setTimeout(cacheRects, 150);
+  });
+
+  /* ── HERO: letras magnéticas ────────────────────────────── */
+  var HERO_R = 210, ticking = false;
+  var hero = document.getElementById('hero');
+
+  if (hero && fine && !reduce) {
+    hero.addEventListener('mousemove', function (e) {
+      if (ticking || !rects.length) return;
+      ticking = true;
+      requestAnimationFrame(function () {
+        var shift = window.scrollY - heroTopAtCache;   // corrige o scroll sem remedir
+        for (var i = 0; i < letters.length; i++) {
+          var r = rects[i];
+          if (!r) continue;
+          var dx = e.clientX - r.cx;
+          var dy = e.clientY - (r.cy - shift);
+          var d  = Math.sqrt(dx * dx + dy * dy);
+          var el = letters[i];
+          if (d < HERO_R) {
+            var f = 1 - d / HERO_R;
+            el.style.transform =
+              'translate(' + (dx * f * .24) + 'px,' + (dy * f * .24) + 'px) ' +
+              'rotate(' + (Math.atan2(dy, dx) * 57.2958 * f * .1) + 'deg) ' +
+              'scale(' + (1 + f * .22) + ')';
+          } else if (el.style.transform) {
+            el.style.transform = '';
+          }
+        }
+        ticking = false;
+      });
+    });
+
+    hero.addEventListener('mouseleave', function () {
+      letters.forEach(function (el) { el.style.transform = ''; });
+    });
+  }
+
+  /* ── CURSOR ─────────────────────────────────────────────── */
+  if (fine) {
+    document.documentElement.classList.add('has-cursor');
+    var cur = document.getElementById('cur');
+    var curR = document.getElementById('curR');
+    var mx = 0, my = 0, rx = 0, ry = 0;
+
+    document.addEventListener('mousemove', function (e) {
+      mx = e.clientX; my = e.clientY;
+      if (!document.documentElement.classList.contains('cursor-live')) {
+        rx = mx; ry = my;
+        document.documentElement.classList.add('cursor-live');
+      }
+      cur.style.transform = 'translate(' + mx + 'px,' + my + 'px) translate(-50%,-50%)';
+    });
+    (function follow() {
+      rx += (mx - rx) * .13; ry += (my - ry) * .13;
+      curR.style.transform = 'translate(' + rx + 'px,' + ry + 'px) translate(-50%,-50%)';
+      requestAnimationFrame(follow);
+    })();
+
+    document.querySelectorAll('a, button, .compare').forEach(function (el) {
+      el.addEventListener('mouseenter', function () { cur.classList.add('hov'); curR.classList.add('hov'); });
+      el.addEventListener('mouseleave', function () { cur.classList.remove('hov'); curR.classList.remove('hov'); });
+    });
+  }
+
+  /* ── COMPARAÇÃO ORIGINAL × VETORIZADO ───────────────────── */
+  (function () {
+    var range  = document.getElementById('compareRange');
+    var pane   = document.getElementById('afterPane');
+    var handle = document.getElementById('compareHandle');
+    if (!range || !pane || !handle) return;
+    function apply() {
+      var v = range.value;
+      pane.style.clipPath = 'inset(0 0 0 ' + v + '%)';
+      handle.style.left = v + '%';
+    }
+    range.addEventListener('input', apply);
+    apply();
+  })();
+
+  /* ── REVEAL ─────────────────────────────────────────────── */
+  var revs = document.querySelectorAll('.rev');
+  if ('IntersectionObserver' in window && !reduce) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting) { en.target.classList.add('on'); io.unobserve(en.target); }
+      });
+    }, { threshold: .08, rootMargin: '0px 0px -6% 0px' });
+    revs.forEach(function (el) {
+      if (el.getBoundingClientRect().top < window.innerHeight) el.classList.add('on');
+      else io.observe(el);
+    });
+  } else {
+    revs.forEach(function (el) { el.classList.add('on'); });
+  }
+
+  /* ── TEMA DO NAV / CURSOR POR SEÇÃO ─────────────────────── */
+  var navEl = document.getElementById('nav');
+  var themed = document.querySelectorAll('[data-nav-theme]');
+  function updateTheme() {
+    var probe = 42, active = null;
+    themed.forEach(function (el) {
+      var r = el.getBoundingClientRect();
+      if (r.top <= probe && r.bottom > probe) active = el;
+    });
+    if (active) {
+      navEl.dataset.theme = active.dataset.navTheme;
+      document.body.dataset.theme = active.dataset.navTheme;
+    } else {
+      navEl.removeAttribute('data-theme');
+      document.body.removeAttribute('data-theme');
+    }
+  }
+  window.addEventListener('scroll', updateTheme, { passive: true });
+  window.addEventListener('resize', updateTheme);
+  updateTheme();
+
+  /* ── BOTÕES MAGNÉTICOS ──────────────────────────────────── */
+  if (fine && !reduce) {
+    document.querySelectorAll('.btn').forEach(function (el) {
+      el.addEventListener('mousemove', function (e) {
+        var r = el.getBoundingClientRect();
+        el.style.transform =
+          'translate(' + ((e.clientX - r.left - r.width / 2) * .22) + 'px,' +
+                         ((e.clientY - r.top - r.height / 2) * .22) + 'px)';
+      });
+      el.addEventListener('mouseleave', function () { el.style.transform = ''; });
+    });
+  }
+
+  /* ── SCROLL: Lenis + ScrollTrigger (uma coisa só) ────────
+     Sem hijack de wheel, sem preventDefault. Se o CDN cair, o
+     scroll nativo continua funcionando — nada quebra.        */
+  window.addEventListener('load', function () {
+    var hasGsap = typeof window.gsap !== 'undefined';
+    if (hasGsap && window.ScrollTrigger) gsap.registerPlugin(ScrollTrigger);
+
+    if (!reduce && typeof window.Lenis === 'function' && fine) {
+      var lenis = new Lenis({ duration: 1.05, smoothWheel: true, smoothTouch: false });
+
+      if (hasGsap) {
+        if (window.ScrollTrigger) lenis.on('scroll', ScrollTrigger.update);
+        gsap.ticker.add(function (t) { lenis.raf(t * 1000); });
+        gsap.ticker.lagSmoothing(0);
+      } else {
+        requestAnimationFrame(function raf(t) { lenis.raf(t); requestAnimationFrame(raf); });
+      }
+
+      lenis.on('scroll', function () { updateTheme(); });
+
+      document.querySelectorAll('a[href^="#"]').forEach(function (a) {
+        var id = a.getAttribute('href');
+        if (id.length < 2) return;
+        a.addEventListener('click', function (e) {
+          var t = document.querySelector(id);
+          if (!t) return;
+          e.preventDefault();
+          lenis.scrollTo(t, { offset: 0 });
+        });
+      });
+    }
+
+    /* parallax discreto nas mídias dos cases de cliente */
+    if (hasGsap && window.ScrollTrigger && !reduce) {
+      gsap.utils.toArray('.case-media img').forEach(function (img) {
+        gsap.fromTo(img, { yPercent: -4 }, {
+          yPercent: 4, ease: 'none',
+          scrollTrigger: { trigger: img.parentNode, start: 'top bottom', end: 'bottom top', scrub: true }
+        });
+      });
+    }
+  });
+});
+</script>
+</body>
+</html>

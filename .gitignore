@@ -1,0 +1,13 @@
+# Lixo do macOS
+.DS_Store
+._*
+.Spotlight-V100
+.Trashes
+
+# Originais em alta — 105 MB de PNG/PDF.
+# Ficam no disco, NÃO no git. O que vai pro ar é o derivado
+# comprimido em site/assets/img/ (JPG <= 400 KB).
+FOTOS/
+
+# Preferências locais do Claude Code (por máquina)
+.claude/settings.local.json

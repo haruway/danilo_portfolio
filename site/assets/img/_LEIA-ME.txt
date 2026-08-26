@@ -1,0 +1,63 @@
+ASSETS — danilo-mariani v11
+===========================
+
+TUDO QUE O SITE PRECISA JÁ ESTÁ AQUI. Nenhum slot vazio.
+
+
+O QUE ENTROU NESTA RODADA
+-------------------------
+  brasao-vetor.jpg       do seu VETORIZADO.pdf, 400dpi
+  brasao-fechado.jpg     do seu FECHADO.pdf, 400dpi
+      Os dois foram recortados no conteúdo e centralizados no MESMO
+      canvas 1800x1200, com a MESMA escala. Por isso o slider registra
+      certinho — a arte não "pula" quando você arrasta.
+
+  jorik-copa.jpg         do Resize_image_to_16_9_2K, 1920x1072
+
+  jorik-v-timelapse.jpg  thumb do vídeo do fechamento
+  jorik-v-produto.jpg    thumb do vídeo do produto aplicado
+  jorik-v-filme.jpg      thumb do filme publicitário
+      4:5 nos três, pra fileira ficar uniforme. Os dois Shorts vieram
+      do oardefault (vertical real), não do maxres — o maxres dos
+      Shorts vem com tarja preta dos dois lados.
+
+  otb-logo.png           do seu "logo 2.png" (lockup completo)
+      Recolorido pra off-white #F5F0E4 com fundo transparente, pra
+      assentar no verde da marca. O alpha foi posterizado em 16
+      degraus: sem perda visível e o arquivo caiu de 1,5 MB pra 519 KB.
+
+  otb-app-1.jpg          fachada / vitrine
+  otb-app-2.jpg          embalagem (sacola + copos + cartão)
+  otb-app-3.jpg          uniforme (avental)
+      Escolhidos entre as 28 do Freepik por SUPERFÍCIE diferente,
+      seguindo a lógica do PRD: mostra amplitude sem repetir peça.
+
+
+SE QUISER TROCAR ALGUMA
+-----------------------
+Salve por cima com o mesmo nome. O site não precisa de edição.
+As de aplicação (otb-app-*) são as mais fáceis de trocar — tem
+outras 25 boas na pasta FOTOS/OLD TOWN.
+
+
+DETECÇÃO AUTOMÁTICA (continua valendo)
+--------------------------------------
+  - Se um arquivo sumir, o bloco cai pro estado tipográfico desenhado.
+  - O comparador do brasão é TUDO OU NADA: falta uma das duas, ele
+    não entra no ar meio pronto.
+  - A fileira de aplicações só aparece se pelo menos uma existir.
+
+
+AINDA PENDENTE (não é imagem)
+-----------------------------
+  1. E-mail profissional — o bloco está comentado em #contato.
+     Hoje o contato roda em WhatsApp + LinkedIn + Behance.
+  2. Domínio real no lugar de danilomariani.netlify.app nas meta tags.
+  3. og.jpg e favicons são os que eu gerei. Funcionam; se quiser
+     desenhar os seus, é só sobrescrever (og = 1200x630).
+
+
+PESO
+----
+Total da pasta assets: 2,7 MB. Nada acima de 400 KB por imagem,
+exceto o otb-logo.png (519 KB, PNG transparente — aceitável).

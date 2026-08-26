@@ -1,0 +1,41 @@
+DEPLOY NO NETLIFY — v11
+=======================
+
+REGRA DE OURO: arraste A PASTA `site` inteira pro Netlify.
+Não arraste o index.html sozinho. Não arraste a pasta do projeto.
+
+    netlify.com  ->  Sites  ->  arraste a pasta `site` na área de drop
+
+POR QUE O SITE TINHA "FICADO EM BRANCO"
+---------------------------------------
+Duas causas, as duas corrigidas nesta versão:
+
+1) O arquivo se chamava `danilo-mariani-v10.html`.
+   O Netlify serve a raiz do site procurando por `index.html`.
+   Sem esse nome, a raiz do domínio devolve 404 / página em branco —
+   o site só aparecia se você digitasse /danilo-mariani-v10.html na URL.
+   Agora o arquivo se chama `index.html`. Resolvido.
+
+2) As fontes .ttf/.otf estavam soltas na raiz do projeto e nem sempre
+   subiam junto. Agora vivem em `site/assets/fonts/` e sobem sempre,
+   porque estão dentro da pasta que você arrasta.
+
+   (Havia ainda um terceiro problema, silencioso: o @font-face da
+   Smart Sans declarava `font-weight: bold`, mas o arquivo real é um
+   "Std Medium". O navegador não casava em peso normal e caía pra
+   sans-serif genérica. Corrigido — agora são dois @font-face
+   apontando pro mesmo arquivo, 400 e 700.)
+
+DEPOIS DO PRIMEIRO DEPLOY — 1 EDIÇÃO OBRIGATÓRIA
+-------------------------------------------------
+Abra `index.html` e troque `https://danilomariani.netlify.app` pelo
+domínio real, nas 5 tags do topo (canonical, og:url, og:image,
+twitter:image). São URLs absolutas de propósito: LinkedIn e WhatsApp
+ignoram caminho relativo e o link volta a virar retângulo cinza.
+
+Teste o preview em: https://www.opengraph.xyz/
+
+E-MAIL
+------
+O bloco do e-mail está comentado dentro da seção de contato,
+pronto pra descomentar quando o endereço profissional existir.
