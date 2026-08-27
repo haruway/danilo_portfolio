@@ -865,13 +865,66 @@ footer{
   html{scroll-behavior:auto}
 }
 
-/* ── TONESTAMP · FASE 1 (provisório) ─────────────────────────
-   Só o suficiente pra enxergar o canvas. O palco cream, o grid
-   de controles, a tipografia e o recorte do grain são Fase 3.
-   O canvas pinta o próprio fundo (S.bg), então não precisa de
-   background aqui.                                            */
-#tonestamp{padding:var(--pad);display:flex;justify-content:center}
-#tsCanvas{width:100%;max-width:60rem;height:auto}
+/* ── TONESTAMP · FASE 2 (provisório) ─────────────────────────
+   Funcional, não desenhado. O palco cream, a tipografia, o ritmo
+   e o recorte do grain são Fase 3 — inclusive o z-index:901 +
+   isolation que impede o grain de tingir o canvas (PRD §6.1).
+   O canvas pinta o próprio fundo (S.bg), então já dá pra ler o
+   resultado sem CSS de palco.                                 */
+#tonestamp{
+  padding:var(--pad);
+  display:grid;gap:1.25rem;justify-items:center;
+}
+.ts-stage{width:100%;max-width:60rem;position:relative}
+.ts-stage.ts-drop{outline:2px dashed var(--gold);outline-offset:6px}
+#tsCanvas{width:100%;height:auto;display:block}
+
+.ts-controls{
+  width:100%;max-width:60rem;
+  display:flex;flex-wrap:wrap;gap:.75rem;align-items:stretch;
+  font-family:var(--ui);font-size:.8125rem;
+}
+.ts-controls fieldset{
+  border:1px solid var(--line-d);
+  padding:.5rem .75rem;
+  display:flex;gap:.4rem;align-items:center;
+}
+.ts-controls legend{
+  padding:0 .35rem;
+  color:var(--cream-55);
+  font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;
+}
+.ts-controls button{
+  background:transparent;
+  border:1px solid var(--line-d);
+  color:var(--cream);
+  padding:.4rem .7rem;
+  font:inherit;
+}
+.ts-controls button[aria-pressed="true"]{
+  background:var(--cream);color:var(--ink);border-color:var(--cream);
+}
+.ts-slider{
+  display:flex;gap:.7rem;align-items:center;
+  border:1px solid var(--line-d);
+  padding:.5rem .9rem;
+  color:var(--cream-75);
+}
+/* touch-action:pan-y — sem isso, arrastar o slider no celular rola
+   a página junto. Mesmo motivo do slider do comparador do brasão. */
+.ts-controls input[type=range]{width:11rem;touch-action:pan-y}
+
+#tsMsg{
+  width:100%;max-width:60rem;min-height:1.3em;
+  font-family:var(--ui);font-size:.75rem;
+  color:var(--cream-55);
+}
+
+@media (max-width:768px){
+  .ts-controls{flex-direction:column}
+  .ts-controls fieldset,.ts-slider{width:100%}
+  .ts-controls input[type=range]{width:100%}
+}
 </style>
 </head>
 <body>
@@ -1164,14 +1217,55 @@ footer{
 </section>
 
 <!-- ═══ 04 · FERRAMENTA ══════════════════════════════════════
-     FASE 1 — só o motor. Ainda NÃO tem: divider antes da seção,
-     renumeração de 04→05→06→07 nas seções seguintes, link na
-     nav, palco cream, controles, copy. Tudo isso é Fase 3 e 5
-     do PRD §9. O canvas pinta o próprio fundo, então já dá pra
-     ver o resultado sem CSS de palco.                       -->
+     FASE 2 — motor + os 5 controles do PRD §5.
+     Ainda NÃO tem: divider antes da seção, renumeração de
+     04→05→06→07 nas seguintes, link na nav, palco cream,
+     tipografia e copy. É Fase 3 e 5.                        -->
 <section id="tonestamp" data-nav-theme="dark">
-  <canvas id="tsCanvas" width="1440" height="960"
-          aria-label="Tonestamp — meio-tom tonal sobre o brasão vetorizado"></canvas>
+
+  <div class="ts-stage" id="tsStage">
+    <canvas id="tsCanvas" width="1440" height="960"
+            aria-label="Tonestamp — meio-tom tonal sobre o brasão vetorizado"></canvas>
+  </div>
+
+  <div class="ts-controls">
+
+    <label class="ts-slider" for="tsCell">
+      Tamanho da célula
+      <input type="range" id="tsCell" min="20" max="160" value="100" step="1">
+    </label>
+
+    <fieldset>
+      <legend>Formas</legend>
+      <button type="button" data-ts-set="default" aria-pressed="true">Densidade</button>
+      <button type="button" data-ts-set="dots"    aria-pressed="false">Pontos</button>
+      <button type="button" data-ts-set="blocks"  aria-pressed="false">Blocos</button>
+    </fieldset>
+
+    <fieldset>
+      <legend>Cor</legend>
+      <button type="button" data-ts-cmode="state" aria-pressed="true">Estado</button>
+      <button type="button" data-ts-cmode="pixel" aria-pressed="false">Pixel</button>
+      <button type="button" data-ts-cmode="quant" aria-pressed="false">Quantizar</button>
+    </fieldset>
+
+    <fieldset>
+      <legend>Fonte</legend>
+      <button type="button" id="tsObra"   aria-pressed="true">Obra</button>
+      <button type="button" id="tsEnviar" aria-pressed="false">Enviar imagem</button>
+      <input type="file" id="tsFile" accept="image/*" hidden>
+    </fieldset>
+
+    <fieldset>
+      <legend>Exportar</legend>
+      <button type="button" id="tsPng">PNG</button>
+      <button type="button" id="tsSvg">SVG</button>
+    </fieldset>
+
+  </div>
+
+  <p id="tsMsg" role="status" aria-live="polite"></p>
+
 </section>
 
 <div class="divider" data-nav-theme="dark">
@@ -1985,9 +2079,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
   var current = null;
   var srcListeners = [];
+  var srcErrListeners = [];
 
   function onSourceChange(fn) { srcListeners.push(fn); }
+  function onSourceError(fn) { srcErrListeners.push(fn); }
   function getSource() { return current; }
+
+  /** Falha de fonte precisa chegar na interface. Numa página pública
+      um upload que não abre sem dizer nada é pior que erro nenhum. */
+  function srcFail(msg) {
+    for (var i = 0; i < srcErrListeners.length; i++) srcErrListeners[i](msg);
+  }
 
   function setImage(url) {
     var isBlob = url.indexOf('blob:') === 0;
@@ -2000,7 +2102,7 @@ document.addEventListener('DOMContentLoaded', function () {
     };
     im.onerror = function () {
       if (isBlob) URL.revokeObjectURL(url);
-      console.warn('[tonestamp] imagem não carregou:', url);
+      srcFail('Não consegui abrir essa imagem.');
     };
     im.src = url;
   }
@@ -2009,8 +2111,14 @@ document.addEventListener('DOMContentLoaded', function () {
   function loadFile(file) {
     if (!file || !file.type) return false;
     // SVG cai aqui quando arrastam uma shape por engano
-    if (file.type.indexOf('image/svg') === 0) return false;
-    if (file.type.indexOf('image/') !== 0) return false;
+    if (file.type.indexOf('image/svg') === 0) {
+      srcFail('SVG não serve de fonte — manda JPG ou PNG.');
+      return false;
+    }
+    if (file.type.indexOf('image/') !== 0) {
+      srcFail('Isso não é imagem. Manda JPG ou PNG.');
+      return false;
+    }
     setImage(URL.createObjectURL(file));
     return true;
   }
@@ -2379,20 +2487,173 @@ document.addEventListener('DOMContentLoaded', function () {
     if (info && S.cmode === 'quant') setPalette(extractPalette(info.el, S.palN));
   }
 
+  /* Assinar ANTES de carregar as shapes: se alguém mexer num controle
+     enquanto os SVGs ainda estão rasterizando, o emit não pode cair no
+     vazio. requestRender é seguro nesse estado — sample() devolve false
+     sem fonte e o quadro simplesmente não acontece. */
+  subscribe(requestRender);
+  onSourceChange(function () {
+    refreshPalette();
+    requestRender();
+  });
+
   var builds = [];
   for (var bi = 0; bi < slots.length; bi++) builds.push(buildSlotImage(slots[bi]));
 
   Promise.all(builds).then(function () {
-    subscribe(requestRender);
-    onSourceChange(function () {
-      refreshPalette();
-      requestRender();
-    });
     setImage(DEFAULT_IMG);
   });
 
-  /* Superfície mínima pra verificar na Fase 1 e pra a casca de
-     controles pendurar na Fase 2. Não é API pública do site. */
+  /* ═════════════════ casca de controles (Fase 2) ═════════════════
+     Cinco controles, conforme PRD §5. Esta parte não vem do repo —
+     o main.js de lá tem uma UI densa demais pra um portfólio, e foi
+     descartado inteiro. Aqui é código novo, só o wiring.          */
+
+  var msgEl = document.getElementById('tsMsg');
+
+  /** Recado curto pro visitante. Erro silencioso numa página pública
+      é pior que erro nenhum: a pessoa acha que a ferramenta é quebrada. */
+  function say(text) {
+    if (msgEl) msgEl.textContent = text || '';
+  }
+
+  onSourceError(say);
+
+  /** Marca qual botão do grupo está ativo. */
+  function pressGroup(nodes, active) {
+    for (var i = 0; i < nodes.length; i++) {
+      nodes[i].setAttribute('aria-pressed', nodes[i] === active ? 'true' : 'false');
+    }
+  }
+
+  /* ── 1. tamanho da célula ──
+     O slider anda ao contrário de `cols`: pra direita = célula maior
+     = menos colunas. É o que a pessoa espera de um controle chamado
+     "tamanho". 180 - v mantém o padrão 80 no meio do curso. */
+  var cellEl = document.getElementById('tsCell');
+  if (cellEl) {
+    cellEl.addEventListener('input', function () {
+      set('cols', 180 - Number(cellEl.value));
+    });
+  }
+
+  /* ── 2. conjunto de formas ──
+     Trocar o conjunto invalida as imagens rasterizadas E o cache de
+     tints. Os dois precisam cair juntos, senão o quadro seguinte
+     desenha a shape velha com a cor nova. */
+  var setBtns = document.querySelectorAll('[data-ts-set]');
+
+  function applyShapeSet(id) {
+    var chosen = null;
+    for (var i = 0; i < SHAPE_SETS.length; i++) {
+      if (SHAPE_SETS[i].id === id) chosen = SHAPE_SETS[i];
+    }
+    if (!chosen) return;
+
+    for (var j = 0; j < N; j++) {
+      slots[j].svgText = chosen.svgs[j];
+      slots[j].dirtyImg = true;
+    }
+    clearTints();
+
+    var jobs = [];
+    for (var k = 0; k < N; k++) jobs.push(buildSlotImage(slots[k]));
+    Promise.all(jobs).then(requestRender);
+  }
+
+  for (var sb = 0; sb < setBtns.length; sb++) {
+    setBtns[sb].addEventListener('click', function () {
+      pressGroup(setBtns, this);
+      applyShapeSet(this.getAttribute('data-ts-set'));
+    });
+  }
+
+  /* ── 3. modo de cor ──
+     `quant` depende da paleta extraída da fonte; sem recalcular, o
+     primeiro clique cai no modo sem paleta e não muda nada. */
+  var cmodeBtns = document.querySelectorAll('[data-ts-cmode]');
+
+  for (var cb = 0; cb < cmodeBtns.length; cb++) {
+    cmodeBtns[cb].addEventListener('click', function () {
+      var mode = this.getAttribute('data-ts-cmode');
+      pressGroup(cmodeBtns, this);
+      clearTints();
+      set('cmode', mode);
+      if (mode === 'quant') refreshPalette();
+      requestRender();
+    });
+  }
+
+  /* ── 4. fonte: obra do Danilo ou upload ── */
+  var srcBtns = [];
+  var obraBtn = document.getElementById('tsObra');
+  var envBtn = document.getElementById('tsEnviar');
+  var fileEl = document.getElementById('tsFile');
+  if (obraBtn) srcBtns.push(obraBtn);
+  if (envBtn) srcBtns.push(envBtn);
+
+  if (obraBtn) {
+    obraBtn.addEventListener('click', function () {
+      pressGroup(srcBtns, obraBtn);
+      say('');
+      setImage(DEFAULT_IMG);
+    });
+  }
+
+  if (envBtn && fileEl) {
+    envBtn.addEventListener('click', function () { fileEl.click(); });
+    fileEl.addEventListener('change', function () {
+      var f = fileEl.files && fileEl.files[0];
+      if (!f) return;
+      say('');
+      if (loadFile(f)) pressGroup(srcBtns, envBtn);
+      // permite reenviar o MESMO arquivo depois de trocar de fonte
+      fileEl.value = '';
+    });
+  }
+
+  /* Arrastar e soltar preso ao palco, NÃO à window.
+     O sources.js do repo registrava em `window` — escopo global
+     demais pra uma seção dentro de uma página que já tem os
+     próprios handlers. Ver PRD §6.3. */
+  var stage = document.getElementById('tsStage');
+  if (stage) {
+    stage.addEventListener('dragover', function (e) {
+      e.preventDefault();
+      stage.classList.add('ts-drop');
+    });
+    stage.addEventListener('dragleave', function () {
+      stage.classList.remove('ts-drop');
+    });
+    stage.addEventListener('drop', function (e) {
+      e.preventDefault();
+      stage.classList.remove('ts-drop');
+      var f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+      if (!f) return;
+      say('');
+      if (loadFile(f) && envBtn) pressGroup(srcBtns, envBtn);
+    });
+  }
+
+  /* ── 5. exportar ── */
+  var pngBtn = document.getElementById('tsPng');
+  var svgBtn = document.getElementById('tsSvg');
+
+  if (pngBtn) {
+    pngBtn.addEventListener('click', function () {
+      say('');
+      exportPNG();
+    });
+  }
+  if (svgBtn) {
+    svgBtn.addEventListener('click', function () {
+      var err = exportSVG();
+      say(err || 'SVG baixado — abre no Illustrator e expande pra editar as células.');
+    });
+  }
+
+  /* Superfície interna. Serviu pra verificar a Fase 1 no console e
+     continua útil pra depurar. Não é API pública do site. */
   window.Tonestamp = {
     S: S,
     slots: slots,
