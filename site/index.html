@@ -864,6 +864,112 @@ footer{
   .rev{opacity:1;transform:none}
   html{scroll-behavior:auto}
 }
+
+/* ── TONESTAMP · FASE 2 (provisório) ─────────────────────────
+   Funcional, não desenhado. O palco cream, a tipografia, o ritmo
+   e o recorte do grain são Fase 3 — inclusive o z-index:901 +
+   isolation que impede o grain de tingir o canvas (PRD §6.1).
+   O canvas pinta o próprio fundo (S.bg), então já dá pra ler o
+   resultado sem CSS de palco.                                 */
+#tonestamp{
+  padding:var(--pad);
+  display:grid;gap:1.25rem;justify-items:center;
+}
+.ts-stage{width:100%;max-width:60rem;position:relative}
+.ts-stage.ts-drop{outline:2px dashed var(--gold);outline-offset:6px}
+#tsCanvas{width:100%;height:auto;display:block}
+
+.ts-controls{
+  width:100%;max-width:60rem;
+  display:flex;flex-wrap:wrap;gap:.75rem;align-items:stretch;
+  font-family:var(--ui);font-size:.8125rem;
+}
+.ts-controls fieldset{
+  border:1px solid var(--line-d);
+  padding:.5rem .75rem;
+  display:flex;gap:.4rem;align-items:center;
+}
+.ts-controls legend{
+  padding:0 .35rem;
+  color:var(--cream-55);
+  font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;
+}
+.ts-controls button{
+  background:transparent;
+  border:1px solid var(--line-d);
+  color:var(--cream);
+  padding:.4rem .7rem;
+  font:inherit;
+}
+.ts-controls button[aria-pressed="true"]{
+  background:var(--cream);color:var(--ink);border-color:var(--cream);
+}
+.ts-slider{
+  display:flex;gap:.7rem;align-items:center;
+  border:1px solid var(--line-d);
+  padding:.5rem .9rem;
+  color:var(--cream-75);
+}
+/* touch-action:pan-y — sem isso, arrastar o slider no celular rola
+   a página junto. Mesmo motivo do slider do comparador do brasão. */
+.ts-controls input[type=range]{width:11rem;touch-action:pan-y}
+
+#tsMsg{
+  width:100%;max-width:60rem;min-height:1.3em;
+  font-family:var(--ui);font-size:.75rem;
+  color:var(--cream-55);
+}
+
+/* ── copy da §8 ──
+   A seção não tem .sec--dark, e o site só define cor de .eyebrow
+   pelas variantes de seção. Sem esta regra o eyebrow herda --cream
+   e perde o dourado que as outras seções escuras usam. */
+#tonestamp .eyebrow{color:var(--gold)}
+.ts-head,.ts-foot{width:100%;max-width:60rem}
+.ts-title{
+  font-family:var(--disp);
+  font-size:clamp(2.75rem,8vw,5.5rem);
+  line-height:.92;
+  color:var(--cream);
+  margin-bottom:1.5rem;
+}
+.ts-lead{
+  max-width:52ch;
+  font-size:1.0625rem;
+  color:var(--cream-75);
+  margin-bottom:1rem;
+}
+.ts-foot{margin-top:.5rem}
+.ts-note{
+  max-width:56ch;
+  font-size:.9375rem;
+  color:var(--cream-75);
+  margin-bottom:1rem;
+}
+.ts-links{
+  display:flex;flex-wrap:wrap;gap:1.5rem;
+  margin:1.75rem 0 1.5rem;
+  font-family:var(--ui);font-size:.875rem;
+  letter-spacing:.04em;
+}
+.ts-links a{
+  color:var(--gold);
+  border-bottom:1px solid rgba(255,190,87,.4);
+  padding-bottom:.15rem;
+  transition:border-color .3s;
+}
+.ts-links a:hover,.ts-links a:focus-visible{border-bottom-color:var(--gold)}
+.ts-credit{
+  max-width:56ch;
+  font-family:var(--ui);font-size:.75rem;line-height:1.7;
+  color:var(--cream-55);
+}
+
+@media (max-width:768px){
+  .ts-controls{flex-direction:column}
+  .ts-controls fieldset,.ts-slider{width:100%}
+  .ts-controls input[type=range]{width:100%}
+}
 </style>
 </head>
 <body>
@@ -1153,6 +1259,99 @@ footer{
       </a>
     </div>
   </div>
+</section>
+
+<!-- ═══ 04 · FERRAMENTA ══════════════════════════════════════
+     Motor + 7 controles + copy da §8.
+     Ainda NÃO tem: divider antes da seção, renumeração de
+     04→05→06→07 nas seguintes, link na nav, palco cream e o
+     layout de duas colunas. É Fase 3.                       -->
+<section id="tonestamp" data-nav-theme="dark">
+
+  <div class="ts-head">
+    <p class="eyebrow rev">A ferramenta que eu construí</p>
+    <h2 class="ts-title rev rev-1">Tonestamp</h2>
+    <p class="ts-lead rev rev-1">
+      Meio-tom tonal: a ferramenta lê o brilho de cada célula da imagem e carimba
+      no lugar uma forma vetorial. Não é ASCII art nem pixel art — é retícula de
+      verdade, com controle sobre qual forma ocupa cada faixa de luz e sombra.
+    </p>
+    <p class="ts-lead rev rev-2">
+      Mexe aí. O que você exportar em SVG abre editável no Illustrator, não como
+      bitmap traçado.
+    </p>
+  </div>
+
+  <div class="ts-stage" id="tsStage">
+    <canvas id="tsCanvas" width="1440" height="960"
+            aria-label="Tonestamp — meio-tom tonal sobre o brasão vetorizado"></canvas>
+  </div>
+
+  <div class="ts-controls">
+
+    <label class="ts-slider" for="tsCell">
+      Tamanho da célula
+      <input type="range" id="tsCell" min="20" max="160" value="100" step="1">
+    </label>
+
+    <fieldset>
+      <legend>Formas</legend>
+      <button type="button" data-ts-set="default"    aria-pressed="true">Densidade</button>
+      <button type="button" data-ts-set="dots"       aria-pressed="false">Pontos</button>
+      <button type="button" data-ts-set="blocks"     aria-pressed="false">Blocos</button>
+      <button type="button" data-ts-set="bitmap-4"   aria-pressed="false">Bitmap</button>
+      <button type="button" data-ts-set="complexity" aria-pressed="false">Complexidade</button>
+    </fieldset>
+
+    <fieldset>
+      <legend>Cor</legend>
+      <button type="button" data-ts-cmode="state" aria-pressed="true">Estado</button>
+      <button type="button" data-ts-cmode="pixel" aria-pressed="false">Pixel</button>
+      <button type="button" data-ts-cmode="quant" aria-pressed="false">Quantizar</button>
+      <button type="button" id="tsInverter" aria-pressed="false">Inverter</button>
+    </fieldset>
+
+    <fieldset>
+      <legend>Fonte</legend>
+      <button type="button" id="tsObra"   aria-pressed="true">Obra</button>
+      <button type="button" id="tsEnviar" aria-pressed="false">Enviar imagem</button>
+      <input type="file" id="tsFile" accept="image/*" hidden>
+    </fieldset>
+
+    <fieldset>
+      <legend>Exportar</legend>
+      <button type="button" id="tsPng">PNG</button>
+      <button type="button" id="tsSvg">SVG</button>
+    </fieldset>
+
+  </div>
+
+  <p id="tsMsg" role="status" aria-live="polite"></p>
+
+  <div class="ts-foot">
+    <p class="ts-note rev">
+      Sete formas, da mais clara à mais escura. Pra imagem funcionar, a área
+      preenchida precisa crescer sem inverter em nenhum passo — se um estado
+      escuro tem menos tinta que o anterior, o olho lê um relevo que não existe
+      na foto. Em vez de conferir no olhômetro, escrevi um script que mede a
+      área de cada SVG e reprova o build se a rampa quebrar. Ele pegou duas
+      inversões que eu não tinha visto.
+    </p>
+    <p class="ts-note rev">
+      Arquivo HTML único. Abre com duplo clique, roda offline, não instala nada.
+    </p>
+
+    <p class="ts-links rev">
+      <a href="https://haruway.github.io/tonestamp/" target="_blank" rel="noopener">Abrir ferramenta →</a>
+      <a href="https://github.com/haruway/tonestamp" target="_blank" rel="noopener">Código no GitHub →</a>
+    </p>
+
+    <p class="ts-credit">
+      Técnica original de Anton Burmistrov (@antoncreations). Implementação
+      independente, com controles adicionais. MIT, sem fins comerciais.
+    </p>
+  </div>
+
 </section>
 
 <div class="divider" data-nav-theme="dark">
@@ -1514,6 +1713,1099 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 });
+</script>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   TONESTAMP — motor + controles
+
+   Porte de github.com/haruway/tonestamp.
+   Técnica original de Anton Burmistrov (@antoncreations). MIT.
+
+   Módulos concatenados na ordem topológica que o scripts/build.mjs
+   do repo produz:
+     shape-sets → shapes → state → palette → sources → renderer → export
+
+   ⚠️ UMA DIFERENÇA DE FUNDO em relação ao repo: o loop de render.
+   O original roda um requestAnimationFrame infinito e reamostra a
+   imagem a cada quadro, mesmo parada — o atalho de pausa dele exige
+   `type !== 'image'`. Aqui o render é SOB DEMANDA: uma mudança de
+   estado agenda UM quadro e para. Ver PRD §2.3 e §7.1.
+
+   O main.js, i18n.js, theme.js e presets.js do repo foram descartados
+   inteiros; a casca de controles no fim deste arquivo é código novo.
+   ═══════════════════════════════════════════════════════════════ */
+(function () {
+  'use strict';
+
+  var canvas = document.getElementById('tsCanvas');
+  if (!canvas) return;
+
+  /** Tinta do halftone sobre o palco cream. */
+  var INK = '#080706';
+  /** Palco claro — o cream do site. */
+  var STAGE = '#EDE5D4';
+  /** Imagem padrão: o brasão vetorizado da Jorik (PRD §5.1). */
+  var DEFAULT_IMG = 'assets/img/brasao-vetor.jpg';
+  /** Teto de resolução do PNG exportado (PRD §5.2). */
+  var MAX_PNG = 2000;
+
+  /* ═════════════════ shape-sets.js ═════════════════
+     Os 5 conjuntos do repo. Lá o arquivo é GERADO por
+     scripts/gen-shape-sets.mjs a partir das pastas de shapes/;
+     aqui entram como dado literal. Pra trocar uma shape, edite
+     no repo, rode o gerador e recopie.                          */
+
+  var SHAPE_SETS = [
+    {
+      id: 'default',
+      label: 'Densidade',
+      svgs: [
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" fill="#fff"/></svg>',
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect x="10" y="10" width="80" height="80" rx="13" fill="#fff"/></svg>',
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="34" fill="#fff"/></svg>',
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M50 10 90 50 50 90 10 50Z" fill="#fff"/></svg>',
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path fill="#fff" fill-rule="evenodd" d="M50 12a38 38 0 1 1 0 76 38 38 0 0 1 0-76Zm0 16a22 22 0 1 0 0 44 22 22 0 0 0 0-44Z"/></svg>',
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect x="36" y="36" width="28" height="28" fill="#fff"/></svg>',
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="7" fill="#fff"/></svg>'
+      ]
+    },
+    {
+      id: 'dots',
+      label: 'Pontos',
+      svgs: [
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" fill="#fff"/></svg>',
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="38" fill="#fff"/></svg>',
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="30" fill="#fff"/></svg>',
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="22" fill="#fff"/></svg>',
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="16" fill="#fff"/></svg>',
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="10" fill="#fff"/></svg>',
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="5" fill="#fff"/></svg>'
+      ]
+    },
+    {
+      id: 'blocks',
+      label: 'Blocos',
+      svgs: [
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect x="0" y="0" width="100" height="100" fill="#fff"/></svg>',
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect x="6" y="6" width="88" height="88" fill="#fff"/></svg>',
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect x="13" y="13" width="74" height="74" fill="#fff"/></svg>',
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect x="21" y="21" width="58" height="58" fill="#fff"/></svg>',
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect x="29" y="29" width="42" height="42" fill="#fff"/></svg>',
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect x="37" y="37" width="26" height="26" fill="#fff"/></svg>',
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect x="44" y="44" width="12" height="12" fill="#fff"/></svg>'
+      ]
+    },
+    {
+      id: 'bitmap-4',
+      label: 'Bitmap',
+      svgs: [
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect x="0" y="0" width="100" height="100" fill="#fff"/></svg>',
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect x="0" y="0" width="100" height="25" fill="#fff"/><rect x="25" y="25" width="25" height="25" fill="#fff"/><rect x="75" y="25" width="25" height="25" fill="#fff"/><rect x="0" y="50" width="100" height="25" fill="#fff"/><rect x="25" y="75" width="25" height="25" fill="#fff"/><rect x="75" y="75" width="25" height="25" fill="#fff"/></svg>',
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect x="0" y="0" width="75" height="25" fill="#fff"/><rect x="25" y="25" width="25" height="25" fill="#fff"/><rect x="75" y="25" width="25" height="25" fill="#fff"/><rect x="0" y="50" width="25" height="25" fill="#fff"/><rect x="50" y="50" width="50" height="25" fill="#fff"/><rect x="25" y="75" width="25" height="25" fill="#fff"/><rect x="75" y="75" width="25" height="25" fill="#fff"/></svg>',
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect x="0" y="0" width="25" height="25" fill="#fff"/><rect x="50" y="0" width="25" height="25" fill="#fff"/><rect x="25" y="25" width="25" height="25" fill="#fff"/><rect x="75" y="25" width="25" height="25" fill="#fff"/><rect x="0" y="50" width="25" height="25" fill="#fff"/><rect x="50" y="50" width="25" height="25" fill="#fff"/><rect x="25" y="75" width="25" height="25" fill="#fff"/><rect x="75" y="75" width="25" height="25" fill="#fff"/></svg>',
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect x="0" y="0" width="25" height="25" fill="#fff"/><rect x="50" y="0" width="25" height="25" fill="#fff"/><rect x="25" y="25" width="25" height="25" fill="#fff"/><rect x="0" y="50" width="25" height="25" fill="#fff"/><rect x="50" y="50" width="25" height="25" fill="#fff"/></svg>',
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect x="0" y="0" width="25" height="25" fill="#fff"/><rect x="50" y="0" width="25" height="25" fill="#fff"/><rect x="50" y="50" width="25" height="25" fill="#fff"/></svg>',
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect x="0" y="0" width="25" height="25" fill="#fff"/></svg>'
+      ]
+    },
+    {
+      id: 'complexity',
+      label: 'Complexidade',
+      svgs: [
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path fill="#fff" fill-rule="evenodd" d="M50 4a46 46 0 1 1 0 92 46 46 0 0 1 0-92Zm0 8a38 38 0 1 0 0 76 38 38 0 0 0 0-76ZM50 20a30 30 0 1 1 0 60 30 30 0 0 1 0-60Zm0 7a23 23 0 1 0 0 46 23 23 0 0 0 0-46ZM50 36a14 14 0 1 1 0 28 14 14 0 0 1 0-28Z"/></svg>',
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path fill="#fff" fill-rule="evenodd" d="M50 4a46 46 0 1 1 0 92 46 46 0 0 1 0-92Zm0 8a38 38 0 1 0 0 76 38 38 0 0 0 0-76ZM50 22a28 28 0 1 1 0 56 28 28 0 0 1 0-56Zm0 8a20 20 0 1 0 0 40 20 20 0 0 0 0-40Z"/></svg>',
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path fill="#fff" fill-rule="evenodd" d="M50 4a46 46 0 1 1 0 92 46 46 0 0 1 0-92Zm0 7a39 39 0 1 0 0 78 39 39 0 0 0 0-78ZM50 37a13 13 0 1 1 0 26 13 13 0 0 1 0-26Z"/></svg>',
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path fill="#fff" fill-rule="evenodd" d="M50 4a46 46 0 1 1 0 92 46 46 0 0 1 0-92Zm0 7a39 39 0 1 0 0 78 39 39 0 0 0 0-78Z"/></svg>',
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path fill="#fff" d="M8 45h84v10H8Z M45 8h10v84H45Z"/></svg>',
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect x="8" y="45" width="84" height="10" fill="#fff"/></svg>',
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="8" fill="#fff"/></svg>'
+      ]
+    }
+  ];
+
+  /* ═════════════════ shapes.js ═════════════════
+     Nada de DOM da página: cria canvas e Image em memória.       */
+
+  /** Resolução em que cada shape é rasterizada antes de virar célula. */
+  var TINT_PX = 128;
+  var DEFAULT_SVG = SHAPE_SETS[0].svgs;
+
+  /**
+   * Parse de um SVG. Lança se o texto não for válido — o protótipo
+   * original falhava em silêncio aqui, e era o que gerava shape
+   * sumida sem explicação.
+   */
+  function parseSvg(text) {
+    if (typeof text !== 'string' || !text.trim()) throw new Error('SVG vazio');
+    var doc = new DOMParser().parseFromString(text, 'image/svg+xml');
+    if (doc.querySelector('parsererror')) throw new Error('SVG malformado');
+    var el = doc.documentElement;
+    if (!el || el.nodeName.toLowerCase() !== 'svg') throw new Error('não é SVG');
+    var viewBox =
+      el.getAttribute('viewBox') ||
+      '0 0 ' + (parseFloat(el.getAttribute('width')) || 100) +
+        ' ' + (parseFloat(el.getAttribute('height')) || 100);
+    return { el: el, viewBox: viewBox };
+  }
+
+  /**
+   * Rasteriza um SVG numa Image de TINT_PX.
+   * Reescreve width/height explícitos antes de serializar porque
+   * Safari e Firefox se recusam a desenhar SVG sem dimensão
+   * intrínseca num canvas.
+   */
+  function svgToImage(text) {
+    return new Promise(function (resolve, reject) {
+      var payload;
+      try {
+        var el = parseSvg(text).el;
+        if (!el.getAttribute('viewBox')) {
+          var w = parseFloat(el.getAttribute('width')) || 100;
+          var h = parseFloat(el.getAttribute('height')) || 100;
+          el.setAttribute('viewBox', '0 0 ' + w + ' ' + h);
+        }
+        el.setAttribute('width', String(TINT_PX));
+        el.setAttribute('height', String(TINT_PX));
+        payload = new XMLSerializer().serializeToString(el);
+      } catch (err) {
+        reject(err);
+        return;
+      }
+      var im = new Image();
+      im.onload = function () { resolve(im); };
+      im.onerror = function () { reject(new Error('SVG não desenhou')); };
+      im.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(payload);
+    });
+  }
+
+  /**
+   * Carrega a imagem de um slot, guardando o erro no próprio slot
+   * em vez de estourar.
+   */
+  function buildSlotImage(slot) {
+    if (!slot.svgText) {
+      slot.img = null;
+      slot.error = null;
+      slot.dirtyImg = false;
+      return Promise.resolve(null);
+    }
+    if (slot.img && !slot.dirtyImg) return Promise.resolve(slot.error);
+
+    // Guarda o texto que estamos carregando. Se o slot for trocado
+    // enquanto o await está pendente — trocar de conjunto duas vezes
+    // rápido faz isso — este resultado está obsoleto e não pode ser
+    // gravado.
+    var pending = slot.svgText;
+
+    return svgToImage(pending).then(
+      function (img) {
+        if (slot.svgText !== pending) return slot.error;
+        slot.img = img;
+        slot.dirtyImg = false;
+        slot.error = null;
+        return null;
+      },
+      function (err) {
+        if (slot.svgText !== pending) return slot.error;
+        slot.img = null;
+        slot.dirtyImg = false;
+        slot.error = err.message || 'SVG malformado';
+        return slot.error;
+      }
+    );
+  }
+
+  /**
+   * Desenha a shape centralizada e, se `solid`, troca todos os
+   * pixels opacos pela cor pedida via source-in.
+   */
+  function makeTint(img, color, solid) {
+    var c = document.createElement('canvas');
+    c.width = c.height = TINT_PX;
+    var x = c.getContext('2d');
+    var s = Math.min(TINT_PX / img.width, TINT_PX / img.height);
+    var w = img.width * s;
+    var h = img.height * s;
+    x.drawImage(img, (TINT_PX - w) / 2, (TINT_PX - h) / 2, w, h);
+    if (solid) {
+      x.globalCompositeOperation = 'source-in';
+      x.fillStyle = color;
+      x.fillRect(0, 0, TINT_PX, TINT_PX);
+      x.globalCompositeOperation = 'source-over';
+    }
+    return c;
+  }
+
+  /**
+   * Cache de shape tingida. O teto não é decoração: no modo Pixel
+   * cada célula pode pedir uma cor diferente. As cores chegam aqui
+   * já quantizadas em passos de 32 por canal, o que limita o espaço
+   * a 9³ = 729 cores por shape. Zerar inteiro ao estourar é mais
+   * barato e mais previsível que LRU.
+   */
+  var tintCache = new Map();
+  var TINT_CACHE_MAX = 1200;
+
+  /** Zera o cache. Chamar sempre que shape, cor ou `fill` mudarem. */
+  function clearTints() { tintCache.clear(); }
+
+  function getTint(slotIndex, img, hex, solid) {
+    if (!img) return null;
+    var key = slotIndex + '|' + (solid ? hex : 'raw');
+    var c = tintCache.get(key);
+    if (c) return c;
+    c = makeTint(img, hex, solid);
+    if (tintCache.size > TINT_CACHE_MAX) tintCache.clear();
+    tintCache.set(key, c);
+    return c;
+  }
+
+  /* ═════════════════ state.js ═════════════════
+     Estado central + pub/sub. No repo o renderer NÃO se inscreve
+     aqui — ele lê S cru a cada quadro do rAF. Aqui é o contrário:
+     o pub/sub é o que dispara o render. Ver PRD §2.3.            */
+
+  /** Faixas tonais. Mudar isso quebra o conceito da ferramenta. */
+  var N = 7;
+
+  var S = {
+    /* ── viram controle na Fase 2 ── */
+    cols: 80,
+    cmode: 'state',
+    palN: 5,
+    sat: 0,
+
+    /* ── palco ──
+       fill:true é OBRIGATÓRIO. As shapes vêm com fill="#fff"
+       hardcoded; com fill:false o SVG exportado sai branco sobre o
+       cream — invisível. Ver PRD §5.2.                           */
+    bg: STAGE,
+    fill: true,
+    res: 1440,
+
+    /* invert:true NÃO é decoração — é o que faz o palco claro ler certo.
+       A rampa do repo vai da forma mais CHEIA no realce até a quase
+       vazia na sombra (01-highlights-16de16 … 07-shadows-01de16), e
+       isso pressupõe o padrão dele: tinta clara sobre fundo escuro,
+       onde mais tinta = mais claro.
+       Aqui é o contrário — tinta escura sobre palco cream, e no papel
+       mais tinta = mais ESCURO. Sem inverter, o realce ganha o borrão
+       cheio e a imagem sai como negativo. Ver PRD §4. */
+    invert: true,
+
+    /* ── fixos nesta versão ──
+       O repo expõe estes como controle; o site não (PRD §5).
+       Ficam em S, e não inlinados, pra manter tonemap/bandIndex/
+       sizeFactor idênticos ao original — divergir o porte aqui
+       custaria mais do que as 8 linhas que economizaria.         */
+    scale: false,
+    minS: 30,
+    maxS: 100,
+    rot: false,
+    rotInt: 400,
+    bri: 0,
+    con: 0,
+    gam: 1,
+    alpha: false,
+    square: false
+  };
+
+  // O canvas nunca passa do teto do PNG, então o export não precisa
+  // reescalar nada depois.
+  if (S.res > MAX_PNG) S.res = MAX_PNG;
+
+  /** Um slot por faixa tonal, do highlight à sombra. */
+  var slots = [];
+  for (var si = 0; si < N; si++) {
+    slots.push({
+      on: true,
+      color: INK,
+      svgText: DEFAULT_SVG[si],
+      img: null,
+      dirtyImg: false,
+      error: null
+    });
+  }
+
+  var listeners = [];
+  var palette = [];
+
+  function subscribe(fn) { listeners.push(fn); }
+
+  /** Dispara os ouvintes. Público porque quem muta `slots` direto
+      (trocar conjunto, ligar/desligar estado) precisa avisar. */
+  function emit(key, value) {
+    for (var i = 0; i < listeners.length; i++) listeners[i](key, value);
+  }
+
+  function set(key, value) {
+    if (S[key] === value) return;
+    S[key] = value;
+    emit(key, value);
+  }
+
+  function getPalette() { return palette; }
+
+  function setPalette(next) {
+    palette = Array.isArray(next) ? next : [];
+    emit('palette', palette);
+  }
+
+  /* ═════════════════ palette.js ═════════════════
+     Funções puras, zero dependência. Único módulo que entrou
+     praticamente verbatim. `hex2rgb` e `spreadOverStates` ficaram
+     de fora: eram usados só pelo "Aplicar nos estados" do main.js,
+     que não existe aqui.                                          */
+
+  /** Luminância relativa aproximada (Rec.709), em 0..255. */
+  function lum(r, g, b) { return 0.2126 * r + 0.7152 * g + 0.0722 * b; }
+
+  function rgb2hex(r, g, b) {
+    var f = function (v) {
+      return Math.max(0, Math.min(255, Math.round(v))).toString(16).padStart(2, '0');
+    };
+    return '#' + f(r) + f(g) + f(b);
+  }
+
+  /** Afasta ou aproxima a cor da própria luminância. */
+  function saturate(r, g, b, amt) {
+    if (!amt) return [r, g, b];
+    var k = 1 + amt / 100;
+    var l = lum(r, g, b);
+    return [l + (r - l) * k, l + (g - l) * k, l + (b - l) * k];
+  }
+
+  /** Lado do thumbnail usado pelo k-means. 96×96 = 9216 amostras. */
+  var SAMPLE_SIDE = 96;
+  /** Doze iterações já estabiliza para k ≤ 8. */
+  var KMEANS_ITER = 12;
+
+  /**
+   * Extrai `k` cores dominantes por k-means em RGB.
+   *
+   * Os centroides iniciais são pegos espalhados pela varredura da
+   * imagem, não ao acaso: com semente aleatória a paleta mudava a
+   * cada clique no mesmo arquivo.
+   *
+   * Sai ordenada da mais clara pra mais escura.
+   */
+  function extractPalette(source, k) {
+    if (!source) return [];
+
+    var c = document.createElement('canvas');
+    c.width = c.height = SAMPLE_SIDE;
+    var x = c.getContext('2d', { willReadFrequently: true });
+    var data;
+    try {
+      x.drawImage(source, 0, 0, SAMPLE_SIDE, SAMPLE_SIDE);
+      data = x.getImageData(0, 0, SAMPLE_SIDE, SAMPLE_SIDE).data;
+    } catch (err) {
+      return []; // fonte sem quadro ainda, ou canvas contaminado
+    }
+
+    var pts = [];
+    for (var i = 0; i < data.length; i += 4) pts.push([data[i], data[i + 1], data[i + 2]]);
+
+    var cent = [];
+    for (var ci = 0; ci < k; ci++) {
+      var p0 = pts[Math.floor((pts.length * (ci + 0.5)) / k)];
+      cent.push([p0[0], p0[1], p0[2]]);
+    }
+
+    for (var it = 0; it < KMEANS_ITER; it++) {
+      var sum = cent.map(function () { return [0, 0, 0, 0]; });
+      for (var pi = 0; pi < pts.length; pi++) {
+        var p = pts[pi];
+        var bi = 0;
+        var bd = Infinity;
+        for (var j = 0; j < k; j++) {
+          var dr = p[0] - cent[j][0];
+          var dg = p[1] - cent[j][1];
+          var db = p[2] - cent[j][2];
+          var dd = dr * dr + dg * dg + db * db;
+          if (dd < bd) { bd = dd; bi = j; }
+        }
+        sum[bi][0] += p[0];
+        sum[bi][1] += p[1];
+        sum[bi][2] += p[2];
+        sum[bi][3]++;
+      }
+      for (var m = 0; m < k; m++) {
+        if (sum[m][3]) {
+          cent[m] = [sum[m][0] / sum[m][3], sum[m][1] / sum[m][3], sum[m][2] / sum[m][3]];
+        }
+      }
+    }
+
+    cent.sort(function (a, b) { return lum(b[0], b[1], b[2]) - lum(a[0], a[1], a[2]); });
+    return cent.map(function (p) {
+      return [Math.round(p[0]), Math.round(p[1]), Math.round(p[2])];
+    });
+  }
+
+  /** Cor da paleta mais próxima em distância euclidiana no cubo RGB. */
+  function nearestPal(pal, r, g, b) {
+    var bi = 0;
+    var bd = Infinity;
+    for (var i = 0; i < pal.length; i++) {
+      var p = pal[i];
+      var dr = r - p[0];
+      var dg = g - p[1];
+      var db = b - p[2];
+      var dd = dr * dr + dg * dg + db * db;
+      if (dd < bd) { bd = dd; bi = i; }
+    }
+    return pal[bi];
+  }
+
+  /**
+   * Passo de quantização por canal nos modos Pixel e Quantizar.
+   * Existe pelo cache de tints, não por estética: sem arredondar,
+   * uma foto colorida pede cor nova quase toda célula e o cache
+   * vira vazamento de memória.
+   */
+  var QUANT_STEP = 32;
+
+  /** Roda uma vez por célula por quadro: argumentos posicionais,
+      sem alocar objeto. */
+  function cellColor(mode, stateColor, rgb, ci, pal, sat) {
+    if (mode === 'state' || !rgb) return stateColor;
+
+    var p = ci * 4;
+    var r = rgb[p];
+    var g = rgb[p + 1];
+    var b = rgb[p + 2];
+
+    if (mode === 'quant' && pal.length) {
+      var q = nearestPal(pal, r, g, b);
+      r = q[0]; g = q[1]; b = q[2];
+    }
+    if (sat) {
+      var c = saturate(r, g, b, sat);
+      r = c[0]; g = c[1]; b = c[2];
+    }
+
+    return rgb2hex(
+      Math.round(r / QUANT_STEP) * QUANT_STEP,
+      Math.round(g / QUANT_STEP) * QUANT_STEP,
+      Math.round(b / QUANT_STEP) * QUANT_STEP
+    );
+  }
+
+  /* ═════════════════ sources.js ═════════════════
+     Reduzido a imagem. Sem vídeo, sem webcam (PRD §5), e sem
+     initDropZone — aquele registrava em `window`, escopo global
+     demais pra uma seção; o drop da Fase 2 se prende ao palco.   */
+
+  var current = null;
+  var srcListeners = [];
+  var srcErrListeners = [];
+
+  function onSourceChange(fn) { srcListeners.push(fn); }
+  function onSourceError(fn) { srcErrListeners.push(fn); }
+  function getSource() { return current; }
+
+  /** Falha de fonte precisa chegar na interface. Numa página pública
+      um upload que não abre sem dizer nada é pior que erro nenhum. */
+  function srcFail(msg) {
+    for (var i = 0; i < srcErrListeners.length; i++) srcErrListeners[i](msg);
+  }
+
+  function setImage(url) {
+    var isBlob = url.indexOf('blob:') === 0;
+    var im = new Image();
+    im.onload = function () {
+      // já decodificada em memória: a URL não serve mais pra nada
+      if (isBlob) URL.revokeObjectURL(url);
+      current = { el: im, type: 'image', w: im.naturalWidth, h: im.naturalHeight };
+      for (var i = 0; i < srcListeners.length; i++) srcListeners[i](current);
+    };
+    im.onerror = function () {
+      if (isBlob) URL.revokeObjectURL(url);
+      srcFail('Não consegui abrir essa imagem.');
+    };
+    im.src = url;
+  }
+
+  /** @returns {boolean} true se o arquivo foi aceito */
+  function loadFile(file) {
+    if (!file || !file.type) return false;
+    // SVG cai aqui quando arrastam uma shape por engano
+    if (file.type.indexOf('image/svg') === 0) {
+      srcFail('SVG não serve de fonte — manda JPG ou PNG.');
+      return false;
+    }
+    if (file.type.indexOf('image/') !== 0) {
+      srcFail('Isso não é imagem. Manda JPG ou PNG.');
+      return false;
+    }
+    setImage(URL.createObjectURL(file));
+    return true;
+  }
+
+  /* ═════════════════ renderer.js ═════════════════
+     Amostragem, mapeamento tonal e desenho. Nada de DOM além do
+     canvas recebido em init().                                    */
+
+  var out = null;
+  var ctx = null;
+
+  /** Canvas auxiliar onde a fonte é reduzida ao tamanho do grid. */
+  var samp = document.createElement('canvas');
+  var sctx = samp.getContext('2d', { willReadFrequently: true });
+
+  /* último quadro amostrado — reaproveitado pelo export, pra não
+     depender de um quadro novo */
+  var lastCells = null;
+  var lastRGB = null;
+  var lastGeo = null;
+
+  function rendererInit(el) {
+    out = el;
+    ctx = el.getContext('2d');
+  }
+
+  function getFrame() {
+    if (!lastGeo || !lastCells) return null;
+    return { geo: lastGeo, cells: lastCells, rgb: lastRGB };
+  }
+
+  /**
+   * Brilho, contraste e gamma ANTES da classificação. Não é efeito
+   * visual: é o que decide em qual das 7 faixas a célula cai.
+   */
+  function tonemap(l) {
+    var v = l + S.bri / 200;
+    var c = S.con / 100;
+    v = (v - 0.5) * (1 + c) + 0.5;
+    v = Math.pow(Math.max(0, Math.min(1, v)), 1 / S.gam);
+    return Math.max(0, Math.min(1, v));
+  }
+
+  /**
+   * Recorte da fonte, tamanho do grid e do canvas.
+   * O número de linhas é derivado da proporção da fonte, nunca
+   * escolhido — é o que mantém a célula quadrada.
+   */
+  function geometry(srcW, srcH) {
+    var w = srcW;
+    var h = srcH;
+    var ox = 0;
+    var oy = 0;
+    if (S.square) {
+      var m = Math.min(w, h);
+      ox = (w - m) / 2;
+      oy = (h - m) / 2;
+      w = h = m;
+    }
+    var cols = S.cols;
+    var cell = w / cols;
+    var rows = Math.max(1, Math.round(h / cell));
+    var outW = S.res;
+    var outH = Math.round((outW * rows) / cols);
+    return { sx: ox, sy: oy, sw: w, sh: h, cols: cols, rows: rows, outW: outW, outH: outH, cs: outW / cols };
+  }
+
+  /** Índice da faixa tonal de uma luminância já tonemapeada. */
+  function bandIndex(l) {
+    var idx = Math.floor((1 - l) * N);
+    if (idx >= N) idx = N - 1;
+    if (idx < 0) idx = 0;
+    return S.invert ? N - 1 - idx : idx;
+  }
+
+  /** Multiplicador do lado da célula, considerando scale e max size. */
+  function sizeFactor(l) {
+    var minF = S.minS / 100;
+    var maxF = S.maxS / 100;
+    if (S.scale) {
+      // posição dentro da faixa: mais claro = maior
+      var band = 1 - ((1 - l) * N - Math.floor((1 - l) * N));
+      return minF + (maxF - minF) * (S.invert ? 1 - band : band);
+    }
+    return maxF;
+  }
+
+  /** Reduz a fonte ao grid e calcula a luminância de cada célula. */
+  function sample() {
+    var info = getSource();
+    if (!info || !info.w || !info.h) return false;
+
+    var g = geometry(info.w, info.h);
+    if (out.width !== g.outW || out.height !== g.outH) {
+      out.width = g.outW;
+      out.height = g.outH;
+    }
+
+    samp.width = g.cols;
+    samp.height = g.rows;
+    sctx.imageSmoothingEnabled = true;
+    sctx.imageSmoothingQuality = 'high';
+
+    var d;
+    try {
+      sctx.drawImage(info.el, g.sx, g.sy, g.sw, g.sh, 0, 0, g.cols, g.rows);
+      d = sctx.getImageData(0, 0, g.cols, g.rows).data;
+    } catch (err) {
+      // quadro indisponível, ou canvas contaminado (file://)
+      return false;
+    }
+
+    var cells = new Float32Array(g.cols * g.rows);
+    for (var i = 0, p = 0; i < cells.length; i++, p += 4) {
+      cells[i] = (0.2126 * d[p] + 0.7152 * d[p + 1] + 0.0722 * d[p + 2]) / 255;
+    }
+
+    lastCells = cells;
+    lastRGB = d;
+    lastGeo = g;
+    return true;
+  }
+
+  /**
+   * Carimba as shapes no canvas de saída.
+   * `opts.transparent` limpa em vez de pintar o fundo — usado só na
+   * hora de exportar PNG com alpha.
+   */
+  function paint(now, opts) {
+    var g = lastGeo;
+    var cells = lastCells;
+    if (!g || !cells || !ctx) return;
+
+    if (opts && opts.transparent) {
+      ctx.clearRect(0, 0, out.width, out.height);
+    } else {
+      ctx.fillStyle = S.bg;
+      ctx.fillRect(0, 0, out.width, out.height);
+    }
+
+    var cs = g.cs;
+    var step = S.rot ? Math.floor(now / S.rotInt) : 0;
+    var pal = getPalette();
+    var mode = S.cmode;
+    var sat = S.sat;
+    var fill = S.fill;
+
+    for (var y = 0; y < g.rows; y++) {
+      for (var x = 0; x < g.cols; x++) {
+        var ci = y * g.cols + x;
+        var l = tonemap(cells[ci]);
+        var idx = bandIndex(l);
+
+        var slot = slots[idx];
+        if (!slot.on) continue;
+
+        var color = cellColor(mode, slot.color, lastRGB, ci, pal, sat);
+        var tint = getTint(idx, slot.img, color, fill);
+        if (!tint) continue;
+
+        var size = cs * sizeFactor(l);
+        if (size <= 0.2) continue;
+
+        var cx = x * cs + cs / 2;
+        var cy = y * cs + cs / 2;
+
+        if (S.rot) {
+          // sorteio estável por posição: a mesma célula gira sempre
+          // igual, senão a textura ferve entre quadros
+          var seed = ((x * 73856093) ^ (y * 19349663) ^ (idx * 83492791)) >>> 0;
+          var q = ((seed >>> 3) + step + (seed % 4)) % 4;
+          if (q) {
+            ctx.save();
+            ctx.translate(cx, cy);
+            ctx.rotate((q * Math.PI) / 2);
+            ctx.drawImage(tint, -size / 2, -size / 2, size, size);
+            ctx.restore();
+            continue;
+          }
+        }
+
+        ctx.drawImage(tint, cx - size / 2, cy - size / 2, size, size);
+      }
+    }
+  }
+
+  /* ── render sob demanda ──────────────────────────────────────
+     Isto substitui o `frame()` do repo. Um pedido agenda UM quadro
+     e para; vários pedidos no mesmo tick coalescem em um só.
+     Nenhum rAF fica vivo com a imagem parada.                    */
+
+  var scheduled = 0;
+
+  function requestRender() {
+    if (scheduled) return;
+    scheduled = requestAnimationFrame(function (now) {
+      scheduled = 0;
+      if (!sample()) return;
+      paint(now);
+    });
+  }
+
+  /* ═════════════════ export.js ═════════════════
+     O SVG não é traçado do canvas: reconstrói a composição célula a
+     célula com as shapes originais. É por isso que abre editável.
+     A gravação de vídeo do repo (linhas 190-328) ficou de fora.   */
+
+  var outEl = null;
+
+  function exporterInit(el) { outEl = el; }
+
+  /** Nome com timestamp, pra não sobrescrever download anterior. */
+  function filename(ext) { return 'tonestamp-' + Date.now() + '.' + ext; }
+
+  /** Revoga object URL depois de um tempo — revogar na hora cancela
+      o download em alguns navegadores. */
+  function download(href, name, isObjectUrl) {
+    var a = document.createElement('a');
+    a.download = name;
+    a.href = href;
+    a.click();
+    if (isObjectUrl) setTimeout(function () { URL.revokeObjectURL(href); }, 10000);
+  }
+
+  /**
+   * Com `S.alpha` ligado, repinta sem o fundo logo antes de ler os
+   * pixels. `toDataURL` é síncrono, então nada desenha entre uma
+   * coisa e outra.
+   */
+  function exportPNG() {
+    if (!outEl) return;
+    if (S.alpha) paint(performance.now(), { transparent: true });
+    var data = outEl.toDataURL('image/png');
+    if (S.alpha) paint(performance.now());
+    download(data, filename('png'), false);
+  }
+
+  /** @returns {string|null} mensagem de erro, ou null se deu certo */
+  function exportSVG() {
+    var frame = getFrame();
+    if (!frame || !outEl) return 'nada pra exportar ainda';
+
+    var g = frame.geo;
+    var cells = frame.cells;
+    var rgb = frame.rgb;
+    var cs = g.cs;
+
+    // pré-parseia cada shape uma vez só
+    var parsed = [];
+    for (var i = 0; i < N; i++) {
+      var slot = slots[i];
+      if (!slot.on || !slot.svgText) { parsed.push(null); continue; }
+      try {
+        parsed.push(parseSvg(slot.svgText));
+      } catch (err) {
+        parsed.push(null);
+      }
+    }
+
+    var defs = [];
+    var symId = new Map();
+
+    /**
+     * Id do `<g>` para (shape, cor), criado na primeira vez.
+     *
+     * Usa `<g>` e não `<symbol>` de propósito: o Illustrator lê SVG
+     * 1.1 e trata `<symbol>` com viewBox de forma inconsistente; um
+     * `<g>` posicionado por transform não depende de mapeamento de
+     * viewport nenhum.
+     */
+    function groupFor(idx, hex) {
+      var key = idx + '|' + hex;
+      var hit = symId.get(key);
+      if (hit) return hit;
+      var pr = parsed[idx];
+      if (!pr) return null;
+
+      var clone = pr.el.cloneNode(true);
+      if (S.fill) {
+        var nodes = clone.querySelectorAll('path,circle,rect,polygon,ellipse,polyline,g');
+        for (var k = 0; k < nodes.length; k++) nodes[k].setAttribute('fill', hex);
+      }
+
+      // normaliza o viewBox pra origem, pra o transform do <use> ser
+      // só posição e escala
+      var vb = pr.viewBox.trim().split(/[\s,]+/).map(Number);
+      var minX = vb[0], minY = vb[1], vbW = vb[2], vbH = vb[3];
+      var inner = (minX || minY)
+        ? '<g transform="translate(' + -minX + ' ' + -minY + ')">' + clone.innerHTML + '</g>'
+        : clone.innerHTML;
+
+      var entry = { id: 's' + symId.size, vbW: vbW || 100, vbH: vbH || 100 };
+      symId.set(key, entry);
+      defs.push('<g id="' + entry.id + '">' + inner + '</g>');
+      return entry;
+    }
+
+    var pal = getPalette();
+    var minF = S.minS / 100;
+    var maxF = S.maxS / 100;
+    var body = [];
+
+    for (var y = 0; y < g.rows; y++) {
+      for (var x = 0; x < g.cols; x++) {
+        var ci = y * g.cols + x;
+        var l = tonemap(cells[ci]);
+        var idx2 = Math.floor((1 - l) * N);
+        if (idx2 >= N) idx2 = N - 1;
+        if (idx2 < 0) idx2 = 0;
+        if (S.invert) idx2 = N - 1 - idx2;
+
+        if (!parsed[idx2]) continue;
+        var g0 = groupFor(idx2, cellColor(S.cmode, slots[idx2].color, rgb, ci, pal, S.sat));
+        if (!g0) continue;
+
+        var size = cs;
+        if (S.scale) {
+          var band = 1 - ((1 - l) * N - Math.floor((1 - l) * N));
+          size = cs * (minF + (maxF - minF) * (S.invert ? 1 - band : band));
+        } else if (maxF !== 1) {
+          size = cs * maxF;
+        }
+        if (size <= 0.2) continue;
+
+        var px = (x * cs + cs / 2 - size / 2).toFixed(2);
+        var py = (y * cs + cs / 2 - size / 2).toFixed(2);
+        var kx = (size / g0.vbW).toFixed(5);
+        var ky = (size / g0.vbH).toFixed(5);
+
+        // xlink:href primeiro, href depois: o Illustrator só entende
+        // o primeiro (SVG 1.1), navegador moderno entende os dois.
+        // Era essa a causa do arquivo abrir vazio no Illustrator e
+        // certo no Preview.
+        body.push(
+          '<use xlink:href="#' + g0.id + '" href="#' + g0.id + '" ' +
+            'transform="translate(' + px + ' ' + py + ') scale(' + kx + ' ' + ky + ')"/>'
+        );
+      }
+    }
+
+    var background = S.alpha ? '' : '<rect width="100%" height="100%" fill="' + S.bg + '"/>';
+
+    var svg =
+      '<?xml version="1.0" encoding="UTF-8"?>\n' +
+      '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" ' +
+      'version="1.1" width="' + outEl.width + '" height="' + outEl.height + '" ' +
+      'viewBox="0 0 ' + outEl.width + ' ' + outEl.height + '">' +
+      '<defs>' + defs.join('') + '</defs>' +
+      background +
+      body.join('') +
+      '</svg>';
+
+    var url = URL.createObjectURL(new Blob([svg], { type: 'image/svg+xml' }));
+    download(url, filename('svg'), true);
+    return null;
+  }
+
+  /* ═════════════════ boot ═════════════════ */
+
+  rendererInit(canvas);
+  exporterInit(canvas);
+
+  /** Recalcula a paleta — só faz diferença no modo Quantizar. */
+  function refreshPalette() {
+    var info = getSource();
+    if (info && S.cmode === 'quant') setPalette(extractPalette(info.el, S.palN));
+  }
+
+  /* Assinar ANTES de carregar as shapes: se alguém mexer num controle
+     enquanto os SVGs ainda estão rasterizando, o emit não pode cair no
+     vazio. requestRender é seguro nesse estado — sample() devolve false
+     sem fonte e o quadro simplesmente não acontece. */
+  subscribe(requestRender);
+  onSourceChange(function () {
+    refreshPalette();
+    requestRender();
+  });
+
+  var builds = [];
+  for (var bi = 0; bi < slots.length; bi++) builds.push(buildSlotImage(slots[bi]));
+
+  Promise.all(builds).then(function () {
+    setImage(DEFAULT_IMG);
+  });
+
+  /* ═════════════════ casca de controles (Fase 2) ═════════════════
+     Cinco controles, conforme PRD §5. Esta parte não vem do repo —
+     o main.js de lá tem uma UI densa demais pra um portfólio, e foi
+     descartado inteiro. Aqui é código novo, só o wiring.          */
+
+  var msgEl = document.getElementById('tsMsg');
+
+  /** Recado curto pro visitante. Erro silencioso numa página pública
+      é pior que erro nenhum: a pessoa acha que a ferramenta é quebrada. */
+  function say(text) {
+    if (msgEl) msgEl.textContent = text || '';
+  }
+
+  onSourceError(say);
+
+  /** Marca qual botão do grupo está ativo. */
+  function pressGroup(nodes, active) {
+    for (var i = 0; i < nodes.length; i++) {
+      nodes[i].setAttribute('aria-pressed', nodes[i] === active ? 'true' : 'false');
+    }
+  }
+
+  /* ── 1. tamanho da célula ──
+     O slider anda ao contrário de `cols`: pra direita = célula maior
+     = menos colunas. É o que a pessoa espera de um controle chamado
+     "tamanho". 180 - v mantém o padrão 80 no meio do curso. */
+  var cellEl = document.getElementById('tsCell');
+  if (cellEl) {
+    cellEl.addEventListener('input', function () {
+      set('cols', 180 - Number(cellEl.value));
+    });
+  }
+
+  /* ── 2. conjunto de formas ──
+     Trocar o conjunto invalida as imagens rasterizadas E o cache de
+     tints. Os dois precisam cair juntos, senão o quadro seguinte
+     desenha a shape velha com a cor nova. */
+  var setBtns = document.querySelectorAll('[data-ts-set]');
+
+  function applyShapeSet(id) {
+    var chosen = null;
+    for (var i = 0; i < SHAPE_SETS.length; i++) {
+      if (SHAPE_SETS[i].id === id) chosen = SHAPE_SETS[i];
+    }
+    if (!chosen) return;
+
+    for (var j = 0; j < N; j++) {
+      slots[j].svgText = chosen.svgs[j];
+      slots[j].dirtyImg = true;
+    }
+    clearTints();
+
+    var jobs = [];
+    for (var k = 0; k < N; k++) jobs.push(buildSlotImage(slots[k]));
+    Promise.all(jobs).then(requestRender);
+  }
+
+  for (var sb = 0; sb < setBtns.length; sb++) {
+    setBtns[sb].addEventListener('click', function () {
+      pressGroup(setBtns, this);
+      applyShapeSet(this.getAttribute('data-ts-set'));
+    });
+  }
+
+  /* ── 3. modo de cor ──
+     `quant` depende da paleta extraída da fonte; sem recalcular, o
+     primeiro clique cai no modo sem paleta e não muda nada. */
+  var cmodeBtns = document.querySelectorAll('[data-ts-cmode]');
+
+  for (var cb = 0; cb < cmodeBtns.length; cb++) {
+    cmodeBtns[cb].addEventListener('click', function () {
+      var mode = this.getAttribute('data-ts-cmode');
+      pressGroup(cmodeBtns, this);
+      clearTints();
+      set('cmode', mode);
+      if (mode === 'quant') refreshPalette();
+      requestRender();
+    });
+  }
+
+  /* ── 4. inverter ──
+     Cuidado: o botão fala a língua do visitante, não a da flag.
+     S.invert = true é a leitura CORRETA no palco claro (ver o
+     comentário em S.invert), então o botão começa DESLIGADO com a
+     flag ligada. Apertar produz o negativo. */
+  var invBtn = document.getElementById('tsInverter');
+  if (invBtn) {
+    invBtn.addEventListener('click', function () {
+      var nowPressed = invBtn.getAttribute('aria-pressed') !== 'true';
+      invBtn.setAttribute('aria-pressed', nowPressed ? 'true' : 'false');
+      set('invert', !nowPressed);
+    });
+  }
+
+  /* ── 5. fonte: obra do Danilo ou upload ── */
+  var srcBtns = [];
+  var obraBtn = document.getElementById('tsObra');
+  var envBtn = document.getElementById('tsEnviar');
+  var fileEl = document.getElementById('tsFile');
+  if (obraBtn) srcBtns.push(obraBtn);
+  if (envBtn) srcBtns.push(envBtn);
+
+  if (obraBtn) {
+    obraBtn.addEventListener('click', function () {
+      pressGroup(srcBtns, obraBtn);
+      say('');
+      setImage(DEFAULT_IMG);
+    });
+  }
+
+  if (envBtn && fileEl) {
+    envBtn.addEventListener('click', function () { fileEl.click(); });
+    fileEl.addEventListener('change', function () {
+      var f = fileEl.files && fileEl.files[0];
+      if (!f) return;
+      say('');
+      if (loadFile(f)) pressGroup(srcBtns, envBtn);
+      // permite reenviar o MESMO arquivo depois de trocar de fonte
+      fileEl.value = '';
+    });
+  }
+
+  /* Arrastar e soltar preso ao palco, NÃO à window.
+     O sources.js do repo registrava em `window` — escopo global
+     demais pra uma seção dentro de uma página que já tem os
+     próprios handlers. Ver PRD §6.3. */
+  var stage = document.getElementById('tsStage');
+  if (stage) {
+    stage.addEventListener('dragover', function (e) {
+      e.preventDefault();
+      stage.classList.add('ts-drop');
+    });
+    stage.addEventListener('dragleave', function () {
+      stage.classList.remove('ts-drop');
+    });
+    stage.addEventListener('drop', function (e) {
+      e.preventDefault();
+      stage.classList.remove('ts-drop');
+      var f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+      if (!f) return;
+      say('');
+      if (loadFile(f) && envBtn) pressGroup(srcBtns, envBtn);
+    });
+  }
+
+  /* ── 6. exportar ── */
+  var pngBtn = document.getElementById('tsPng');
+  var svgBtn = document.getElementById('tsSvg');
+
+  if (pngBtn) {
+    pngBtn.addEventListener('click', function () {
+      say('');
+      exportPNG();
+    });
+  }
+  if (svgBtn) {
+    svgBtn.addEventListener('click', function () {
+      var err = exportSVG();
+      say(err || 'SVG baixado — abre no Illustrator e expande pra editar as células.');
+    });
+  }
+
+  /* Superfície interna. Serviu pra verificar a Fase 1 no console e
+     continua útil pra depurar. Não é API pública do site. */
+  window.Tonestamp = {
+    S: S,
+    slots: slots,
+    SHAPE_SETS: SHAPE_SETS,
+    set: set,
+    emit: emit,
+    render: requestRender,
+    clearTints: clearTints,
+    buildSlotImage: buildSlotImage,
+    refreshPalette: refreshPalette,
+    setImage: setImage,
+    loadFile: loadFile,
+    getSource: getSource,
+    exportPNG: exportPNG,
+    exportSVG: exportSVG
+  };
+})();
 </script>
 </body>
 </html>
