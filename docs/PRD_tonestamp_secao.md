@@ -84,7 +84,7 @@ sources.js  (folha)     │              │
 | Módulo | Origem | Alvo | O que muda |
 |---|---|---|---|
 | `palette.js` | 224 | **~180** | ✅ verbatim — zero imports, funções puras |
-| `shape-sets.js` | 94 | **~30** | ✅ verbatim, reduzido a 3 conjuntos |
+| `shape-sets.js` | 94 | **~55** | ✅ verbatim, os 5 conjuntos |
 | `shapes.js` | 203 | ~150 | corta `tintCacheSize`; troca chaves i18n |
 | `state.js` | 163 | ~70 | corta `STATE_META`, `resetParams`, `defaults`, `get` |
 | `sources.js` | 270 | ~55 | só `getSource`/`setImage`/`loadFile`; sem vídeo, sem webcam, sem `initDropZone` |
@@ -204,15 +204,21 @@ As fontes do Tonestamp (Bricolage Grotesque, IBM Plex Mono) **não entram**.
 
 ## 5. Superfície de controle
 
-Máximo 5 controles. A versão completa fica no link.
+7 controles. A versão completa fica no link.
 
 | Controle | Tipo | Padrão | Por quê |
 |---|---|---|---|
 | Tamanho da célula | slider | médio | Mais dramático visualmente. É o que faz a pessoa entender na hora |
-| Conjunto de formas | 3 botões | densidade | Mostra que a forma é customizável |
+| Conjunto de formas | 5 botões | densidade | Mostra que a forma é customizável |
 | Modo de cor | 3 botões | state | `quantize` dá o look serigrafia — é o mais bonito, mas `state` é o mais legível |
+| **Inverter** | toggle | desligado | ver 5.3 |
 | Fonte | Obra / Enviar | Obra | ver 5.1 |
 | Exportar | PNG · SVG | — | ver 5.2 |
+
+> **Revisão 27/08 — de 5 para 7 controles.** A rev. 2 fechava em 5 e em 3
+> conjuntos de formas. Ao ver a coisa funcionando o Danilo pediu os 5 conjuntos
+> e o inverter. Registrado aqui pra a contagem do documento não descolar do que
+> está na página — foi exatamente esse tipo de deriva que a Fase 0 encontrou.
 
 **Cortar da versão do site:** brilho, contraste, gamma, escala, rotação, presets, i18n, tema,
 gravação de vídeo, **webcam**.
@@ -265,6 +271,31 @@ As shapes embutidas vêm com `fill="#fff"` hardcoded. Com `S.fill = false`, o SV
 o palco cream** — invisível. Fixar `S.fill = true` e `slots[i].color = '#080706'`.
 
 **PNG:** capar em 2000px na versão do site.
+
+### 5.3 — 🔴 Inverter: o palco claro EXIGE `S.invert = true`
+
+Descoberto na Fase 2, e é correção de bug, não preferência.
+
+A rampa de formas do repo vai da mais **cheia** no realce até a quase vazia na
+sombra — os arquivos são literais quanto a isso:
+
+```
+shapes/bitmap-4/01-highlights-16de16.svg   ← realce, 16/16 preenchido
+shapes/bitmap-4/07-shadows-01de16.svg      ← sombra,  1/16 preenchido
+```
+
+Isso pressupõe o padrão do repo (`state.js`): `bg: '#000000'` com tinta
+`'#ffffff'` — **tinta clara sobre fundo escuro, onde mais tinta = mais claro.**
+
+A §4 deste PRD pede o oposto: palco cream com tinta `#080706`. E no papel
+**mais tinta = mais escuro.** Sem inverter, o realce recebe o borrão cheio e a
+composição sai como **negativo** — foi o que a Fase 1 subiu, sem ninguém notar
+de imediato.
+
+**`S.invert = true` é o estado correto do palco claro**, não um efeito. O
+controle "Inverter" da §5 existe pra ligar o negativo de propósito, então o
+botão nasce **desligado com a flag ligada** — ele fala a língua do visitante,
+não a da flag.
 
 **Gravação de vídeo: cortar** — mas não por incompatibilidade. A ferramenta grava MP4 hoje
 (confirmado em `export.js:207-214`: tenta `avc1` antes de WebM; 30 fps, bitrate proporcional à área).
@@ -413,8 +444,8 @@ Portar os 7 módulos na ordem topológica da §2.1, com os cortes da §2.2. O tr
 reescrita do loop (§2.3). Renderizar o brasão num canvas fixo, sem controles, sem estilo.
 Só provar que desenha.
 
-**Fase 2 — Controles** · ~200 ln
-Os 5 controles da §5. `S.fill = true`, `slots[i].color = '#080706'`. Ainda sem estilo final.
+**Fase 2 — Controles** · ~250 ln
+Os 7 controles da §5. `S.fill = true`, `slots[i].color = '#080706'`. Ainda sem estilo final.
 
 **Fase 3 — Visual** · ~240 ln
 Tokens, tipografia, layout, palco claro. Inserção na 1156, divider, renumeração, link na nav.
@@ -462,6 +493,8 @@ seção que passa a ser ~45% do arquivo, num site de 6 seções. Registrado aqui
 **Visual**
 - [ ] Grain não tinge o canvas
 - [ ] Nenhuma cor fora dos tokens da §4 — em especial, **nenhum `#C9923A`**
+- [ ] A composição abre como positivo, não negativo (§5.3): sombra recebe a
+      forma cheia, realce recebe o pontinho
 - [ ] Nenhuma fonte nova
 - [ ] 375 / 768 / 1440
 

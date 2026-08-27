@@ -920,6 +920,51 @@ footer{
   color:var(--cream-55);
 }
 
+/* ── copy da §8 ──
+   A seção não tem .sec--dark, e o site só define cor de .eyebrow
+   pelas variantes de seção. Sem esta regra o eyebrow herda --cream
+   e perde o dourado que as outras seções escuras usam. */
+#tonestamp .eyebrow{color:var(--gold)}
+.ts-head,.ts-foot{width:100%;max-width:60rem}
+.ts-title{
+  font-family:var(--disp);
+  font-size:clamp(2.75rem,8vw,5.5rem);
+  line-height:.92;
+  color:var(--cream);
+  margin-bottom:1.5rem;
+}
+.ts-lead{
+  max-width:52ch;
+  font-size:1.0625rem;
+  color:var(--cream-75);
+  margin-bottom:1rem;
+}
+.ts-foot{margin-top:.5rem}
+.ts-note{
+  max-width:56ch;
+  font-size:.9375rem;
+  color:var(--cream-75);
+  margin-bottom:1rem;
+}
+.ts-links{
+  display:flex;flex-wrap:wrap;gap:1.5rem;
+  margin:1.75rem 0 1.5rem;
+  font-family:var(--ui);font-size:.875rem;
+  letter-spacing:.04em;
+}
+.ts-links a{
+  color:var(--gold);
+  border-bottom:1px solid rgba(255,190,87,.4);
+  padding-bottom:.15rem;
+  transition:border-color .3s;
+}
+.ts-links a:hover,.ts-links a:focus-visible{border-bottom-color:var(--gold)}
+.ts-credit{
+  max-width:56ch;
+  font-family:var(--ui);font-size:.75rem;line-height:1.7;
+  color:var(--cream-55);
+}
+
 @media (max-width:768px){
   .ts-controls{flex-direction:column}
   .ts-controls fieldset,.ts-slider{width:100%}
@@ -1217,11 +1262,25 @@ footer{
 </section>
 
 <!-- ═══ 04 · FERRAMENTA ══════════════════════════════════════
-     FASE 2 — motor + os 5 controles do PRD §5.
+     Motor + 7 controles + copy da §8.
      Ainda NÃO tem: divider antes da seção, renumeração de
-     04→05→06→07 nas seguintes, link na nav, palco cream,
-     tipografia e copy. É Fase 3 e 5.                        -->
+     04→05→06→07 nas seguintes, link na nav, palco cream e o
+     layout de duas colunas. É Fase 3.                       -->
 <section id="tonestamp" data-nav-theme="dark">
+
+  <div class="ts-head">
+    <p class="eyebrow rev">A ferramenta que eu construí</p>
+    <h2 class="ts-title rev rev-1">Tonestamp</h2>
+    <p class="ts-lead rev rev-1">
+      Meio-tom tonal: a ferramenta lê o brilho de cada célula da imagem e carimba
+      no lugar uma forma vetorial. Não é ASCII art nem pixel art — é retícula de
+      verdade, com controle sobre qual forma ocupa cada faixa de luz e sombra.
+    </p>
+    <p class="ts-lead rev rev-2">
+      Mexe aí. O que você exportar em SVG abre editável no Illustrator, não como
+      bitmap traçado.
+    </p>
+  </div>
 
   <div class="ts-stage" id="tsStage">
     <canvas id="tsCanvas" width="1440" height="960"
@@ -1237,9 +1296,11 @@ footer{
 
     <fieldset>
       <legend>Formas</legend>
-      <button type="button" data-ts-set="default" aria-pressed="true">Densidade</button>
-      <button type="button" data-ts-set="dots"    aria-pressed="false">Pontos</button>
-      <button type="button" data-ts-set="blocks"  aria-pressed="false">Blocos</button>
+      <button type="button" data-ts-set="default"    aria-pressed="true">Densidade</button>
+      <button type="button" data-ts-set="dots"       aria-pressed="false">Pontos</button>
+      <button type="button" data-ts-set="blocks"     aria-pressed="false">Blocos</button>
+      <button type="button" data-ts-set="bitmap-4"   aria-pressed="false">Bitmap</button>
+      <button type="button" data-ts-set="complexity" aria-pressed="false">Complexidade</button>
     </fieldset>
 
     <fieldset>
@@ -1247,6 +1308,7 @@ footer{
       <button type="button" data-ts-cmode="state" aria-pressed="true">Estado</button>
       <button type="button" data-ts-cmode="pixel" aria-pressed="false">Pixel</button>
       <button type="button" data-ts-cmode="quant" aria-pressed="false">Quantizar</button>
+      <button type="button" id="tsInverter" aria-pressed="false">Inverter</button>
     </fieldset>
 
     <fieldset>
@@ -1265,6 +1327,30 @@ footer{
   </div>
 
   <p id="tsMsg" role="status" aria-live="polite"></p>
+
+  <div class="ts-foot">
+    <p class="ts-note rev">
+      Sete formas, da mais clara à mais escura. Pra imagem funcionar, a área
+      preenchida precisa crescer sem inverter em nenhum passo — se um estado
+      escuro tem menos tinta que o anterior, o olho lê um relevo que não existe
+      na foto. Em vez de conferir no olhômetro, escrevi um script que mede a
+      área de cada SVG e reprova o build se a rampa quebrar. Ele pegou duas
+      inversões que eu não tinha visto.
+    </p>
+    <p class="ts-note rev">
+      Arquivo HTML único. Abre com duplo clique, roda offline, não instala nada.
+    </p>
+
+    <p class="ts-links rev">
+      <a href="https://haruway.github.io/tonestamp/" target="_blank" rel="noopener">Abrir ferramenta →</a>
+      <a href="https://github.com/haruway/tonestamp" target="_blank" rel="noopener">Código no GitHub →</a>
+    </p>
+
+    <p class="ts-credit">
+      Técnica original de Anton Burmistrov (@antoncreations). Implementação
+      independente, com controles adicionais. MIT, sem fins comerciais.
+    </p>
+  </div>
 
 </section>
 
@@ -1631,7 +1717,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 <script>
 /* ═══════════════════════════════════════════════════════════════
-   TONESTAMP — motor (Fase 1)
+   TONESTAMP — motor + controles
 
    Porte de github.com/haruway/tonestamp.
    Técnica original de Anton Burmistrov (@antoncreations). MIT.
@@ -1646,8 +1732,8 @@ document.addEventListener('DOMContentLoaded', function () {
    `type !== 'image'`. Aqui o render é SOB DEMANDA: uma mudança de
    estado agenda UM quadro e para. Ver PRD §2.3 e §7.1.
 
-   Fase 1 = só o motor. Sem controles, sem estilo, sem export ligado
-   a botão. Prova que desenha.
+   O main.js, i18n.js, theme.js e presets.js do repo foram descartados
+   inteiros; a casca de controles no fim deste arquivo é código novo.
    ═══════════════════════════════════════════════════════════════ */
 (function () {
   'use strict';
@@ -1665,7 +1751,7 @@ document.addEventListener('DOMContentLoaded', function () {
   var MAX_PNG = 2000;
 
   /* ═════════════════ shape-sets.js ═════════════════
-     3 dos 5 conjuntos do repo. Lá o arquivo é GERADO por
+     Os 5 conjuntos do repo. Lá o arquivo é GERADO por
      scripts/gen-shape-sets.mjs a partir das pastas de shapes/;
      aqui entram como dado literal. Pra trocar uma shape, edite
      no repo, rode o gerador e recopie.                          */
@@ -1708,6 +1794,32 @@ document.addEventListener('DOMContentLoaded', function () {
         '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect x="29" y="29" width="42" height="42" fill="#fff"/></svg>',
         '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect x="37" y="37" width="26" height="26" fill="#fff"/></svg>',
         '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect x="44" y="44" width="12" height="12" fill="#fff"/></svg>'
+      ]
+    },
+    {
+      id: 'bitmap-4',
+      label: 'Bitmap',
+      svgs: [
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect x="0" y="0" width="100" height="100" fill="#fff"/></svg>',
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect x="0" y="0" width="100" height="25" fill="#fff"/><rect x="25" y="25" width="25" height="25" fill="#fff"/><rect x="75" y="25" width="25" height="25" fill="#fff"/><rect x="0" y="50" width="100" height="25" fill="#fff"/><rect x="25" y="75" width="25" height="25" fill="#fff"/><rect x="75" y="75" width="25" height="25" fill="#fff"/></svg>',
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect x="0" y="0" width="75" height="25" fill="#fff"/><rect x="25" y="25" width="25" height="25" fill="#fff"/><rect x="75" y="25" width="25" height="25" fill="#fff"/><rect x="0" y="50" width="25" height="25" fill="#fff"/><rect x="50" y="50" width="50" height="25" fill="#fff"/><rect x="25" y="75" width="25" height="25" fill="#fff"/><rect x="75" y="75" width="25" height="25" fill="#fff"/></svg>',
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect x="0" y="0" width="25" height="25" fill="#fff"/><rect x="50" y="0" width="25" height="25" fill="#fff"/><rect x="25" y="25" width="25" height="25" fill="#fff"/><rect x="75" y="25" width="25" height="25" fill="#fff"/><rect x="0" y="50" width="25" height="25" fill="#fff"/><rect x="50" y="50" width="25" height="25" fill="#fff"/><rect x="25" y="75" width="25" height="25" fill="#fff"/><rect x="75" y="75" width="25" height="25" fill="#fff"/></svg>',
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect x="0" y="0" width="25" height="25" fill="#fff"/><rect x="50" y="0" width="25" height="25" fill="#fff"/><rect x="25" y="25" width="25" height="25" fill="#fff"/><rect x="0" y="50" width="25" height="25" fill="#fff"/><rect x="50" y="50" width="25" height="25" fill="#fff"/></svg>',
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect x="0" y="0" width="25" height="25" fill="#fff"/><rect x="50" y="0" width="25" height="25" fill="#fff"/><rect x="50" y="50" width="25" height="25" fill="#fff"/></svg>',
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect x="0" y="0" width="25" height="25" fill="#fff"/></svg>'
+      ]
+    },
+    {
+      id: 'complexity',
+      label: 'Complexidade',
+      svgs: [
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path fill="#fff" fill-rule="evenodd" d="M50 4a46 46 0 1 1 0 92 46 46 0 0 1 0-92Zm0 8a38 38 0 1 0 0 76 38 38 0 0 0 0-76ZM50 20a30 30 0 1 1 0 60 30 30 0 0 1 0-60Zm0 7a23 23 0 1 0 0 46 23 23 0 0 0 0-46ZM50 36a14 14 0 1 1 0 28 14 14 0 0 1 0-28Z"/></svg>',
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path fill="#fff" fill-rule="evenodd" d="M50 4a46 46 0 1 1 0 92 46 46 0 0 1 0-92Zm0 8a38 38 0 1 0 0 76 38 38 0 0 0 0-76ZM50 22a28 28 0 1 1 0 56 28 28 0 0 1 0-56Zm0 8a20 20 0 1 0 0 40 20 20 0 0 0 0-40Z"/></svg>',
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path fill="#fff" fill-rule="evenodd" d="M50 4a46 46 0 1 1 0 92 46 46 0 0 1 0-92Zm0 7a39 39 0 1 0 0 78 39 39 0 0 0 0-78ZM50 37a13 13 0 1 1 0 26 13 13 0 0 1 0-26Z"/></svg>',
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path fill="#fff" fill-rule="evenodd" d="M50 4a46 46 0 1 1 0 92 46 46 0 0 1 0-92Zm0 7a39 39 0 1 0 0 78 39 39 0 0 0 0-78Z"/></svg>',
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path fill="#fff" d="M8 45h84v10H8Z M45 8h10v84H45Z"/></svg>',
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect x="8" y="45" width="84" height="10" fill="#fff"/></svg>',
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="8" fill="#fff"/></svg>'
       ]
     }
   ];
@@ -1872,12 +1984,21 @@ document.addEventListener('DOMContentLoaded', function () {
     fill: true,
     res: 1440,
 
+    /* invert:true NÃO é decoração — é o que faz o palco claro ler certo.
+       A rampa do repo vai da forma mais CHEIA no realce até a quase
+       vazia na sombra (01-highlights-16de16 … 07-shadows-01de16), e
+       isso pressupõe o padrão dele: tinta clara sobre fundo escuro,
+       onde mais tinta = mais claro.
+       Aqui é o contrário — tinta escura sobre palco cream, e no papel
+       mais tinta = mais ESCURO. Sem inverter, o realce ganha o borrão
+       cheio e a imagem sai como negativo. Ver PRD §4. */
+    invert: true,
+
     /* ── fixos nesta versão ──
        O repo expõe estes como controle; o site não (PRD §5).
        Ficam em S, e não inlinados, pra manter tonemap/bandIndex/
        sizeFactor idênticos ao original — divergir o porte aqui
        custaria mais do que as 8 linhas que economizaria.         */
-    invert: false,
     scale: false,
     minS: 30,
     maxS: 100,
@@ -2584,7 +2705,21 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  /* ── 4. fonte: obra do Danilo ou upload ── */
+  /* ── 4. inverter ──
+     Cuidado: o botão fala a língua do visitante, não a da flag.
+     S.invert = true é a leitura CORRETA no palco claro (ver o
+     comentário em S.invert), então o botão começa DESLIGADO com a
+     flag ligada. Apertar produz o negativo. */
+  var invBtn = document.getElementById('tsInverter');
+  if (invBtn) {
+    invBtn.addEventListener('click', function () {
+      var nowPressed = invBtn.getAttribute('aria-pressed') !== 'true';
+      invBtn.setAttribute('aria-pressed', nowPressed ? 'true' : 'false');
+      set('invert', !nowPressed);
+    });
+  }
+
+  /* ── 5. fonte: obra do Danilo ou upload ── */
   var srcBtns = [];
   var obraBtn = document.getElementById('tsObra');
   var envBtn = document.getElementById('tsEnviar');
@@ -2635,7 +2770,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  /* ── 5. exportar ── */
+  /* ── 6. exportar ── */
   var pngBtn = document.getElementById('tsPng');
   var svgBtn = document.getElementById('tsSvg');
 
