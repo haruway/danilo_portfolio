@@ -771,7 +771,8 @@ footer{
    barras tira a âncora das bordas e o layout perde estrutura. */
 .faz-head,.tr-head,.case-info,.compare-intro,.dz,.otb-info,
 .pr-head,.pr-step,.pr-foot,.ct-inner,.films-label,.eyebrow,
-.hero-thesis,.case-text,.faz-item,.sobre-p,.sobre-now{
+.hero-thesis,.case-text,.faz-item,.sobre-p,.sobre-now,
+.ts-head,.ts-foot{
   text-align:center;
 }
 
@@ -888,7 +889,7 @@ footer{
 .ts-stage.ts-drop{outline:2px dashed var(--gold);outline-offset:6px}
 #tsCanvas{width:100%;height:auto;display:block}
 
-#tonestamp{display:grid;gap:clamp(2rem,4vw,3rem);justify-items:start}
+#tonestamp{display:grid;gap:clamp(2rem,4vw,3rem);justify-items:center}
 .ts-head,.ts-foot{width:100%;max-width:60rem}
 
 /* duas colunas: palco à esquerda, painel à direita (PRD §4) */
@@ -949,22 +950,18 @@ footer{
   color:var(--cream);
   margin-bottom:1.5rem;
 }
-.ts-lead{max-width:52ch;font-size:1.0625rem;color:var(--cream-75);margin-bottom:1rem}
-.ts-note{max-width:56ch;font-size:.9375rem;color:var(--cream-75);margin-bottom:1rem}
+.ts-lead{max-width:52ch;margin-inline:auto;font-size:1.0625rem;color:var(--cream-75);margin-bottom:1rem}
+.ts-note{max-width:56ch;margin-inline:auto;font-size:.9375rem;color:var(--cream-75);margin-bottom:1rem}
+/* CTA no padrão .btn do site — mesmo componente do WhatsApp em
+   #contato, e o JS já dá efeito magnético em tudo que é .btn.
+   A demo é --primary (dourada) porque é o clique que importa: é
+   ela que prova o argumento em um segundo. */
 .ts-links{
-  display:flex;flex-wrap:wrap;gap:1.5rem;
-  margin:1.75rem 0 1.5rem;
-  font-family:var(--ui);font-size:.875rem;letter-spacing:.04em;
+  display:flex;flex-wrap:wrap;gap:.75rem;justify-content:center;
+  margin:2.25rem 0 1.75rem;
 }
-.ts-links a{
-  color:var(--gold);
-  border-bottom:1px solid rgba(255,190,87,.4);
-  padding-bottom:.15rem;
-  transition:border-color .3s;
-}
-.ts-links a:hover,.ts-links a:focus-visible{border-bottom-color:var(--gold)}
 .ts-credit{
-  max-width:56ch;
+  max-width:56ch;margin-inline:auto;
   font-family:var(--ui);font-size:.75rem;line-height:1.7;
   color:var(--cream-55);
 }
@@ -1361,8 +1358,8 @@ footer{
     </p>
 
     <p class="ts-links rev">
-      <a href="https://haruway.github.io/tonestamp/" target="_blank" rel="noopener">Abrir ferramenta →</a>
-      <a href="https://github.com/haruway/tonestamp" target="_blank" rel="noopener">Código no GitHub →</a>
+      <a class="btn btn--primary" href="https://haruway.github.io/tonestamp/" target="_blank" rel="noopener">Abrir a ferramenta ↗</a>
+      <a class="btn" href="https://github.com/haruway/tonestamp" target="_blank" rel="noopener">Código no GitHub ↗</a>
     </p>
 
     <p class="ts-credit">
