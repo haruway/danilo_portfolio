@@ -34,10 +34,18 @@ Uma marca precisa existir em fachada, embalagem, uniforme, impresso, feed e víd
 01  HERO             nome + tese. Sem cargo.
 02  O QUE EU FAÇO    3 blocos, linguagem de cliente
 03  TRABALHO         Cliente (primeiro) | Conceito (rotulado)
-04  COMO FUNCIONA    processo e o que ele recebe
-05  QUEM SOU         curto, com foto
-06  CONTATO          CTA específico
+04  BENDITO          marca autoral — case de sistema completo
+05  FERRAMENTA       Tonestamp (PRD próprio: PRD_tonestamp_secao.md)
+06  COMO FUNCIONA    processo e o que ele recebe
+07  QUEM SOU         curto, com foto
+08  CONTATO          CTA específico
 ```
+
+**Por que Bendito e Tonestamp saíram de dentro de TRABALHO:** os dois provam coisas que
+um card de case não comporta. A Bendito é sistema de marca inteiro — nome, símbolo,
+naipes, 54 superfícies. O Tonestamp é ferramenta que roda na página. Ambos ficam depois
+do trabalho de cliente e antes da credencial: é a virada de "ele executa" para "ele
+constrói".
 
 Sai do site (vai pro LinkedIn): Formação, Stack de IA, timeline de Experiência.
 Fica como linha discreta: *"Atualmente na Dzigna, agência de branding em Maringá."*
@@ -122,7 +130,84 @@ Exemplo, Camaro:
 
 ---
 
-### 04 — COMO FUNCIONA
+### 04 — BENDITO
+
+**Eyebrow:** Uma marca inteira, do nome à carta
+**Título:** Bendito
+**Badge:** Conceito · não comissionado
+
+**Abertura**
+> Bendito é bênção e praga na mesma palavra. *Bendito seja* é agradecimento; *esse bendito
+> baralho* é xingamento. Sorte e azar cabem na mesma boca — que é exatamente o que acontece
+> quando a carta vira: a mesma carta que salva um jogador afunda o outro.
+
+**De onde veio**
+> Começou com uma pergunta feita no meio de um jogo: quem é o homem desenhado no rei de
+> espadas? Ninguém soube responder. Era Davi, rei de Israel. Do outro lado da mesa estavam
+> Carlos Magno, Júlio César e Alexandre, o Grande — as quatro figuras que gravadores
+> franceses fixaram na carta no século XV e que atravessaram quinhentos anos sem que ninguém
+> pedisse licença pra mudar. Nenhum deles nunca pisou aqui.
+>
+> **O baralho é o objeto mais presente na mesa brasileira e o menos brasileiro que existe nela.**
+
+**Posicionamento**
+> **A Bendito não fabrica baralho. Edita.**
+>
+> Editora e não fábrica: cada baralho é uma edição, com conceito, autoria e tiragem
+> declarada. O território não é bar nem mágica — é sorte, destino, superstição e trapaça.
+
+**A marca**
+> Numa marca de baralho a coroa não é enfeite de realeza — é a carta mais alta. É o rei. E
+> ela está no *i*: a menor letra da palavra, a que normalmente só tem um pingo. O pequeno
+> coroado, com uma coroa torta de três pontas irregulares.
+
+**Os naipes**
+> Os naipes saem da mesma forma-mãe da coroa, o que torna o baralho inteiro proprietário da
+> marca — não é carta genérica com um logo aplicado em cima. A silhueta externa é preservada
+> de propósito, porque carta que não se lê de longe quebra o valor mais duro da marca:
+> carta é pra jogar.
+
+**A colab**
+> **Bendito × Antarctica.** A tese é unir o jovem e o boteco — e o baralho é o objeto que faz
+> a ponte, porque permanece na mesa depois que a garrafa acaba. 54 cartas, verso e caixa. Uma
+> corte real de pinguins brasileiros: nobreza fajuta, instrumento de samba no lugar do cetro.
+
+**A corte**
+> É o lugar exato onde por quinhentos anos estiveram reis europeus de verdade. O Coringa fecha
+> a piada: é a única carta sem valor fixo, vale o que a mesa combinar — e é literalmente o bobo
+> da corte, o arquétipo da marca já impresso dentro do produto.
+>
+**Os quatro naipes** (grid completo)
+> Do ás ao rei, naipe por naipe. 54 cartas — e uma delas não tem valor
+> nenhum e é a mais importante.
+
+⚠️ **O arquivo `carta-33.png` NÃO é carta** — é só a linha de faca (#e61873) que
+entrou numerada na sequência. Removê-lo não deixa nada: 0% de opacidade. O mesmo
+vale pras caixas `01` e `03`, que têm faca em `#a6539b`; a limpa é a `02`.
+Linha de corte é arquivo de fábrica e não entra no portfólio.
+
+**Rodapé da seção (obrigatório)**
+> Projeto acadêmico (Unicesumar, 2026). A Bendito é uma marca autoral fictícia e a colab com a
+> Antarctica é um exercício hipotético — não existe relação comercial com a marca. Conceito,
+> identidade visual e arte das 54 cartas: Danilo Mariani.
+
+⚠️ **O rodapé não é opcional.** Antarctica é marca real (Ambev). Sem o aviso, um portfólio
+público mostrando "Bendito × Antarctica" pode ser lido como trabalho comissionado — e é o
+tipo de coisa que queima credibilidade se alguém perguntar.
+
+⚠️ **Fontes licenciadas.** Tomato Grotesk e P22 Morris Troy não sobem como webfont. Elas
+aparecem só dentro das imagens (logo e cartas já rasterizados). Os originais vivem em
+`FOTOS/BENDITO/`, fora do git.
+
+---
+
+### 05 — FERRAMENTA
+
+A copy da seção Tonestamp vive em `PRD_tonestamp_secao.md`, §8 — não duplicar aqui.
+
+---
+
+### 06 — COMO FUNCIONA
 
 **Eyebrow:** Do primeiro contato ao arquivo final
 
@@ -137,7 +222,7 @@ Exemplo, Camaro:
 
 ---
 
-### 05 — QUEM SOU
+### 07 — QUEM SOU
 
 Foto real, obrigatória. Texto curto:
 
@@ -149,7 +234,7 @@ Foto real, obrigatória. Texto curto:
 
 ---
 
-### 06 — CONTATO
+### 08 — CONTATO
 
 **Título:** Vamos conversar
 

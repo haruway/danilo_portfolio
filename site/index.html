@@ -76,6 +76,10 @@
   --line-d:rgba(237,229,212,.16);
   --line-l:rgba(26,16,8,.16);
 
+  --bdt-preto:#17171C;      /* Bendito — paleta do case, como a do Old Town */
+  --bdt-dourado:#F1BA29;
+  --bdt-azul:#056AB1;
+
   --otb-green:#194B46;
   --otb-caramel:#6B3F1E;
   --otb-off:#F5F0E4;
@@ -772,7 +776,8 @@ footer{
 .faz-head,.tr-head,.case-info,.compare-intro,.dz,.otb-info,
 .pr-head,.pr-step,.pr-foot,.ct-inner,.films-label,.eyebrow,
 .hero-thesis,.case-text,.faz-item,.sobre-p,.sobre-now,
-.ts-head,.ts-foot{
+.ts-head,.ts-foot,
+.bdt-head,.bdt-foot{
   text-align:center;
 }
 
@@ -975,6 +980,89 @@ footer{
   .ts-controls{flex-direction:column}
   .ts-controls fieldset,.ts-slider{flex:1 1 auto}
 }
+
+/* ── BENDITO ─────────────────────────────────────────────────
+   Case de marca autoral. Usa .sec .sec--dark como as outras; o
+   que é próprio daqui é a paleta do case (--bdt-*) e o palco
+   preto da marca, no mesmo padrão do Old Town.               */
+#bendito{display:grid;gap:clamp(3rem,6vw,5rem);justify-items:center}
+.bdt-head,.bdt-foot{width:100%;max-width:60rem}
+
+/* Bloco editorial de duas colunas: rótulo à esquerda, conteúdo à
+   direita. É o que tira a seção da coluna estreita no meio da tela —
+   num monitor, texto centralizado em 56ch vira cara de app de celular
+   aberto no desktop. Abaixo de 900px vira uma coluna só.           */
+.bdt-bloco{
+  width:100%;max-width:76rem;
+  display:grid;
+  grid-template-columns:12rem minmax(0,1fr);
+  gap:clamp(1.25rem,4vw,3.5rem);
+  align-items:start;
+  text-align:left;
+}
+.bdt-bloco > .bdt-rotulo{margin:0;padding-top:.3rem}
+.bdt-title{
+  font-family:var(--disp);
+  font-size:clamp(2.75rem,8vw,5.5rem);
+  line-height:.92;color:var(--cream);
+  margin:.5rem 0 1.25rem;
+}
+.bdt-lead{max-width:56ch;margin-inline:auto;font-size:1.0625rem;color:var(--cream-75)}
+.bdt-frase{
+  max-width:20ch;margin:0;
+  font-family:var(--disp);
+  font-size:clamp(1.9rem,5vw,3.4rem);line-height:1.02;
+  color:var(--bdt-dourado);
+}
+.bdt-p{max-width:64ch;margin:0 0 1rem;font-size:1rem;line-height:1.7;color:var(--cream-75)}
+.bdt-rotulo{
+  font-family:var(--ui);
+  font-size:.75rem;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--cream-55);margin-bottom:1.1rem;
+}
+
+/* palco preto da marca — o mesmo tom em que as imagens foram
+   achatadas, então a carta encosta no fundo sem emenda */
+.bdt-palco{
+  width:100%;background:var(--bdt-preto);
+  padding:clamp(1.25rem,3vw,2.5rem);
+}
+.bdt-palco img{width:100%;height:auto;display:block}
+
+.bdt-marca{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:clamp(1.5rem,4vw,3rem);align-items:center;justify-items:center;
+}
+.bdt-marca img{max-height:7rem;width:auto}
+.bdt-marca .bdt-i{max-height:10rem}
+
+.bdt-naipes{display:flex;gap:clamp(2rem,6vw,4rem);justify-content:center;align-items:center}
+.bdt-naipe{width:clamp(4.5rem,11vw,7.5rem);height:auto;color:var(--cream)}
+
+.bdt-figuras{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:clamp(.6rem,1.5vw,1rem);
+}
+.bdt-dupla{display:grid;grid-template-columns:1fr 1fr;gap:clamp(.6rem,1.5vw,1rem)}
+.bdt-figuras img,.bdt-dupla img{width:100%;height:auto;display:block}
+.bdt-cap{
+  font-family:var(--ui);font-size:.75rem;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--cream-55);
+  margin-top:.6rem;text-align:center;
+}
+.bdt-foot{
+  max-width:56ch;
+  font-family:var(--ui);font-size:.75rem;line-height:1.7;
+  color:var(--cream-55);
+}
+@media (max-width:900px){
+  .bdt-bloco{grid-template-columns:1fr;gap:1rem}
+  .bdt-frase{max-width:none}
+}
+@media (max-width:768px){
+  .bdt-marca{grid-template-columns:1fr;gap:2rem}
+  .bdt-figuras{grid-template-columns:repeat(2,1fr)}
+}
 </style>
 </head>
 <body>
@@ -990,6 +1078,7 @@ footer{
   <ul class="nav-links">
     <li><a href="#faco">O que eu faço</a></li>
     <li><a href="#trabalho">Trabalho</a></li>
+    <li><a href="#bendito">Bendito</a></li>
     <li><a href="#tonestamp">Ferramenta</a></li>
     <li><a href="#processo">Como funciona</a></li>
     <li><a href="#sobre">Quem sou</a></li>
@@ -1268,12 +1357,178 @@ footer{
 </section>
 
 <div class="divider" data-nav-theme="dark">
+  <span>◆ Bendito</span>
+  <span class="c">Marca autoral de baralhos</span>
+  <span class="r">↓ 54 cartas</span>
+</div>
+
+<!-- ═══ 04 · BENDITO ═════════════════════════════════════════ -->
+<section id="bendito" class="sec sec--dark" data-nav-theme="dark">
+
+  <div class="bdt-head">
+    <p class="eyebrow rev">Uma marca inteira, do nome à carta</p>
+    <h2 class="bdt-title rev rev-1">Bendito</h2>
+    <p class="rev rev-1"><span class="badge">Conceito · não comissionado</span></p>
+    <p class="bdt-lead rev rev-2" style="margin-top:1.5rem">
+      Bendito é bênção e praga na mesma palavra. <em>Bendito seja</em> é agradecimento;
+      <em>esse bendito baralho</em> é xingamento. Sorte e azar cabem na mesma boca — que é
+      exatamente o que acontece quando a carta vira: a mesma carta que salva um jogador
+      afunda o outro.
+    </p>
+  </div>
+
+  <div class="bdt-bloco rev">
+    <p class="bdt-rotulo">De onde veio</p>
+    <div>
+      <p class="bdt-p">
+        Começou com uma pergunta feita no meio de um jogo: quem é o homem desenhado no rei
+        de espadas? Ninguém soube responder. Era Davi, rei de Israel. Do outro lado da mesa
+        estavam Carlos Magno, Júlio César e Alexandre, o Grande — as quatro figuras que
+        gravadores franceses fixaram na carta no século XV e que atravessaram quinhentos
+        anos sem que ninguém pedisse licença pra mudar. Nenhum deles nunca pisou aqui.
+      </p>
+      <p class="bdt-frase" style="margin-top:2rem">
+        O baralho é o objeto mais presente na mesa brasileira e o menos brasileiro que existe nela.
+      </p>
+    </div>
+  </div>
+
+  <div class="bdt-bloco rev">
+    <p class="bdt-rotulo">Posicionamento</p>
+    <div>
+      <p class="bdt-frase">A Bendito não fabrica baralho. Edita.</p>
+      <p class="bdt-p" style="margin-top:1.75rem">
+        Editora e não fábrica: cada baralho é uma edição, com conceito, autoria e tiragem
+        declarada. O território não é bar nem mágica — é sorte, destino, superstição e
+        trapaça. Tudo que o brasileiro põe na mesa junto com as cartas.
+      </p>
+    </div>
+  </div>
+
+  <div class="bdt-bloco rev">
+    <p class="bdt-rotulo">A marca</p>
+    <div>
+      <div class="bdt-marca" style="margin-bottom:2rem">
+        <img src="assets/img/bendito-logo.png" alt="Assinatura horizontal da marca Bendito" loading="lazy">
+        <img class="bdt-i" src="assets/img/bendito-i-coroado.png" alt="Logo secundário: o i coroado" loading="lazy">
+        <img src="assets/img/bendito-coroa.png" alt="A coroa isolada, ícone da marca" loading="lazy">
+      </div>
+      <p class="bdt-p">
+        Numa marca de baralho a coroa não é enfeite de realeza — é a carta mais alta. É o rei.
+        O símbolo vem do próprio produto, não de um repertório genérico de nobreza. E ela está
+        no <em>i</em>: a menor letra da palavra, a que normalmente só tem um pingo. O pequeno
+        coroado, com uma coroa torta de três pontas irregulares.
+      </p>
+    </div>
+  </div>
+
+  <div class="bdt-bloco rev">
+    <p class="bdt-rotulo">Os naipes</p>
+    <div>
+      <div class="bdt-naipes" style="margin-bottom:2rem">
+        <svg class="bdt-naipe" viewBox="0 0 1341.33 1087.89" role="img" aria-label="Naipe de copas, Bendito"><g><path fill="currentColor" d="M1238.01,199.64c-.8-5.92-27.48-156.62-30.48-157.93C1171.72,26.13,782.17-4.24,761.57.5c-20.59,4.73-130.6,311.21-117.38,322.27,14.93,12.5,145.79-108.13,194.69-120.19,32.19-7.94,64.25-15.52,89.43,3.2,93.37,69.44,293.35,257.52,307.45,254.2,14.71-3.46,3.86-248.47,2.26-260.33Z"/><path fill="currentColor" d="M105.58,459.97c14.1,3.32,214.08-184.76,307.45-254.2,25.17-18.72,57.23-11.14,89.43-3.2,48.9,12.06,179.75,132.69,194.69,120.19,13.21-11.06-96.79-317.53-117.38-322.27-20.59-4.73-410.14,25.63-445.95,41.21-3.01,1.31-29.69,152.01-30.48,157.93-1.6,11.86-12.44,256.87,2.26,260.33Z"/></g><g><path fill="currentColor" d="M612.15,920.2c3.47-18.16-247.3-263.09-340.95-378.43-25.25-31.1-17.31-72.41-8.93-113.91,12.73-63.04,159.53-236.51,142.77-254.88C390.22,156.73,5.21,313.68.29,340.2c-4.92,26.53,54.94,521.83,76.75,566.67,1.83,3.76,195.53,29.63,203.13,30.33,15.22,1.39,328.37,1.95,331.99-17Z"/><path fill="currentColor" d="M1061.16,937.2c7.59-.69,201.29-26.56,203.13-30.33,21.82-44.84,81.68-540.15,76.75-566.67-4.92-26.53-389.93-183.48-404.75-167.22-16.76,18.37,130.04,191.84,142.77,254.88,8.38,41.5,16.32,82.81-8.93,113.91-93.65,115.34-344.42,360.27-340.95,378.43,3.62,18.95,316.77,18.4,331.99,17Z"/></g><rect fill="currentColor" x="534.43" y="921.13" width="267.67" height="166.76"/></svg>
+        <svg class="bdt-naipe" viewBox="0 0 1710.18 1657.74" role="img" aria-label="Naipe de espadas, Bendito"><path fill="currentColor" d="M1589.16,606.36c-1.04,9.95-18.26,100.53-40.09,201.98-22.13,102.9-48.99,216.99-68.5,269.43-6.88,18.5-12.85,29.33-17.37,29.3-.73,0-1.65-.31-2.73-.9-41.11-22.44-327.37-459.73-471.11-632.64-32.36-38.92-81.62-46.41-134.27-47.72-52.65,1.31-101.92,8.8-134.27,47.72-143.73,172.89-429.95,610.13-471.11,632.63-1.09.6-2,.9-2.74.91-4.52.03-10.49-10.81-17.38-29.33-19.5-52.46-46.36-166.52-68.48-269.4-21.83-101.45-39.05-192.03-40.09-201.98-1.23-11.78-20.19-314.71-15.01-318.63,39.36-29.81,353.05-138.36,586.13-213.26C727.28,29.17,754.11-.11,763.89,0c8.04.1,41.67,9.03,91.2,23.74C904.62,9.03,938.25.1,946.29,0c9.78-.11,36.61,29.17,71.75,74.47,233.08,74.9,546.76,183.45,586.13,213.26,5.18,3.92-13.78,306.85-15.01,318.63Z"/><g><path fill="currentColor" d="M1699.36,1244.93c-1.67-16.06-65.3-340.74-85.68-340.61-4.66.03-19.72,17.69-41.32,46.2-24.2,31.96-56.61,77.55-91.79,127.25-6.62,9.34-13.33,18.83-20.1,28.4-59.87,84.57-124.56,175.52-169.12,229.12-27.06,32.55-71.51,32.79-116.23,32.61-67.95-.27-277.84-116.86-293.45-95.73-13.61,18.44,221.19,375.52,255,385.04.47.14.91.2,1.3.2,28.5-.34,529.6-163.92,571.6-195.73,3.53-2.67-9.37-208.74-10.21-216.75Z"/><path fill="currentColor" d="M828.5,1272.17c-15.6-21.13-225.49,95.46-293.44,95.73-44.73.18-89.17-.06-116.23-32.61-44.56-53.6-109.26-144.56-169.12-229.13-6.78-9.58-13.5-19.07-20.12-28.42-35.17-49.68-67.58-95.26-91.77-127.21-21.6-28.52-36.66-46.18-41.32-46.21-20.38-.13-84.01,324.55-85.68,340.61-.84,8.01-13.74,214.08-10.21,216.75,42,31.81,543.1,195.39,571.6,195.73.39,0,.83-.06,1.3-.2,33.81-9.52,268.61-366.6,254.99-385.04Z"/></g></svg>
+      </div>
+      <p class="bdt-p">
+        Os naipes saem da mesma forma-mãe da coroa, o que torna o baralho inteiro proprietário
+        da marca — não é carta genérica com um logo aplicado em cima. A silhueta externa de
+        cada um é preservada de propósito, porque carta que não se lê de longe quebra o valor
+        mais duro da marca: carta é pra jogar.
+      </p>
+    </div>
+  </div>
+
+  <div class="bdt-bloco rev">
+    <p class="bdt-rotulo">A colab</p>
+    <div>
+      <p class="bdt-frase">Bendito × Antarctica</p>
+      <p class="bdt-p" style="margin-top:1.75rem">
+        Dois objetos de encontro brasileiro com mais de um século de estrada. A tese é unir o
+        jovem e o boteco — e o baralho é o objeto que faz a ponte, porque permanece na mesa
+        depois que a garrafa acaba. Baralho completo em edição limitada: 54 cartas, verso e
+        caixa. O conceito é uma corte real de pinguins brasileiros — nobreza fajuta,
+        instrumento de samba no lugar do cetro.
+      </p>
+    </div>
+  </div>
+
+  <div class="bdt-bloco rev">
+    <p class="bdt-rotulo">A corte</p>
+    <div>
+      <div class="bdt-palco">
+        <div class="bdt-figuras">
+          <div>
+            <img src="assets/img/bendito-rei.jpg" alt="Carta do rei: o velho puxador, com surdo no lugar do cetro" loading="lazy">
+            <p class="bdt-cap">Rei · velho puxador</p>
+          </div>
+          <div>
+            <img src="assets/img/bendito-rainha.jpg" alt="Carta da rainha: a porta-bandeira, com estandarte" loading="lazy">
+            <p class="bdt-cap">Rainha · porta-bandeira</p>
+          </div>
+          <div>
+            <img src="assets/img/bendito-valete.jpg" alt="Carta do valete: o moleque malandro, de tamborim e coroa torta" loading="lazy">
+            <p class="bdt-cap">Valete · moleque malandro</p>
+          </div>
+          <div>
+            <img src="assets/img/bendito-coringa.jpg" alt="Carta do Coringa: o pinguim coroado" loading="lazy">
+            <p class="bdt-cap">Coringa · o bobo da corte</p>
+          </div>
+        </div>
+      </div>
+      <p class="bdt-p" style="margin-top:1.75rem">
+        É o lugar exato onde por quinhentos anos estiveram reis europeus de verdade. O Coringa
+        fecha a piada: é a única carta do baralho sem valor fixo, vale o que a mesa combinar —
+        e é literalmente o bobo da corte, o arquétipo da marca já impresso dentro do produto.
+      </p>
+    </div>
+  </div>
+
+  <div class="bdt-bloco rev">
+    <p class="bdt-rotulo">Os quatro naipes</p>
+    <div>
+      <div class="bdt-palco">
+        <img src="assets/img/bendito-cartas-54.jpg" alt="O baralho completo: quatro naipes, do ás ao rei, desenhados um a um" loading="lazy">
+      </div>
+      <p class="bdt-p" style="margin-top:1.75rem">
+        Do ás ao rei, naipe por naipe. 54 cartas — e uma delas não tem valor nenhum e é a
+        mais importante.
+      </p>
+    </div>
+  </div>
+
+  <div class="bdt-bloco rev">
+    <p class="bdt-rotulo">Verso e caixa</p>
+    <div>
+      <div class="bdt-palco">
+        <div class="bdt-dupla">
+          <div>
+            <img src="assets/img/bendito-verso.jpg" alt="Verso da edição Bendito × Antarctica" loading="lazy">
+            <p class="bdt-cap">Verso</p>
+          </div>
+          <div>
+            <img src="assets/img/bendito-caixa.jpg" alt="Caixa da edição limitada" loading="lazy">
+            <p class="bdt-cap">Caixa</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p class="bdt-foot">
+    Projeto acadêmico (Unicesumar, 2026). A Bendito é uma marca autoral fictícia e a colab
+    com a Antarctica é um exercício hipotético — não existe relação comercial com a marca.
+    Conceito, identidade visual e arte das 54 cartas: Danilo Mariani.
+  </p>
+
+</section>
+
+<div class="divider" data-nav-theme="dark">
   <span>◆ Ferramenta</span>
   <span class="c">Meio-tom tonal, código aberto</span>
   <span class="r">↓ mexe aí</span>
 </div>
 
-<!-- ═══ 04 · FERRAMENTA ══════════════════════════════════════ -->
+<!-- ═══ 05 · FERRAMENTA ══════════════════════════════════════ -->
 <section id="tonestamp" class="sec sec--dark" data-nav-theme="dark">
 
   <div class="ts-head">
@@ -1376,7 +1631,7 @@ footer{
   <span class="r">↓ 04 etapas</span>
 </div>
 
-<!-- ═══ 05 · COMO FUNCIONA ══════════════════════════════════ -->
+<!-- ═══ 06 · COMO FUNCIONA ══════════════════════════════════ -->
 <section id="processo" class="sec sec--gold">
   <div class="pr-head">
     <p class="eyebrow rev">Do primeiro contato ao arquivo final</p>
@@ -1415,7 +1670,7 @@ footer{
   <span class="r">↓ Sobre</span>
 </div>
 
-<!-- ═══ 06 · QUEM SOU ═══════════════════════════════════════ -->
+<!-- ═══ 07 · QUEM SOU ═══════════════════════════════════════ -->
 <section id="sobre">
   <div class="sobre-photo rev">
     <img src="assets/img/danilo.jpg" alt="Retrato de Danilo Mariani" loading="lazy">
@@ -1435,7 +1690,7 @@ footer{
   <span class="r">↓ Final</span>
 </div>
 
-<!-- ═══ 07 · CONTATO ════════════════════════════════════════ -->
+<!-- ═══ 08 · CONTATO ════════════════════════════════════════ -->
 <section id="contato" data-nav-theme="dark">
   <span class="ct-deco" aria-hidden="true">Fale</span>
   <div class="ct-inner">

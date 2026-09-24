@@ -28,6 +28,9 @@ docs/                      documentos de trabalho
   DESIGN_REFERENCES.md     referências visuais (ainda válidas)
 FOTOS/                     originais em alta — fora do git (.gitignore)
   BRASÃO JORIK/  OLD TOWN (SELECIONAR AS CONDIZENTES)/  SOBRE/
+  BENDITO/                 projeto completo: assets, slides e docs.
+                           ⚠️ contém fontes LICENCIADAS (Tomato Grotesk,
+                           P22 Morris Troy) — nunca subir em lugar nenhum.
 _arquivo/                  não editar
   v9/  v10/  sessoes-antigas/
 CLAUDE.md                  fica na raiz — é onde o Claude Code lê
@@ -53,6 +56,7 @@ esse nome. Foi por isso que a v10 abria em branco no domínio.
 --ink:   #1A1008   /* texto sobre dourado/branco */
 ```
 Old Town: `#194B46` verde · `#6B3F1E` caramelo · `#F5F0E4` off-white · `#1A1008` preto quente
+Bendito: `#17171C` preto · `#F1BA29` dourado · `#056AB1` azul
 
 Tipografia: **Relaxe** display (nome, títulos de seção — usar com restrição) ·
 **Smart Sans** utilitário (nav, eyebrows, labels) · **DM Sans** corpo.
@@ -61,18 +65,25 @@ Tipografia: **Relaxe** display (nome, títulos de seção — usar com restriç�
 de propósito: o .otf é um "Std Medium", e declarar só `bold` fazia o navegador
 não casar em peso normal e cair pra sans-serif genérica.
 
-## Estrutura do site (6 seções)
+## Estrutura do site (8 seções)
 ```
 01 #hero       nome + tese. Sem cargo. Letras magnéticas.
 02 #faco       O que eu resolvo — 3 blocos
 03 #trabalho   CLIENTE (fundo branco) | CONCEITO (fundo escuro)
-04 #processo   Como funciona — 4 etapas
-05 #sobre      Quem sou + foto
-06 #contato    WhatsApp primário
+04 #bendito    Marca autoral de baralhos + colab fictícia
+05 #tonestamp  Ferramenta interativa (PRD próprio)
+06 #processo   Como funciona — 4 etapas
+07 #sobre      Quem sou + foto
+08 #contato    WhatsApp primário
 ```
 A separação Cliente / Conceito é feita pela **troca de fundo** — é
 obrigatória e não pode virar só um label.
-Todo item de Conceito leva badge `CONCEITO · NÃO COMISSIONADO`.
+Todo item de Conceito leva badge `CONCEITO · NÃO COMISSIONADO` —
+inclusive a Bendito, que é seção própria mas continua sendo conceito.
+
+⚠️ A colab Bendito × Antarctica é **fictícia**. O rodapé da seção que diz
+isso não é opcional: Antarctica é marca real e sem o aviso a seção pode
+ser lida como trabalho comissionado.
 
 Fora do site (vai pro LinkedIn): Formação, Stack de IA, timeline de Experiência.
 
