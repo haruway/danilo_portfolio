@@ -172,12 +172,19 @@ Exemplo, Camaro:
 > a ponte, porque permanece na mesa depois que a garrafa acaba. 54 cartas, verso e caixa. Uma
 > corte real de pinguins brasileiros: nobreza fajuta, instrumento de samba no lugar do cetro.
 
-**O produto**
+**A corte**
 > É o lugar exato onde por quinhentos anos estiveram reis europeus de verdade. O Coringa fecha
 > a piada: é a única carta sem valor fixo, vale o que a mesa combinar — e é literalmente o bobo
 > da corte, o arquétipo da marca já impresso dentro do produto.
 >
-> *54 cartas. Uma delas não tem valor nenhum e é a mais importante.*
+**Os quatro naipes** (grid completo)
+> Do ás ao rei, naipe por naipe. 54 cartas — e uma delas não tem valor
+> nenhum e é a mais importante.
+
+⚠️ **O arquivo `carta-33.png` NÃO é carta** — é só a linha de faca (#e61873) que
+entrou numerada na sequência. Removê-lo não deixa nada: 0% de opacidade. O mesmo
+vale pras caixas `01` e `03`, que têm faca em `#a6539b`; a limpa é a `02`.
+Linha de corte é arquivo de fábrica e não entra no portfólio.
 
 **Rodapé da seção (obrigatório)**
 > Projeto acadêmico (Unicesumar, 2026). A Bendito é uma marca autoral fictícia e a colab com a
