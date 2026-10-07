@@ -61,6 +61,30 @@ Alternativa sem ligar o GitHub: `cd app && npm run build` e arrastar
 - Pendências do Danilo: PRD §11 (sem mudança).
 - README do Tonestamp (PRD §5): diz WebM, o export real é MP4. Fica pra Fase 7.
 
+### Portão da Fase 0: ✅ passou
+Danilo criou o site novo na Netlify ligado à branch `v12`, e a página de
+verificação abre.
+
+## Sessão 1 (cont.) · Fase 1 (Referências e direção)
+
+### Feito
+- `docs/DIRECAO.md`: conceito "Retícula ao sol", emoção, arquétipo
+  (Criador + Mago), 12 referências com o que pegar e o que não pegar,
+  tipografia, cor (com contraste medido), movimento (três verbos: ferver,
+  assentar, correr), tese de interação ("você esquenta o que olha"), pele
+  de cada seção, layout.
+- Pesquisa: a busca do Awwwards estava fora do ar (503). As referências foram
+  achadas por busca na web e conferidas pelo preview (og:image) da página de
+  cada site no Awwwards. As imagens ficaram só no scratchpad (são do Awwwards,
+  não vão pro repo).
+- Não rodei o `concept-seed` do impeccable (sorteio de direção): o PRD fixa
+  o mundo visual, e no impeccable o brief fixado ganha do sorteio.
+
+### Em aberto (perguntas do portão, DIRECAO.md §10)
+1. Aprovação da direção.
+2. Three.js (PRD) ou WebGL puro (recomendado: ~150 KB a menos).
+3. Seção interna do mock: Manifesto ou Trabalhos.
+
 ### Próximo
-Portão da Fase 0 → Danilo confirma que o preview abre → **Fase 1**: pesquisa no
-Awwwards (mín. 10 referências) e `docs/DIRECAO.md`.
+Portão da Fase 1 → **Fase 2**: mock em imagem da capa (A e B) e de uma
+seção interna. Nenhum código de UI antes da aprovação do mock.
