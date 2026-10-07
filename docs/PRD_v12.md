@@ -205,7 +205,7 @@ Apenas **dois cases**, aprofundados — processo inteiro, não só a peça final
 > **Correção (07/10/2026, Danilo, Fase 0):** os nomes das duas seções do Lab estavam invertidos.
 > **Lab: Dither = Tonestamp** (`github.com/haruway/tonestamp`).
 > **Lab: Halftone = Halftone Tool** (`github.com/haruway/halftonetool`, motor de retícula de impressão em JS com harness de navegador).
-> O texto abaixo ainda está na versão antiga. Qual interface (a do Tonestamp, com Bricolage/Plex, ou a 1-bit) vai em qual seção ainda precisa ser confirmado.
+> O texto abaixo ainda está na versão antiga. Interfaces, decidido: **Dither (Tonestamp)** usa a pele 1-bit, com botão pra ligar/desligar (desligada = interface normal do Tonestamp). **Halftone (Halftone Tool)** usa a interface própria dele. Detalhar na Fase 7.
 
 ### 05 — Lab: Halftone (Tonestamp)
 - Fonte: github.com/haruway/tonestamp. Reutilizar `renderer.js`, `shapes.js`, `palette.js` e `export.js` **sem reescrever**. Consultar `docs/PRD_tonestamp_secao.md` (porte, auditoria) onde ainda servir.

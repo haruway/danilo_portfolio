@@ -96,8 +96,8 @@ padrão**. Cada seção tem pele própria.
 | Assinatura (só o nome) | Mayluna — provisória | Arquivo é **Demo**. Entra só como **SVG paths**; o .otf nunca entra no repo. Antes de publicar: licença ou assinatura real vetorizada |
 | Títulos e texto | Overused Grotesk (variável, .woff2) | OFL, self-host, incluir `OFL.txt`. Pesos extremos: Black contra Book |
 | Rótulos técnicos | DM Mono | OFL, self-host |
-| Lab: Dither (Tonestamp) | Bricolage Grotesque, IBM Plex Mono | Só dentro da seção do Tonestamp |
-| Lab: Halftone (Halftone Tool) | a definir (1-bit/mono no PRD original) | Só dentro da seção da Halftone Tool |
+| Lab: Dither (Tonestamp) | pele 1-bit (bitmap/mono), com botão pra desligar e voltar à interface do Tonestamp (Bricolage Grotesque, IBM Plex Mono) | Só dentro da seção do Tonestamp |
+| Lab: Halftone (Halftone Tool) | a da interface própria da ferramenta | Só dentro da seção da Halftone Tool |
 
 Lab: **Dither = Tonestamp** (`github.com/haruway/tonestamp`) ·
 **Halftone = Halftone Tool** (`github.com/haruway/halftonetool`).

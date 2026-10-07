@@ -47,16 +47,17 @@ Alternativa sem ligar o GitHub: `cd app && npm run build` e arrastar
 `app/dist/` no Netlify.
 
 ### Em aberto
-- **Interface do Lab:** o PRD diz "Tonestamp com interface própria (Bricolage/Plex)"
-  e "Dither com interface 1-bit". Com a troca de nomes, qual vai em qual?
-  Opções: Tonestamp mantém a interface dele, e a 1-bit fica com a Halftone Tool
-  ou sai do plano. Decidir até a Fase 7.
+- **Interface do Lab — decidido (opção B), detalhar na Fase 7:**
+  Lab: Dither (Tonestamp) usa a pele **1-bit** (preto e branco puro, fonte
+  bitmap/mono, cursor pixelado), **com um botão pra ligar e desligar** essa pele.
+  Desligada, volta a interface normal do Tonestamp.
+  Lab: Halftone (Halftone Tool) usa a interface própria dele.
 - Halftone Tool: o motor (`engine/*.js`) é JS puro com worker, então é portável.
   O README do repo diz que o plugin do Photoshop ainda não existe; pro site só
   precisa do motor e do harness.
-- Skills que o PRD pede e não estão instaladas: **`genjutsu`** (GSAP/shaders).
-  `grill-me` não existe com esse nome; o equivalente instalado é
-  `mattpocock-skills:grilling`.
+- Skills: `genjutsu` estava baixada em `~/.agents/skills/` mas sem o link em
+  `~/.claude/skills/`. Link criado, e a skill já está ativa.
+  `grill-me` = `mattpocock-skills:grilling` (já instalada).
 - Pendências do Danilo: PRD §11 (sem mudança).
 - README do Tonestamp (PRD §5): diz WebM, o export real é MP4. Fica pra Fase 7.
 
