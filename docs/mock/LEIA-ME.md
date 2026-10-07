@@ -4,7 +4,37 @@ Imagens estáticas pra aprovar layout e hierarquia antes de qualquer código de
 interface. **Não é o site.** O movimento (ferver, assentar, a assinatura se
 escrevendo) aparece aqui congelado num instante.
 
-## Rodada 3 (atual): protótipo interativo
+## Rodada 4 (atual): protótipo refinado
+
+Como abrir: na **raiz do repo**, `python3 -m http.server 8766` e acesse
+`http://127.0.0.1:8766/docs/mock/proto/`. (Mudou: o sol agora lê uma imagem
+da pasta de referências, que fica na raiz.)
+
+- **Sol** com forma real: o shader lê uma das fotos de referência do Danilo
+  (`fotos halftone e dither tool/`) como fonte de luz e redesenha em
+  halftone de linha. Botões **Sol raios** / **Sol pintado** e **Sol em
+  cima** / embaixo. ⚠️ As fotos são do Pinterest: ficam fora do git e **não
+  podem ir pro site**. Pro site final, a fonte do sol tem que ser material
+  próprio (render, vídeo do Veo, pintura) — ver HANDOFF.
+- **Nome B** sem contorno; DANILO em Overused **ExtraBold (800)**, nas
+  proporções da arte do Danilo (DANILO até ~84% da largura, Mariani de ~16%
+  até a margem direita, cruzando a base do DANILO).
+- **Menu** virou header horizontal no topo; PT/EN no canto direito.
+- **Manifesto** na estrutura do Canals: palavras em caixa-alta, Bold (700),
+  alternando entre a margem e um recuo fixo; legendas pequenas nos vãos;
+  "Aqui passa / por um." com um fio amarelo correndo da margem até a palavra.
+- **Desempenho** (travava num MacBook Pro M4): ruído vem de uma textura
+  pronta em vez de ser calculado por pixel; resolução limitada a 1,5x;
+  15 quadros/s parado e 30 com cursor/scroll; para quando sai da tela ou a aba
+  fica oculta; o filtro de calor do nome some quando a escrita termina. O
+  contador "qps" no painel mostra os quadros por segundo.
+- "Sombra no sol" (desligado por padrão): as letras escurecem o sol atrás
+  delas.
+
+Prints: `proto-capa.jpg`, `proto-capa-mobile.jpg`, `proto-manifesto.jpg`.
+Rodada 3 em `v3/`.
+
+## Rodada 3: protótipo interativo
 
 `proto/index.html` — capa + Manifesto rodando de verdade, com:
 - sol em **WebGL** (halftone de linha, disco chapado, anel de linhas,

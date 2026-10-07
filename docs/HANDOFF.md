@@ -122,8 +122,29 @@ gigante na seção de baixo. Novos: `capa-auth`, `capa-tech`,
   `docs/mock/proto/index.html` (é o halftone de linha dentro da letra).
 - `.gitignore` agora bloqueia qualquer arquivo com "Mayluna" no nome.
 
+### Rodada 4 (feedback do Danilo)
+- Sol "sem sal": agora o shader lê as fotos de referência dele como fonte de
+  luz (pasta `fotos halftone e dither tool/`, adicionada ao `.gitignore`:
+  são do Pinterest e não podem ser publicadas).
+- Canals: ele não quer outra fonte; quer o **layout/hierarquia** do Canals
+  com caixa-alta (ou inicial maiúscula) e peso menor. Feito: Overused 700,
+  caixa-alta, estrutura margem/recuo, legendas nos vãos, fio amarelo.
+- Nome: B ganhou (o Mariani cruzando o DANILO), **sem contorno**; DANILO em
+  ExtraBold (800), não Black. Posição do sol: no alto à direita, como no A.
+- Menu: sai do canto inferior direito, vira header horizontal no topo.
+- Desempenho: o protótipo travava num MacBook Pro M4. Otimizado (ver
+  LEIA-ME do mock). Testar de novo na máquina dele.
+- A Libre Caslon Condensed (OFL) chegou a ser testada e foi descartada.
+
+### Pendência nova
+- **Fonte do sol pro site final:** precisa ser material próprio (as refs são
+  de terceiros). Opções: vídeo do sol gerado no Veo (já previsto no PRD como
+  `uSource`), um render/pintura do próprio Danilo, ou um sol procedural
+  desenhado pra imitar as refs.
+
 ### Em aberto (portão da Fase 2)
-1. ~~Sol autêntico ou tecnológico~~ → autêntico. Nome A ou B?
+1. ~~Sol autêntico ou tecnológico~~ → autêntico. ~~Nome A ou B~~ → B.
+   Sol raios ou pintado? Em cima ou embaixo?
 2. Manifesto aprovado? Copy rascunho dos fornecedores riscados.
 3. Trabalhos aprovado? Copy rascunho (etapas, bloco do filme).
 4. "O trabalhos já pode ir para a sessão 2": só a escolha do mock, ou
