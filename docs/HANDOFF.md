@@ -85,6 +85,32 @@ verificação abre.
 2. Three.js (PRD) ou WebGL puro (recomendado: ~150 KB a menos).
 3. Seção interna do mock: Manifesto ou Trabalhos.
 
+### Portão da Fase 1: ✅ passou
+- Direção aprovada pelo Danilo.
+- **Stack:** "o que for melhor". Decidido: **WebGL puro** pro shader de
+  textura (sem Three.js). Three.js entra só se alguma interação específica
+  precisar dele. Isso substitui o "Three.js como tela" do PRD §7.
+- Seção interna do mock: **Trabalhos**.
+
+## Sessão 1 (cont.) · Fase 2 (Mock)
+
+### Feito
+- `docs/mock/`: capa A (`#FFD21F` e `#FFC61A`), capa B, as duas no mobile,
+  e Trabalhos (case Jorik inteiro + entrada da Bendito). Detalhes e copy
+  rascunho em `docs/mock/LEIA-ME.md`.
+- Sem ferramenta de geração de imagem na sessão: o mock é HTML estático
+  renderizado no Chrome headless (fontes reais, retícula e dither reais em
+  canvas). Fontes do mock em `docs/mock/src/`, descartáveis.
+
+### Em aberto (portão da Fase 2)
+1. Capa A ou B.
+2. Amarelo `#FFD21F` ou `#FFC61A`.
+3. Trabalhos aprovado? Copy rascunho (etapas, bloco do filme) precisa de revisão.
+4. Danilo escreveu "o trabalhos já pode ir para a sessão 2". Confirmar se
+   isso só escolhe a seção do mock ou se é pra **reordenar** (Trabalhos
+   logo depois da capa, antes do Manifesto).
+5. Contato amarelo ou preto (PRD §4) — sai junto com a escolha A/B.
+
 ### Próximo
-Portão da Fase 1 → **Fase 2**: mock em imagem da capa (A e B) e de uma
-seção interna. Nenhum código de UI antes da aprovação do mock.
+Portão da Fase 2 → **Fase 3** (Fundação): tokens, fontes, grid, Lenis +
+ScrollTrigger, i18n, shader com 4 modos + fallback. Primeiro código de UI.

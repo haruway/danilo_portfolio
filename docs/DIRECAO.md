@@ -1,6 +1,8 @@
 # Direção de arte — v12
 
-**Fase 1 · 07/10/2026** · Status: **aguardando aprovação do Danilo**
+**Fase 1 · 07/10/2026** · Status: **aprovado pelo Danilo (07/10/2026)**
+Respostas do portão: direção aprovada · WebGL puro pro shader (Three.js só se
+uma interação exigir) · mock interno = Trabalhos.
 Base: `docs/PRD_v12.md` §2–§5 e `PRODUCT.md`. Este documento não muda o que o
 PRD já fixou (paleta, fontes, arquitetura). Ele dá a razão por trás, o
 comportamento e as regras pra que o mock (Fase 2) e o código saiam coerentes.

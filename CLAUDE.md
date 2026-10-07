@@ -68,7 +68,8 @@ Merge no `main` só quando o v12 estiver pronto pra substituir o v11.
 - Vite + JavaScript puro, sem framework de UI
 - GSAP + ScrollTrigger e Lenis. **Um único sistema de scroll.** Nada de hijack
   de `wheel` com `preventDefault`.
-- Three.js só como tela pros shaders (plano fullscreen + ShaderMaterial)
+- Shader de textura em **WebGL puro** (decidido na Fase 1; substitui o
+  Three.js do PRD §7). Three.js só se uma interação específica exigir.
 - Grain e textura **dentro do shader**, nunca overlay com z-index alto
 - Um canvas WebGL compartilhado, ou um por seção visível pausado fora da tela
   (IntersectionObserver). Nenhum loop rodando em seção invisível.

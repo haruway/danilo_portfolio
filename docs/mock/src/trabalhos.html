@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>mock trabalhos</title>
+<style>
+  @font-face { font-family: 'Overused'; src: url(fonts/OverusedGrotesk-VF.woff2) format('woff2'); font-weight: 300 900; }
+  @font-face { font-family: 'DM Mono'; src: url(fonts/DMMono-Regular.ttf); font-weight: 400; }
+  @font-face { font-family: 'DM Mono'; src: url(fonts/DMMono-Medium.ttf); font-weight: 500; }
+  @font-face { font-family: 'Mayluna'; src: url(fonts/Mayluna.otf); }
+  :root { --black: #0A0A0A; --white: #FFFFFF; --yellow: #FFD21F; --m: 48px; --col: calc((100vw - 2 * var(--m) - 11 * 24px) / 12); }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--white); color: var(--black); font-family: 'Overused', sans-serif; -webkit-font-smoothing: antialiased; width: 1440px; }
+  .mono { font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: .06em; text-transform: uppercase; line-height: 1.6; }
+  .body { font-size: 17px; line-height: 1.55; font-weight: 400; max-width: 34em; }
+  .wrap { padding: 0 var(--m); position: relative; }
+
+  /* nav fixa nos cantos (no mock, só no topo) */
+  .nav { position: absolute; top: 32px; left: var(--m); right: var(--m); display: flex; justify-content: space-between; align-items: flex-start; z-index: 5; }
+  .nav .sig { font-family: 'Mayluna'; font-size: 30px; line-height: 1; text-transform: none; letter-spacing: 0; }
+  .nav ul { list-style: none; text-align: right; }
+  .nav li span { opacity: .5; margin-right: .8em; }
+  .nav li.on { font-weight: 500; }
+  .nav li.on::before { content: ''; display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--black); margin-right: 8px; transform: translateY(-1px); box-shadow: 0 0 0 3px var(--yellow); }
+
+  /* abertura da seção */
+  .open { padding-top: 150px; display: grid; grid-template-columns: repeat(12, 1fr); column-gap: 24px; align-items: end; }
+  .open h2 { grid-column: 1 / 11; font-weight: 900; font-size: 236px; line-height: .8; letter-spacing: -.045em; margin-left: -10px; }
+  .open .toc { grid-column: 11 / 13; text-align: right; padding-bottom: 14px; }
+  .open .toc b { font-weight: 500; }
+
+  /* case */
+  .case-head { margin-top: 150px; display: grid; grid-template-columns: repeat(12, 1fr); column-gap: 24px; align-items: start; }
+  .case-head h3 { grid-column: 1 / 8; font-size: 104px; line-height: .88; letter-spacing: -.035em; }
+  .case-head h3 .k { font-weight: 900; display: block; }
+  .case-head h3 .l { font-weight: 400; display: block; }
+  .case-head .txt { grid-column: 9 / 13; padding-top: 10px; }
+  .ficha { margin-top: 28px; display: grid; grid-template-columns: 110px 1fr; row-gap: 6px; border-top: 1px solid var(--black); padding-top: 14px; }
+  .ficha dt { opacity: .55; }
+
+  .hero { margin-top: 56px; position: relative; }
+  .hero canvas { display: block; width: 100%; height: 760px; }
+  .cap { display: flex; justify-content: space-between; margin-top: 12px; }
+
+  /* comparação */
+  .cmp-head { margin-top: 170px; display: grid; grid-template-columns: repeat(12, 1fr); column-gap: 24px; align-items: end; }
+  .cmp-head h4 { grid-column: 1 / 8; font-weight: 900; font-size: 88px; line-height: .9; letter-spacing: -.035em; }
+  .cmp-head h4 i { font-style: normal; font-weight: 400; }
+  .cmp-head .body { grid-column: 9 / 13; }
+  .cmp { margin-top: 48px; position: relative; height: 800px; overflow: hidden; background: #fff; }
+  .cmp canvas { display: block; width: 100%; height: 100%; }
+  .cmp .lab { position: absolute; top: 22px; }
+  .cmp .lab.l { left: 24px; } .cmp .lab.r { right: 24px; text-align: right; }
+  .cmp .bar { position: absolute; top: 0; bottom: 0; left: 50%; width: 2px; background: var(--black); transform: translateX(-1px); }
+  .cmp .knob { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); background: var(--black); color: var(--white); padding: 10px 14px; display: flex; gap: 10px; align-items: center; }
+  .cmp .knob svg { width: 14px; height: 10px; }
+
+  /* processo */
+  .steps { margin-top: 120px; display: grid; grid-template-columns: repeat(4, 1fr); column-gap: 24px; }
+  .steps li { list-style: none; border-top: 1px solid var(--black); padding-top: 16px; }
+  .steps h5 { font-size: 26px; font-weight: 900; letter-spacing: -.02em; line-height: 1.05; margin: 14px 0 10px; }
+  .steps p { font-size: 15px; line-height: 1.5; max-width: 24em; }
+
+  /* filme */
+  .film { margin-top: 170px; display: grid; grid-template-columns: repeat(12, 1fr); column-gap: 24px; }
+  .film .frames { grid-column: 1 / 9; display: grid; grid-template-columns: repeat(3, 1fr); column-gap: 24px; align-items: start; }
+  .film figure:nth-child(2) { margin-top: 120px; }
+  .film figure:nth-child(3) { margin-top: 40px; }
+  .film img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; display: block; }
+  .film figcaption { margin-top: 10px; }
+  .film .side { grid-column: 10 / 13; align-self: end; }
+  .film .side h4 { font-size: 44px; font-weight: 900; line-height: .95; letter-spacing: -.03em; margin-bottom: 18px; }
+  .stamp { font-family: 'Mayluna'; font-size: 40px; margin-top: 40px; display: block; }
+
+  /* próximo case */
+  .next { margin-top: 190px; border-top: 1px solid var(--black); padding-top: 22px; display: grid; grid-template-columns: repeat(12, 1fr); column-gap: 24px; }
+  .next .mono { grid-column: 1 / 4; }
+  .next h3 { grid-column: 4 / 13; font-size: 148px; font-weight: 900; line-height: .85; letter-spacing: -.045em; }
+  .next h3 span { font-weight: 400; }
+  .badge { display: inline-block; border: 1.5px solid var(--black); padding: 6px 10px; margin-top: 18px; font-weight: 500; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="nav mono">
+    <div class="sig">Danilo Mariani</div>
+    <ul>
+      <li><span>02</span>Manifesto</li>
+      <li class="on"><span>03</span>Trabalhos</li>
+      <li><span>04</span>Vídeos</li>
+      <li><span>05</span>Lab</li>
+      <li><span>07</span>Contato</li>
+    </ul>
+  </header>
+
+  <section class="open">
+    <h2>Trabalhos</h2>
+    <div class="toc mono">
+      <b>Jorik Têxtil</b><br>Copa do Mundo<br><br>
+      <b>Bendito × Antarctica</b><br>Marca de baralho
+    </div>
+  </section>
+
+  <section class="case-head">
+    <h3><span class="k">Jorik Têxtil</span><span class="l">Copa do Mundo</span></h3>
+    <div class="txt">
+      <p class="body">Campanha de Copa para uma fabricante de termocolantes. O brasão da Seleção foi redesenhado em vetor para aplicação em patch termotransferível — e o filme mostra o produto aplicado, não um conceito abstrato.</p>
+      <dl class="ficha mono">
+        <dt>Cliente</dt><dd>Jorik Têxtil</dd>
+        <dt>Entrega</dt><dd>Vetorização · direção · vídeo</dd>
+        <dt>Arquivo</dt><dd>Illustrator · CorelDRAW</dd>
+      </dl>
+    </div>
+  </section>
+
+  <figure class="hero">
+    <canvas id="hero" width="1344" height="760"></canvas>
+    <figcaption class="cap mono"><span>Frame do filme da campanha</span><span>A imagem assenta quando você para em cima</span></figcaption>
+  </figure>
+
+  <section class="cmp-head">
+    <h4>Original <i>×</i><br>vetor</h4>
+    <p class="body">Recriação vetorial do brasão a partir de referência fotográfica, para aplicação têxtil termotransferível. Traçado limpo, curvas fechadas e arquivo pronto para produção.</p>
+  </section>
+  <div class="cmp">
+    <canvas id="cmp" width="1344" height="800"></canvas>
+    <div class="lab l mono">Original<br>bordado fotografado</div>
+    <div class="lab r mono">Vetor<br>curvas fechadas</div>
+    <div class="bar"></div>
+    <div class="knob mono">
+      <svg viewBox="0 0 14 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 1 1 5l4 4M9 1l4 4-4 4"/></svg>
+      Arraste
+    </div>
+  </div>
+
+  <ol class="steps">
+    <li><span class="mono">Etapa 1/4</span><h5>Referência</h5><p>Foto do brasão bordado. Serve de mapa, não de arquivo.</p></li>
+    <li><span class="mono">Etapa 2/4</span><h5>Traçado</h5><p>Curva por curva, sem autotrace. Cada ponto no lugar certo.</p></li>
+    <li><span class="mono">Etapa 3/4</span><h5>Cor e fechamento</h5><p>Cores separadas pra termotransferência, curvas fechadas pro corte.</p></li>
+    <li><span class="mono">Etapa 4/4</span><h5>Patch</h5><p>Arquivo na gráfica, patch aplicado na camisa, camisa no filme.</p></li>
+  </ol>
+
+  <section class="film">
+    <div class="frames">
+      <figure><img src="img/jorik-v-filme.jpg" alt=""><figcaption class="mono">Filme</figcaption></figure>
+      <figure><img src="img/jorik-v-produto.jpg" alt=""><figcaption class="mono">Produto</figcaption></figure>
+      <figure><img src="img/jorik-v-timelapse.jpg" alt=""><figcaption class="mono">Timelapse</figcaption></figure>
+    </div>
+    <div class="side">
+      <h4>O produto aplicado, não o conceito.</h4>
+      <p class="body">O filme mostra o patch na camisa, na mesa do bar, no jogo. Direção e produção do vídeo.</p>
+      <span class="stamp">Danilo Mariani</span>
+    </div>
+  </section>
+
+  <section class="next">
+    <div class="mono">Próximo case</div>
+    <div style="grid-column: 4 / 13">
+      <h3>Bendito <span>×</span> Antarctica</h3>
+      <span class="badge mono">Conceito · não comissionado</span>
+    </div>
+  </section>
+  <div style="height: 120px"></div>
+</div>
+
+<script src="ht.js"></script>
+<script>
+  Promise.all([document.fonts.ready, loadImg('img/jorik-copa.jpg'), loadImg('img/brasao-fechado.jpg'), loadImg('img/brasao-vetor.jpg')])
+    .then(([, copa, orig, vet]) => {
+      settleFrame(document.getElementById('hero'), copa, { split: 0.52, band: 0.3 })
+
+      const c = document.getElementById('cmp'), ctx = c.getContext('2d')
+      const w = c.width, h = c.height
+      ctx.save(); ctx.beginPath(); ctx.rect(0, 0, w / 2, h); ctx.clip(); drawCover(ctx, orig, w, h); ctx.restore()
+      ctx.save(); ctx.beginPath(); ctx.rect(w / 2, 0, w / 2, h); ctx.clip(); drawCover(ctx, vet, w, h); ctx.restore()
+      document.body.dataset.ready = '1'
+    })
+</script>
+</body>
+</html>

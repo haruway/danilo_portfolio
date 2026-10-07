@@ -8,7 +8,7 @@ web
 
 ## Stack
 
-Vite + JavaScript puro (sem framework de UI), GSAP + ScrollTrigger, Lenis, Three.js só como tela pros shaders. Deploy na Netlify a partir de `app/` (`netlify.toml`). Decidido pelo Danilo no PRD v12 §7.
+Vite + JavaScript puro (sem framework de UI), GSAP + ScrollTrigger, Lenis, shaders em WebGL puro (Three.js só se uma interação exigir; decidido na Fase 1). Deploy na Netlify a partir de `app/` (`netlify.toml`). Decidido pelo Danilo no PRD v12 §7.
 
 ## Users
 
