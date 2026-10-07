@@ -11,3 +11,7 @@ FOTOS/
 
 # Preferências locais do Claude Code (por máquina)
 .claude/settings.local.json
+
+# Fonte licenciada/demo: nunca no repo (só SVG paths da assinatura)
+*Mayluna*
+*mayluna*

@@ -4,7 +4,29 @@ Imagens estáticas pra aprovar layout e hierarquia antes de qualquer código de
 interface. **Não é o site.** O movimento (ferver, assentar, a assinatura se
 escrevendo) aparece aqui congelado num instante.
 
-## Rodada 2 (atual)
+## Rodada 3 (atual): protótipo interativo
+
+`proto/index.html` — capa + Manifesto rodando de verdade, com:
+- sol em **WebGL** (halftone de linha, disco chapado, anel de linhas,
+  línguas de fogo creme, raios laranja/vermelho) que ferve com o tempo, com o
+  cursor e com a velocidade do scroll;
+- assinatura em SVG medida pelo contorno das letras, **se escrevendo** com
+  calor que assenta (aproximação: revela da esquerda pra direita; o site final
+  segue a ordem do traço);
+- **Nome A**: as duas palavras na assinatura, Danilo amarelo, Mariani branco.
+  **Nome B** (ideia do Danilo): DANILO em Overused Black de margem a margem,
+  Mariani na assinatura em amarelo cruzando por cima, com contorno preto; o
+  sol nasce embaixo. "Trocar cores" inverte amarelo/branco;
+- **zona limpa**: a textura apaga atrás do menu;
+- Manifesto alinhado à esquerda (leitura), cada palavra entra em linhas
+  laranja e assenta em branco; o "um." assenta em amarelo.
+
+Como abrir: `cd docs/mock/proto && python3 -m http.server 8766` e acesse
+`http://127.0.0.1:8766`. A Mayluna vem do sistema (`local('Mayluna Demo')`);
+o `.otf` nunca entra no repo (`.gitignore` bloqueia).
+Prints: `proto-A.jpg`, `proto-B.jpg` e as versões `-mobile`.
+
+## Rodada 2
 
 | Arquivo | O que é |
 |---|---|

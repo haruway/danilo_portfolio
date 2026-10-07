@@ -109,8 +109,21 @@ linha com amarelo/laranja/pouco vermelho, capa só tipo + sol, tese em tipo
 gigante na seção de baixo. Novos: `capa-auth`, `capa-tech`,
 `capa-auth-write`, mobiles e `manifesto`.
 
+### Rodada 3: protótipo interativo (feedback do Danilo)
+- Sol: **autêntico** escolhido, mas o render da rodada 2 estava "bugado"
+  (linhas com cara de tecido, coroa em contas). Refeito em WebGL com formas
+  definidas e antialias. `docs/mock/proto/`.
+- Nome: um amarelo e um branco (não branco nos dois). Variação B = ideia
+  dele (DANILO em bloco + Mariani script por cima).
+- Manifesto: alinhado à esquerda (zigue-zague prejudicava leitura).
+- Os mocks de Manifesto e Trabalhos **eram desktop** (1440 de largura); a
+  imagem da página inteira parecia mobile por ser alta.
+- Exceção do hook do impeccable: `gradient-text` só em
+  `docs/mock/proto/index.html` (é o halftone de linha dentro da letra).
+- `.gitignore` agora bloqueia qualquer arquivo com "Mayluna" no nome.
+
 ### Em aberto (portão da Fase 2)
-1. Sol autêntico ou tecnológico.
+1. ~~Sol autêntico ou tecnológico~~ → autêntico. Nome A ou B?
 2. Manifesto aprovado? Copy rascunho dos fornecedores riscados.
 3. Trabalhos aprovado? Copy rascunho (etapas, bloco do filme).
 4. "O trabalhos já pode ir para a sessão 2": só a escolha do mock, ou

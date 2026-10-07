@@ -1,3 +1,18 @@
 {
-  "buildPath": "comp"
+  "buildPath": "comp",
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "gradient-text",
+        "value": "*",
+        "files": [
+          "docs/mock/proto/index.html"
+        ],
+        "createdAt": "2026-10-07T16:34:17.151Z",
+        "reason": "repeating-linear-gradient desenha o halftone de linha dentro da letra (verbo 'assentar' da DIRECAO.md), não é gradiente de cor; protótipo descartável"
+      }
+    ]
+  }
 }
