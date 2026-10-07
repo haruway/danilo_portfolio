@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>mock manifesto</title>
+<style>
+  @font-face { font-family: 'Overused'; src: url(fonts/OverusedGrotesk-VF.woff2) format('woff2'); font-weight: 300 900; }
+  @font-face { font-family: 'DM Mono'; src: url(fonts/DMMono-Regular.ttf); font-weight: 400; }
+  @font-face { font-family: 'DM Mono'; src: url(fonts/DMMono-Medium.ttf); font-weight: 500; }
+  @font-face { font-family: 'Mayluna'; src: url(fonts/Mayluna.otf); }
+  :root { --m: 48px; --y: #FFD21F; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { width: 1440px; background: #0A0A0A; color: #fff; font-family: 'Overused', sans-serif; -webkit-font-smoothing: antialiased; position: relative; }
+  #fx { position: absolute; left: 0; top: 0; width: 1440px; z-index: 0; }
+  main { position: relative; z-index: 1; padding: 0 var(--m); }
+  .mono { font-family: 'DM Mono', monospace; font-size: 13px; letter-spacing: .06em; text-transform: uppercase; line-height: 1.5; }
+
+  .lead { padding-top: 420px; font-size: 64px; font-weight: 400; letter-spacing: -.02em; line-height: 1; }
+  .words { margin-top: 18px; }
+  .w { position: relative; height: 196px; }
+  .w b { position: absolute; top: 0; font-weight: 900; font-size: 214px; line-height: .86; letter-spacing: -.05em; white-space: nowrap; }
+  .w.l b { left: -8px; } .w.r b { right: -4px; }
+  .w .who { position: absolute; top: 92px; }
+  .w.l .who { right: 0; text-align: right; } .w.r .who { left: 0; }
+  .who s { text-decoration-thickness: 1.5px; color: rgba(255,255,255,.72); }
+  .who i { font-style: normal; color: rgba(255,255,255,.5); margin-right: 10px; }
+
+  .norm { margin: 120px 0 0 auto; width: 560px; font-size: 40px; line-height: 1.12; letter-spacing: -.02em; font-weight: 400; }
+  .norm em { font-style: normal; color: rgba(255,255,255,.55); }
+
+  .one { margin-top: 150px; position: relative; height: 760px; }
+  .one .a { position: absolute; left: 0; top: 0; font-size: 150px; font-weight: 400; letter-spacing: -.045em; line-height: .9; }
+  .one .u { position: absolute; right: -14px; top: 90px; font-size: 600px; font-weight: 900; letter-spacing: -.07em; line-height: .8; color: var(--y); }
+  .one .sig { position: absolute; left: 0; bottom: 40px; font-family: 'Mayluna'; font-size: 44px; }
+  .one .note { position: absolute; left: 0; bottom: 110px; width: 420px; text-transform: none; font-family: 'Overused'; font-size: 17px; letter-spacing: 0; line-height: 1.5; color: rgba(255,255,255,.85); }
+</style>
+</head>
+<body>
+<canvas id="fx" width="1440" height="2900"></canvas>
+<main>
+  <p class="lead">Uma marca precisa virar</p>
+  <div class="words">
+    <div class="w l" id="first"><span class="who mono"><i>1/5</i><s>Fotógrafo</s></span></div>
+    <div class="w r"><b>embalagem,</b><span class="who mono"><i>2/5</i><s>Designer</s></span></div>
+    <div class="w l"><b>vídeo,</b><span class="who mono"><i>3/5</i><s>Finalizador</s></span></div>
+    <div class="w r"><b>post</b><span class="who mono"><i>4/5</i><s>Editor</s></span></div>
+    <div class="w l"><b>e site.</b><span class="who mono"><i>5/5</i><s>Desenvolvedor</s></span></div>
+  </div>
+  <p class="norm">Normalmente isso passa por <em>cinco fornecedores.</em></p>
+  <section class="one">
+    <p class="a">Aqui passa<br>por</p>
+    <p class="u">um.</p>
+    <p class="note mono">Fotógrafo, designer, finalizador, editor e desenvolvedor. A marca sai coerente porque sai da mesma mão.</p>
+    <p class="sig">Danilo Mariani</p>
+  </section>
+</main>
+<script src="ht.js"></script>
+<script src="lines.js"></script>
+<script>
+  Promise.all([document.fonts.load('900 214px Overused'), document.fonts.load('40px Mayluna'), document.fonts.ready]).then(() => {
+    const H = document.body.scrollHeight
+    const c = document.getElementById('fx'); c.height = H; c.style.height = H + 'px'
+    // cauda do sol da capa: o centro fica acima desta seção
+    const top = document.createElement('canvas'); top.width = 1440; top.height = 760
+    renderSun(top, { style: 'auth', cx: 1440 * 0.84, cy: 243 - 420, R: 135, angle: 60, period: 7, heat: 46,
+      fade: (x, y) => Math.pow(Math.max(0, 1 - y / 700), 1.4) })
+    c.getContext('2d').drawImage(top, 0, 0)
+    // "fachada," saindo do calor: em linhas, assentando de baixo pra cima
+    const f = document.getElementById('first').getBoundingClientRect()
+    const base = f.top + window.scrollY + 214 * 0.86 * 0.84
+    renderTypeLines(c, { text: 'fachada,', font: '900 214px Overused', x: 48 - 8, y: base,
+      color: '#FFC21A', period: 6, angle: 60, heat: 58, settle: 0.1, ls: '-10.7px',
+      region: [0, Math.floor(base - 260), 1440, Math.ceil(base + 80)] })
+  })
+</script>
+</body>
+</html>

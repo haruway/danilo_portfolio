@@ -102,14 +102,26 @@ verificação abre.
   renderizado no Chrome headless (fontes reais, retícula e dither reais em
   canvas). Fontes do mock em `docs/mock/src/`, descartáveis.
 
+### Rodada 2 do mock (feedback do Danilo)
+Rodada 1 foi pra `docs/mock/v1/`. Mudanças (detalhe em DIRECAO.md, nota de
+revisão no topo): assinatura gigante de margem a margem, sol em halftone de
+linha com amarelo/laranja/pouco vermelho, capa só tipo + sol, tese em tipo
+gigante na seção de baixo. Novos: `capa-auth`, `capa-tech`,
+`capa-auth-write`, mobiles e `manifesto`.
+
 ### Em aberto (portão da Fase 2)
-1. Capa A ou B.
-2. Amarelo `#FFD21F` ou `#FFC61A`.
-3. Trabalhos aprovado? Copy rascunho (etapas, bloco do filme) precisa de revisão.
-4. Danilo escreveu "o trabalhos já pode ir para a sessão 2". Confirmar se
-   isso só escolhe a seção do mock ou se é pra **reordenar** (Trabalhos
-   logo depois da capa, antes do Manifesto).
-5. Contato amarelo ou preto (PRD §4) — sai junto com a escolha A/B.
+1. Sol autêntico ou tecnológico.
+2. Manifesto aprovado? Copy rascunho dos fornecedores riscados.
+3. Trabalhos aprovado? Copy rascunho (etapas, bloco do filme).
+4. "O trabalhos já pode ir para a sessão 2": só a escolha do mock, ou
+   reordenar (Trabalhos antes do Manifesto)? Com a tese virando seção própria
+   logo abaixo da capa, a ordem atual (Capa → Manifesto → Trabalhos) parece a
+   natural.
+5. Amarelo exato: no sol o amarelo virou parte de uma rampa (`#FFC21A`); o
+   `#FFD21F` ficou no "um." do Manifesto. Fechar um só na Fundação.
+6. Contato amarelo ou preto (PRD §4).
+7. Mobile da capa: o nome cabe menor (limitado pela largura). Alternativa a
+   testar: nome na vertical.
 
 ### Próximo
 Portão da Fase 2 → **Fase 3** (Fundação): tokens, fontes, grid, Lenis +

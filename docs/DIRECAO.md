@@ -3,6 +3,23 @@
 **Fase 1 · 07/10/2026** · Status: **aprovado pelo Danilo (07/10/2026)**
 Respostas do portão: direção aprovada · WebGL puro pro shader (Three.js só se
 uma interação exigir) · mock interno = Trabalhos.
+
+> **Revisão do Danilo após a rodada 1 do mock (07/10/2026)** — vale por cima
+> do que está abaixo onde houver conflito:
+> - **Assinatura gigante**, em duas linhas, de margem a margem (arte dele:
+>   2560×1440, margem de 50px), se desenhando na página como no site do
+>   Lando Norris.
+> - **Sol em halftone de linha e ondas**, não de pontos. Raios diversos e não
+>   uniformes. Cor: amarelo + laranja + **muito pouco** vermelho. Isso libera a
+>   paleta térmica dentro do sol e do calor (antes, só em efeitos).
+>   Dois caminhos no mock: autêntico (grão, raios irregulares) e tecnológico
+>   (linhas limpas, ondas).
+> - **A capa é só tipo + sol.** A tese sai da capa e vai pra seção de baixo,
+>   em tipo gigante, "surgindo" do calor. Texto informativo não precisa ser
+>   gigante, mas o contraste de escala tem que ser extremo.
+> - Referências que ele mandou: halftone de linha em vermelho/creme, linhas
+>   cruzadas, três sóis em linha (vermelho/amarelo, laranja, e um limpo
+>   "tecnológico"), retrato em linha, e um sol com raios orgânicos.
 Base: `docs/PRD_v12.md` §2–§5 e `PRODUCT.md`. Este documento não muda o que o
 PRD já fixou (paleta, fontes, arquitetura). Ele dá a razão por trás, o
 comportamento e as regras pra que o mock (Fase 2) e o código saiam coerentes.
