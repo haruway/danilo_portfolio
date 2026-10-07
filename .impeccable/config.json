@@ -12,6 +12,15 @@
         ],
         "createdAt": "2026-10-07T16:34:17.151Z",
         "reason": "repeating-linear-gradient desenha o halftone de linha dentro da letra (verbo 'assentar' da DIRECAO.md), não é gradiente de cor; protótipo descartável"
+      },
+      {
+        "rule": "repeating-stripes-gradient",
+        "value": "*",
+        "files": [
+          "docs/mock/proto/index.html"
+        ],
+        "createdAt": "2026-10-07T19:38:06.872Z",
+        "reason": "listras são o halftone de linha dentro da letra (verbo 'assentar' da DIRECAO.md, pedido do Danilo por padrão de linha); protótipo descartável"
       }
     ]
   }
