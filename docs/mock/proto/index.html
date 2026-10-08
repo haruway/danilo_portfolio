@@ -38,6 +38,9 @@
   .loader.out { transform: translateY(-100%); }
   .loader .top { display: flex; justify-content: space-between; }
   .loader .count { font-weight: 800; font-size: clamp(120px, 31vw, 460px); line-height: .78; letter-spacing: -.06em; font-variant-numeric: tabular-nums; margin-left: -.04em; }
+  .loader.sig { justify-content: center; align-items: center; }
+  .loader.sig .top { position: absolute; left: var(--m); right: var(--m); top: 24px; }
+  .loader.sig .count { font-family: 'Sig'; font-weight: 400; font-size: clamp(72px, 9vw, 140px); line-height: 1; letter-spacing: 0; margin: 0; color: var(--yellow); }
   .loader .bar { position: absolute; left: 0; bottom: 0; height: 4px; background: var(--yellow); width: 0; }
 
   /* header horizontal */
@@ -50,8 +53,8 @@
   .head a:focus-visible { outline: 2px solid var(--yellow); outline-offset: 3px; }
   .head .lang b { font-weight: 500; text-decoration: underline; text-underline-offset: 3px; }
 
-  /* capa: a altura extra é a pista de scroll da intro (sol + nome se montando) */
-  .capa { position: relative; height: 230vh; }
+  /* capa: a intro roda sozinha (vídeo → 1,2 s no sol → nome); o scroll só desce a página */
+  .capa { position: relative; height: 100vh; }
   #gl { position: fixed; left: 0; top: 0; width: 100vw; height: 100vh; display: block; z-index: 0; }
 
   .cue { position: fixed; left: var(--m); bottom: 26px; z-index: 5; display: flex; align-items: center; gap: 14px; opacity: 0; transition: opacity .6s ease; pointer-events: none; }
@@ -122,7 +125,7 @@
 </head>
 <body>
 
-<div class="loader" id="loader" aria-hidden="true">
+<div class="loader sig" id="loader" aria-hidden="true">
   <div class="top mono"><span>Danilo Mariani</span><span>Maringá, PR</span></div>
   <div class="count" id="count">000</div>
   <div class="bar" id="bar"></div>
@@ -148,7 +151,7 @@
 
 <div class="cue mono" id="cue" aria-hidden="true">
   <svg viewBox="0 0 14 44" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M7 0v44" opacity=".25"/><path class="run" d="M7 0v44"/><path d="M2 38l5 6 5-6"/></svg>
-  <span>Role para montar a página</span>
+  <span>Role a página</span>
 </div>
 
 <div class="proto" role="group" aria-label="Controles do protótipo">
@@ -156,6 +159,7 @@
   <button data-pos="bottom" aria-pressed="true">Sol embaixo</button>
   <button data-pos="side" aria-pressed="false">Sol ao lado</button>
   <button data-act="swap" aria-pressed="false">Trocar cores</button>
+  <button data-act="loader" aria-pressed="true">Loading assinatura</button>
   <button data-act="intro">Ver intro de novo</button>
   <button data-act="freeze" aria-pressed="false">Congelar</button>
   <span class="tag" id="fps"></span>
@@ -201,7 +205,7 @@ uniform float uSunAlpha;
 // nome: textura (R = DANILO, G = Mariani), transformação, revelação e "acender"
 uniform sampler2D uName;
 uniform vec3 uNameXf;     // escala, deslocamento x, y  (tela = textura * escala + desloc.)
-uniform vec4 uRev;        // borda de DANILO, borda de Mariani (x em px da textura), calor do nome, hover
+uniform vec4 uRev;        // borda de DANILO, borda de Mariani (x em px da textura), calor do nome, (livre)
 uniform vec3 uC1, uC2;
 uniform vec4 uQuiet;      // retângulo do PT/EN
 uniform sampler2D uSrc;
@@ -247,9 +251,12 @@ void main() {
   vec2 dv = q - uSunC;
   float ca = cos(-uSunA), sa = sin(-uSunA);
   vec2 uv = vec2(dv.x * ca - dv.y * sa, dv.x * sa + dv.y * ca) / uSize + uAnchor;
-  uv.x = uv.x > 1.0 ? 2.0 - uv.x : uv.x;
   vec3 src = texture(uSrc, clamp(uv, 0.0, 1.0)).rgb;
-  float L = dot(src, vec3(0.2126, 0.7152, 0.0722));
+  // só o que é quente vira luz: o fundo azul do vídeo cai pro preto
+  float lum = dot(src, vec3(0.2126, 0.7152, 0.0722));
+  // miolo branco também conta como luz; respingos laranja fracos no fundo não
+  float warm = max(smoothstep(0.12, 0.35, src.r - src.b), smoothstep(0.72, 0.9, lum));
+  float L = lum * warm;
   L = pow(clamp((L - 0.05) * 1.1, 0.0, 1.0), 1.7);
   float fall = 1.0 - smoothstep(1.5, 3.2, length(q - uSunC) / uSunR);
   L *= fall;
@@ -275,12 +282,9 @@ void main() {
   float e2 = uRev.y + (fbm(vec2(7.0, tp.y * 0.02 + uTime * 0.3)) - 0.5) * 70.0;
   m.r *= 1.0 - smoothstep(e1 - 40.0, e1, tp.x);
   m.g *= 1.0 - smoothstep(e2 - 40.0, e2, tp.x);
-  // acender: dentro das letras a cor vira linha de fogo, que respira
-  float Lf = 0.42 + 0.56 * fbm(vec2(tp.x * 0.008, tp.y * 0.012 - uTime * 0.9));
-  vec3 fire = tone(Lf, px, hy);
-  float hov = uRev.w;
-  col = mix(col, mix(uC1, fire, hov), m.r);
-  col = mix(col, mix(uC2, fire, hov), m.g);
+  // cores lisas; o hover só aumenta a onda de calor (uRev.z)
+  col = mix(col, uC1, m.r);
+  col = mix(col, uC2, m.g);
   outColor = vec4(col, 1.0);
 }
 </script>
@@ -295,8 +299,14 @@ const still = !!q.get('still')
 const state = { pos: q.get('pos') || 'bottom', swap: !!q.get('swap'), frozen: false }
 const hex = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16) / 255)
 const Y = hex('#FFD21F'), W = hex('#FFFFFF')
-const SRC = '../../../fotos%20halftone%20e%20dither%20tool%20/download.png' // sol pintado (provisório até o vídeo do Veo)
-const ANCHOR = [1.0, 0.48] // centro do sol na imagem (ele está cortado na borda direita)
+// vídeos do Veo (Danilo). Ficam na pasta de referências, fora do git por enquanto.
+const REF = '../../../fotos%20halftone%20e%20dither%20tool%20/'
+const RISE = REF + encodeURIComponent('video sol surgindo de fundo.mp4')
+const LOOP = REF + encodeURIComponent('video estatico onda de calor.mp4')
+// o sol do vídeo de entrada começa deslocado pra direita (~60%) e termina em ~53%:
+// o centro acompanha essa posição pra ele crescer no meio da tela
+const RISE_X = t => t < 4 ? 0.6 : 0.6 + (0.53 - 0.6) * Math.min(1, (t - 4) / 4)
+const SUN_UV_R = 0.145 // raio do disco em fração da largura do vídeo
 
 if ('scrollRestoration' in history) history.scrollRestoration = 'manual'
 scrollTo(0, 0)
@@ -304,7 +314,7 @@ scrollTo(0, 0)
 /* ---------- WebGL ---------- */
 const cv = document.getElementById('gl'), langEl = document.getElementById('lang')
 const gl = cv.getContext('webgl2', { antialias: false, alpha: false, powerPreference: 'high-performance' })
-let U = {}, srcTex, nameTex, img = { w: 1152, h: 2048 }
+let U = {}, srcTex, nameTex, img = { w: 1920, h: 1080 }, anchor = [0.6, 0.5], vids = {}, curVid = null, frameDirty = false
 const DPR = () => Math.min(devicePixelRatio || 1, 1.5)
 
 function compile(type, src) { const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) console.error(gl.getShaderInfoLog(s)); return s }
@@ -327,22 +337,36 @@ if (gl) {
   const N = 256, data = new Uint8Array(N * N * 4)
   for (let i = 0; i < data.length; i++) data[i] = Math.random() * 255
   makeTex(1, gl.LINEAR, gl.REPEAT); gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, N, N, 0, gl.RGBA, gl.UNSIGNED_BYTE, data); gl.uniform1i(U.uNoise, 1)
-  srcTex = makeTex(0, gl.LINEAR_MIPMAP_LINEAR, gl.CLAMP_TO_EDGE)
+  srcTex = makeTex(0, gl.LINEAR, gl.CLAMP_TO_EDGE)
   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array([0, 0, 0, 255])); gl.uniform1i(U.uSrc, 0)
   nameTex = makeTex(2, gl.LINEAR_MIPMAP_LINEAR, gl.CLAMP_TO_EDGE); gl.uniform1i(U.uName, 2)
 }
 
-function loadSun() {
+function makeVideo(url, loop) {
+  const v = document.createElement('video')
+  v.src = url; v.muted = true; v.playsInline = true; v.loop = loop; v.preload = 'auto'; v.crossOrigin = 'anonymous'
   return new Promise(res => {
-    const im = new Image()
-    im.onload = () => {
-      gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, srcTex)
-      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, im); gl.generateMipmap(gl.TEXTURE_2D)
-      img = { w: im.naturalWidth, h: im.naturalHeight }; res()
-    }
-    im.onerror = () => { console.warn('fonte do sol não encontrada (fica só na máquina do Danilo)'); res() }
-    im.src = SRC
+    v.addEventListener('loadeddata', () => res(v), { once: true })
+    v.addEventListener('error', () => { console.warn('vídeo do sol não encontrado (fica só na máquina do Danilo):', url); res(null) }, { once: true })
   })
+}
+// só sobe pra GPU quando o vídeo tem quadro novo (≈24–30/s), não a cada desenho
+function useVideo(v) {
+  curVid = v; if (!v) return
+  img = { w: v.videoWidth, h: v.videoHeight }
+  const pump = () => { frameDirty = true; if (curVid === v && v.requestVideoFrameCallback) v.requestVideoFrameCallback(pump) }
+  if (v.requestVideoFrameCallback) v.requestVideoFrameCallback(pump); else frameDirty = true
+  frameDirty = true
+}
+function uploadFrame() {
+  if (!curVid || !frameDirty || curVid.readyState < 2) return
+  gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, srcTex)
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, curVid)
+  frameDirty = !curVid.requestVideoFrameCallback
+  anchor = curVid === vids.rise ? [RISE_X(curVid.currentTime), 0.5] : [0.53, 0.48]
+}
+function loadSun() {
+  return Promise.all([makeVideo(RISE, false), makeVideo(LOOP, true)]).then(([rise, loop]) => { vids = { rise, loop } })
 }
 
 /* ---------- nome: medido pelo contorno das letras, desenhado numa textura ---------- */
@@ -385,24 +409,22 @@ const span = (p, a, b) => clamp01((p - a) / (b - a))
 // três estados do sol: grande no centro (fim da intro) → posição final (ao lado ou embaixo)
 function sunAt(kind) {
   const w = innerWidth, h = innerHeight, mobile = w < 700
-  if (kind === 'big') return mobile ? { x: w * .5, y: h * .5, R: w * .46, a: 0 } : { x: w * .5, y: h * .55, R: Math.min(w, h) * .34, a: 0 }
-  if (kind === 'side') return mobile ? { x: w * .95, y: h * .15, R: w * .3, a: 0 } : { x: w, y: h * .26, R: h * .37, a: 0 }
-  return mobile ? { x: w * .5, y: h * 1.0, R: w * .55, a: Math.PI / 2 } : { x: w * .5, y: h * 1.1, R: Math.min(w * .26, h * .4), a: Math.PI / 2 }
+  if (kind === 'big') return mobile ? { x: w * .5, y: h * .5, R: w * .3, a: 0 } : { x: w * .5, y: h * .52, R: Math.min(w, h) * .24, a: 0 }
+  if (kind === 'side') return mobile ? { x: w * .92, y: h * .15, R: w * .2, a: 0 } : { x: w * .93, y: h * .26, R: h * .24, a: 0 }
+  return mobile ? { x: w * .5, y: h * 1.0, R: w * .4, a: 0 } : { x: w * .5, y: h * 1.08, R: Math.min(w * .2, h * .32), a: 0 }
 }
 
 const S = { intro: 0, p: 0, ps: 0, hover: 0, shift: 0, boost: 0 }
 const mouse = { x: -9999, y: -9999, heat: 0 }
 let scrollHeat = 0, lastY = scrollY, t0 = performance.now(), tNow = 0, visible = true, last = 0, idleT = performance.now()
 
-function stickyLen() { return document.getElementById('capa').offsetHeight - innerHeight }
+
 
 function frameState() {
-  const sl = stickyLen()
-  S.p = q.get('p') !== null ? +q.get('p') : clamp01(scrollY / sl)
-  S.ps += (S.p - S.ps) * (reduce ? 1 : 0.18)           // suaviza o scroll
-  S.shift = Math.max(0, scrollY - sl)                      // depois da capa, tudo sobe junto com a página
+  S.ps = q.get('p') !== null ? +q.get('p') : S.p          // S.p vem da linha do tempo da intro
+  S.shift = scrollY                                        // a capa sobe junto com a página
   const over = name && mouse.x > name.box[0] && mouse.x < name.box[2] && mouse.y > name.box[1] && mouse.y < name.box[3] && S.ps > .92
-  const hTarget = q.get('hover') ? 1 : (over ? 1 : 0)
+  const hTarget = q.get('hover') ? 1 : (over ? 1 : 0) // hover = mais calor no nome, cores intactas
   S.hover += (hTarget - S.hover) * (hTarget > S.hover ? 0.12 : 0.05) // acende rápido, apaga devagar
 }
 
@@ -414,9 +436,9 @@ function draw(t) {
   const move = easeIO(span(S.ps, 0.05, 0.85))             // scroll: o sol vai pro lugar
   const big = sunAt('big'), fin = sunAt(state.pos)
   const sx = lerp(big.x, fin.x, move), sy = lerp(big.y, fin.y, move) - S.shift
-  const R = lerp(big.R, fin.R, move) * lerp(0.05, 1, zoom)
+  const R = lerp(big.R, fin.R, move) // o vídeo já faz o sol crescer
   const a = lerp(big.a, fin.a, move)
-  const sizeX = R / 0.45, sizeY = sizeX * img.h / img.w
+  const sizeX = R / SUN_UV_R, sizeY = sizeX * img.h / img.w
   // nome: se escreve com o scroll, começa maior e no centro, assenta na posição final
   const n1 = easeOut(span(S.ps, 0.1, 0.55)), n2 = easeOut(span(S.ps, 0.32, 0.86))
   const settle = easeIO(span(S.ps, 0.1, 1))
@@ -424,19 +446,20 @@ function draw(t) {
   const cx = (name.box[0] + name.box[2]) / 2, cy = (name.box[1] + name.box[3]) / 2
   const px = lerp(w / 2, cx, settle), py = lerp(h * .52, cy, settle) - S.shift
   const e1 = lerp(name.r1[0] - 80, name.r1[2] + 80, n1), e2 = lerp(name.r2[0] - 80, name.r2[2] + 80, n2)
-  const nameHeat = reduce ? 0 : 4 + 34 * (1 - settle) + 16 * S.hover
+  const nameHeat = reduce ? 0 : 5 + 34 * (1 - settle) + 26 * S.hover
   const c1 = state.swap ? Y : W, c2 = state.swap ? W : Y
   const lb = langEl.getBoundingClientRect()
 
   gl.uniform2f(U.uRes, cv.width, cv.height); gl.uniform1f(U.uDpr, dpr); gl.uniform1f(U.uTime, t); gl.uniform2f(U.uView, w, h)
   gl.uniform2f(U.uMouse, mouse.x, mouse.y); gl.uniform1f(U.uMouseHeat, reduce ? 0 : mouse.heat)
   gl.uniform1f(U.uScrollHeat, reduce ? 0 : scrollHeat); gl.uniform1f(U.uBoost, reduce ? 0 : S.boost)
-  gl.uniform2f(U.uSunC, sx, sy); gl.uniform1f(U.uSunA, a); gl.uniform2f(U.uSize, sizeX, sizeY); gl.uniform2f(U.uAnchor, ...ANCHOR)
+  gl.uniform2f(U.uSunC, sx, sy); gl.uniform1f(U.uSunA, a); gl.uniform2f(U.uSize, sizeX, sizeY); gl.uniform2f(U.uAnchor, ...anchor)
   gl.uniform1f(U.uSunR, R); gl.uniform1f(U.uSunAlpha, clamp01(zoom * 1.4))
   gl.uniform3f(U.uNameXf, s, px - cx * s, py - cy * s)
   gl.uniform4f(U.uRev, e1, e2, nameHeat, S.hover)
   gl.uniform3f(U.uC1, ...c1); gl.uniform3f(U.uC2, ...c2)
   gl.uniform4f(U.uQuiet, lb.left - 14, lb.top - 10, lb.right + 14, lb.bottom + 10)
+  uploadFrame()
   gl.drawArrays(gl.TRIANGLES, 0, 3)
 }
 
@@ -452,7 +475,7 @@ function loop(now) {
   const dy = Math.abs(scrollY - lastY); lastY = scrollY
   scrollHeat = Math.min(1, scrollHeat * 0.9 + dy * 0.004)
   if (dy > 0) idleT = now
-  const moving = Math.abs(S.p - S.ps) > 0.001 || S.intro < 1 || dy > 0
+  const moving = S.intro < 1 || (S.p > 0 && S.p < 1) || dy > 0
   const warm = mouse.heat > 0.04 || scrollHeat > 0.04 || (S.hover > 0.01 && S.hover < 0.99)
   const fps = reduce ? 60 : moving ? 60 : warm ? 30 : 15
   if (now - last < 1000 / fps - 1) return
@@ -460,7 +483,7 @@ function loop(now) {
   draw(tNow); frames++
   if (now - fpsT > 1000) { document.getElementById('fps').textContent = frames + ' qps'; frames = 0; fpsT = now }
   // aviso de scroll: aparece depois da intro sempre que a pessoa para na capa
-  document.getElementById('cue').classList.toggle('on', S.intro >= 1 && now - idleT > 1200 && S.p < 0.98 && !html.classList.contains('lock'))
+  document.getElementById('cue').classList.toggle('on', S.p >= 1 && scrollY < 40 && now - idleT > 1200 && !html.classList.contains('lock'))
 }
 addEventListener('pointermove', e => {
   mouse.x = e.clientX; mouse.y = e.clientY
@@ -471,17 +494,33 @@ document.addEventListener('visibilitychange', () => { visible = !document.hidden
 /* ---------- loading (000 → 100) e intro ---------- */
 const html = document.documentElement
 function intro() {
-  // o sol vem lá de trás até a tela, com calor forte que esfria
+  // 1) vídeo do sol surgindo  2) troca pro loop de calor  3) 1,2 s só no sol
+  // 4) o nome se escreve e o sol vai pro lugar (1,8 s). Scroll travado até o fim.
   html.classList.add('lock'); scrollTo(0, 0)
-  const start = performance.now(), dur = reduce ? 1 : 2200
-  const step = now => {
-    const k = clamp01((now - start) / dur)
-    S.intro = k; S.boost = 1 - k
-    if (k < 1) requestAnimationFrame(step)
-    else { html.classList.remove('lock'); idleT = performance.now() - 900 }
+  const id = ++introId
+  S.p = 0; S.ps = 0; S.intro = 0; S.boost = 1
+  const HOLD = 1200, NAME = 1800, start = performance.now()
+  const fadeIn = now => { if (id !== introId) return; const k = clamp01((now - start) / 600); S.intro = k; if (k < 1) requestAnimationFrame(fadeIn) }
+  requestAnimationFrame(fadeIn)
+  const afterRise = () => {
+    if (id !== introId) return
+    if (vids.loop) { vids.loop.currentTime = 0; vids.loop.play(); useVideo(vids.loop) }
+    const t1 = performance.now()
+    const step = now => {
+      if (id !== introId) return
+      const e = now - t1
+      S.boost = Math.max(0, 1 - e / HOLD) * 0.6
+      S.p = clamp01((e - HOLD) / NAME)
+      if (S.p < 1) requestAnimationFrame(step)
+      else { html.classList.remove('lock'); idleT = performance.now() - 900 }
+    }
+    requestAnimationFrame(step)
   }
-  requestAnimationFrame(step)
+  if (reduce || !vids.rise) { S.intro = 1; if (vids.loop) { vids.loop.play(); useVideo(vids.loop) } S.p = 1; html.classList.remove('lock'); return }
+  vids.rise.currentTime = 0; vids.rise.playbackRate = 1.6; vids.rise.play(); useVideo(vids.rise)
+  vids.rise.onended = afterRise
 }
+let introId = 0
 
 // o número sobe com o carregamento real, mas nunca mais rápido que ~1,8 s
 function runLoader(tasks) {
@@ -513,7 +552,8 @@ document.querySelector('.proto').addEventListener('click', e => {
   const b = e.target.closest('button'); if (!b) return
   if (b.dataset.pos) { state.pos = b.dataset.pos; document.querySelectorAll('[data-pos]').forEach(x => x.setAttribute('aria-pressed', x === b)) }
   if (b.dataset.act === 'swap') { state.swap = !state.swap; b.setAttribute('aria-pressed', state.swap) }
-  if (b.dataset.act === 'intro') { S.intro = 0; S.ps = 0; scrollTo(0, 0); intro() }
+  if (b.dataset.act === 'intro') intro()
+  if (b.dataset.act === 'loader') { const l = document.getElementById('loader'); l.classList.toggle('sig'); b.setAttribute('aria-pressed', l.classList.contains('sig')); b.textContent = l.classList.contains('sig') ? 'Loading assinatura' : 'Loading número'; replayLoader() }
   if (b.dataset.act === 'freeze') { state.frozen = !state.frozen; b.setAttribute('aria-pressed', state.frozen) }
 })
 document.querySelectorAll('[data-pos]').forEach(x => x.setAttribute('aria-pressed', x.dataset.pos === state.pos))
@@ -534,17 +574,24 @@ if (still) {
   document.getElementById('loader').style.display = 'none'
   S.intro = q.get('zoom') !== null ? +q.get('zoom') : 1
   ready.then(() => {
+    const v = q.get('src') === 'rise' ? vids.rise : vids.loop
+    if (v) { v.currentTime = +(q.get('t') || 1); v.addEventListener('seeked', () => { useVideo(v); frameDirty = true }, { once: true }) }
+    if (q.get('src') === 'rise') { anchor = [RISE_X(+(q.get('t') || 1)), 0.5] }
     if (q.get('p') !== null) S.ps = +q.get('p')
     document.body.classList.add('still'); document.querySelectorAll('.row').forEach(el => el.classList.add('in'))
     if (q.get('only') === 'm') { document.getElementById('capa').style.display = 'none'; cv.style.display = 'none' }
     requestAnimationFrame(loop)
   })
   if (q.get('loader') !== null) { // print do loading parado num número
-    const l = document.getElementById('loader'); l.style.display = ''
+    const l = document.getElementById('loader'); l.style.display = ''; if (q.get('lstyle') === 'num') l.classList.remove('sig')
     const n = +q.get('loader'); document.getElementById('count').textContent = String(n).padStart(3, '0'); document.getElementById('bar').style.width = n + '%'
   }
 } else {
   runLoader(tasks).then(() => ready).then(() => { requestAnimationFrame(loop); intro() })
+}
+function replayLoader() {
+  const l = document.getElementById('loader'); l.style.display = ''; l.classList.remove('out')
+  runLoader([new Promise(r => setTimeout(r, 300))]).then(intro)
 }
 </script>
 </body>
