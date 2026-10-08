@@ -5,6 +5,9 @@
 A copy de Jorik, Bendito, filmes e contato vem de `docs/PRD_v11_com_copy.md`
 onde o PRD v12 apontar pra ela. Copy nova ou alterada passa pelo PRD primeiro.
 `docs/HANDOFF.md` diz onde a última sessão parou — leia antes de começar.
+**Referência viva aprovada:** `docs/mock/proto/index.html` (capa + manifesto). O site
+porta o comportamento dele. Leia também PRD §12 (erros que já cometemos).
+**Fale com o Danilo em português.**
 
 ## Quem é e o que o site é
 Danilo Mariani, designer em Maringá/PR. Atualmente na Dzigna (agência de branding).
@@ -46,6 +49,7 @@ docs/
   DIRECAO.md               direção de arte (Fase 1)
   HANDOFF.md               estado da última sessão
 FOTOS/                     originais em alta — fora do git
+fotos halftone e dither tool/  refs do Pinterest + vídeos do Veo — fora do git
 _arquivo/                  não editar
   v11/                     site anterior inteiro (index.html único + assets)
   v9/ v10/ sessoes-antigas/
@@ -78,24 +82,29 @@ Merge no `main` só quando o v12 estiver pronto pra substituir o v11.
 ```css
 --black:  #0A0A0A;
 --white:  #FFFFFF;
---yellow: /* decidido no mock: #FFD21F ou #FFC61A */;
+--yellow: #FFD21F;
+--red:    #D9230F;   /* fio do "POR UM." */
 ```
 Proporção ~40% preto · 40% branco · 20% amarelo. Amarelo é detalhe (efeito,
 hover, sol, marcador). Fundo amarelo só na capa e no contato.
-Paleta térmica (preto → vermelho → laranja → amarelo) só dentro de efeitos.
+Rampa térmica (preto → vinho → vermelho → laranja → amarelo → creme) só no sol,
+no calor e em efeitos. Fundo do site: preto.
 **Proibido:** `#FFFA00` (Dzigna) e `#FFBE57` (v11).
 
 Conceito: **solar**. Calor como comportamento — miragem, luz estourada, as coisas
 tremem e se revelam como sob sol forte.
 
 Layout: informação ancorada nas margens, vazio no meio, **nada centralizado por
-padrão**. Cada seção tem pele própria.
+padrão**. Sequência de títulos grandes alterna esquerda/direita em duas posições
+fixas (Canals). Nunca posições aleatórias. Sem contorno em texto, sem glow.
 
 ### Fontes e licenças
 | Papel | Fonte | Regra |
 |---|---|---|
 | Assinatura (só o nome) | Mayluna — provisória | Arquivo é **Demo**. Entra só como **SVG paths**; o .otf nunca entra no repo. Antes de publicar: licença ou assinatura real vetorizada |
-| Títulos e texto | Overused Grotesk (variável, .woff2) | OFL, self-host, incluir `OFL.txt`. Pesos extremos: Black contra Book |
+| Nome "DANILO" | Overused Grotesk **ExtraBold 800** | Caixa-alta. Não é Black |
+| Títulos (manifesto etc.) | Overused Grotesk **Bold 700**, caixa-alta | Black é pesado demais |
+| Texto | Overused Grotesk ~400 | OFL, self-host com a licença |
 | Rótulos técnicos | DM Mono | OFL, self-host |
 | Lab: Dither (Tonestamp) | pele 1-bit (bitmap/mono), com botão pra desligar e voltar à interface do Tonestamp (Bricolage Grotesque, IBM Plex Mono) | Só dentro da seção do Tonestamp |
 | Lab: Halftone (Halftone Tool) | a da interface própria da ferramenta | Só dentro da seção da Halftone Tool |
