@@ -142,9 +142,24 @@ gigante na seção de baixo. Novos: `capa-auth`, `capa-tech`,
   `uSource`), um render/pintura do próprio Danilo, ou um sol procedural
   desenhado pra imitar as refs.
 
+### Rodada 5 (feedback do Danilo)
+- Manifesto: alternância rígida esq/dir como o Canals ("coisas diferentes
+  não significam coisa bagunçada"). "POR UM." e o fio tinham a mesma cor:
+  fio agora vermelho.
+- Sol: **pintado** escolhido (o de raios saiu). Duas posições pra comparar:
+  embaixo e ao lado.
+- Nome: mais calor e "acende" no hover.
+- Nova sequência de abertura: loading com contador (ref. chunkychunks.com.br,
+  não consegui abrir o site: o Chrome desconectou), sol vindo de longe em
+  zoom, scroll leva o sol pro lugar enquanto o nome se escreve, aviso de
+  scroll no fim.
+- **Danilo está gerando o vídeo do sol no Veo 3.1** a partir da ref pintada.
+  Quando chegar, ele vira a fonte do shader (`uSrc` com vídeo) no lugar da
+  imagem do Pinterest.
+
 ### Em aberto (portão da Fase 2)
 1. ~~Sol autêntico ou tecnológico~~ → autêntico. ~~Nome A ou B~~ → B.
-   Sol raios ou pintado? Em cima ou embaixo?
+   ~~Raios ou pintado~~ → pintado. Embaixo ou ao lado?
 2. Manifesto aprovado? Copy rascunho dos fornecedores riscados.
 3. Trabalhos aprovado? Copy rascunho (etapas, bloco do filme).
 4. "O trabalhos já pode ir para a sessão 2": só a escolha do mock, ou

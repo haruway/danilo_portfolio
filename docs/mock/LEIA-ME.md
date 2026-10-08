@@ -4,7 +4,34 @@ Imagens estáticas pra aprovar layout e hierarquia antes de qualquer código de
 interface. **Não é o site.** O movimento (ferver, assentar, a assinatura se
 escrevendo) aparece aqui congelado num instante.
 
-## Rodada 4 (atual): protótipo refinado
+## Rodada 5 (atual): loading, intro do sol e nome aceso
+
+Mesmo endereço: na raiz do repo, `python3 -m http.server 8766` →
+`http://127.0.0.1:8766/docs/mock/proto/`.
+
+Sequência (prints em `intro/`, na ordem):
+1. **Loading**: contador 000 → 100 em Overused 800 gigante, preso ao
+   carregamento real (fontes + sol) mas nunca mais rápido que ~1,8 s.
+   Barra amarela embaixo. Sai pra cima.
+2. **Sol chegando**: o sol pintado vem lá de trás, pequeno, até encher a
+   tela (2,2 s), com calor forte que esfria. Scroll travado enquanto isso.
+3. **Scroll monta a capa**: o sol vai pra posição dele (embaixo ou ao lado,
+   botões no painel) enquanto DANILO e depois Mariani se escrevem e assentam
+   no lugar. O aviso "Role para montar a página" aparece quando a pessoa para.
+4. **Nome aceso**: com o mouse em cima, as letras viram linha de fogo e o
+   calor aumenta; ao sair, apagam devagar.
+5. Depois da capa, tudo sobe junto com a página e o Manifesto entra.
+
+Mudanças técnicas: o nome agora é desenhado dentro do shader (calor
+constante sem custo extra) e faz uma **sombra suave no sol**, que separa o
+amarelo do nome do amarelo do sol sem contorno. Manifesto: alternância rígida
+esquerda/direita (como o Canals), legenda sempre no lado vazio; "POR UM." em
+amarelo com o fio em **vermelho** atrás.
+
+Parâmetros pra print (`?still=1&…`): `loader=64`, `zoom=0.35`, `p=0..1`
+(progresso do scroll da capa), `pos=bottom|side`, `hover=1`, `only=m`.
+
+## Rodada 4: protótipo refinado
 
 Como abrir: na **raiz do repo**, `python3 -m http.server 8766` e acesse
 `http://127.0.0.1:8766/docs/mock/proto/`. (Mudou: o sol agora lê uma imagem

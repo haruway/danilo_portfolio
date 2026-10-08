@@ -11,7 +11,7 @@
   - A Mayluna vem instalada no sistema (local()); o .otf nunca entra no repo.
   - O sol lê uma imagem de referência da pasta "fotos halftone e dither tool"
     (Pinterest, terceiros): só existe na máquina do Danilo e nunca é publicada.
-    No site final a fonte do sol tem que ser material próprio.
+    Vai ser trocada pelo vídeo do Veo que o Danilo está gerando.
   Abrir servindo a RAIZ do repo: python3 -m http.server 8766
   e acessar http://127.0.0.1:8766/docs/mock/proto/
 -->
@@ -24,12 +24,21 @@
   @property --lw { syntax: '<length>'; inherits: false; initial-value: 0.6px; }
   @property --c { syntax: '<color>'; inherits: false; initial-value: #EC620E; }
 
-  :root { --black: #0A0A0A; --white: #FFFFFF; --yellow: #FFD21F; --m: 48px; }
+  :root { --black: #0A0A0A; --white: #FFFFFF; --yellow: #FFD21F; --red: #D9230F; --m: 48px; }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html { background: var(--black); }
+  html.lock { overflow: hidden; }
   body { background: var(--black); color: var(--white); font-family: 'Overused', sans-serif; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
   ::selection { background: var(--yellow); color: var(--black); }
   .mono { font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: .06em; text-transform: uppercase; line-height: 1.6; }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+  /* loading */
+  .loader { position: fixed; inset: 0; z-index: 50; background: var(--black); display: flex; flex-direction: column; justify-content: space-between; padding: 24px var(--m) 18px; transition: transform .9s cubic-bezier(.76,0,.24,1); }
+  .loader.out { transform: translateY(-100%); }
+  .loader .top { display: flex; justify-content: space-between; }
+  .loader .count { font-weight: 800; font-size: clamp(120px, 31vw, 460px); line-height: .78; letter-spacing: -.06em; font-variant-numeric: tabular-nums; margin-left: -.04em; }
+  .loader .bar { position: absolute; left: 0; bottom: 0; height: 4px; background: var(--yellow); width: 0; }
 
   /* header horizontal */
   .head { position: fixed; left: 0; right: 0; top: 0; z-index: 10; display: flex; justify-content: space-between; align-items: center; padding: 20px var(--m); pointer-events: none; }
@@ -41,74 +50,83 @@
   .head a:focus-visible { outline: 2px solid var(--yellow); outline-offset: 3px; }
   .head .lang b { font-weight: 500; text-decoration: underline; text-underline-offset: 3px; }
 
-  /* capa */
-  .capa { position: relative; height: 100vh; min-height: 560px; }
-  #sun { position: absolute; left: 0; top: 0; width: 100%; height: 118vh; display: block; z-index: 0; }
-  #name { position: absolute; left: 0; top: 0; width: 100%; height: 100%; z-index: 2; overflow: visible; }
+  /* capa: a altura extra é a pista de scroll da intro (sol + nome se montando) */
+  .capa { position: relative; height: 230vh; }
+  #gl { position: fixed; left: 0; top: 0; width: 100vw; height: 100vh; display: block; z-index: 0; }
+
+  .cue { position: fixed; left: var(--m); bottom: 26px; z-index: 5; display: flex; align-items: center; gap: 14px; opacity: 0; transition: opacity .6s ease; pointer-events: none; }
+  .cue.on { opacity: 1; }
+  .cue svg { width: 14px; height: 44px; overflow: visible; }
+  .cue svg .run { stroke-dasharray: 44; animation: run 1.8s cubic-bezier(.65,0,.35,1) infinite; }
+  @keyframes run { 0% { stroke-dashoffset: 44 } 55% { stroke-dashoffset: 0 } 100% { stroke-dashoffset: -44 } }
 
   /* painel do protótipo (não faz parte do site) */
-  .proto { position: fixed; left: var(--m); bottom: 24px; z-index: 20; display: flex; gap: 6px; flex-wrap: wrap; max-width: 70vw; }
+  .proto { position: fixed; right: var(--m); bottom: 22px; z-index: 20; display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; max-width: 60vw; }
   .proto button { font: 500 11px/1 'DM Mono', monospace; letter-spacing: .06em; text-transform: uppercase; color: var(--white); background: rgba(10,10,10,.82); border: 1px solid rgba(255,255,255,.35); padding: 8px 10px; cursor: pointer; }
   .proto button[aria-pressed="true"] { background: var(--yellow); color: var(--black); border-color: var(--yellow); }
   .proto button:focus-visible { outline: 2px solid var(--yellow); outline-offset: 2px; }
   .proto .tag { font: 500 11px/1 'DM Mono', monospace; letter-spacing: .06em; text-transform: uppercase; padding: 8px 4px; color: rgba(255,255,255,.6); }
 
-  /* manifesto — estrutura do Canals: duas posições fixas (margem e recuo),
-     palavras empilhadas, legendas nos vãos, um fio atravessando o fim */
-  .manifesto { position: relative; z-index: 2; padding: 18vh var(--m) 12vh; --in: 30%; }
-  .lead { font-size: clamp(22px, 2.6vw, 38px); font-weight: 400; letter-spacing: -.01em; line-height: 1.15; margin: 0 0 3vw var(--in); max-width: 18em; }
-  .row { position: relative; display: grid; grid-template-columns: var(--in) 1fr; align-items: center; }
-  .row.at-0 > b { grid-column: 1 / -1; }
-  .row.at-in > b { grid-column: 2; }
+  /* manifesto — Canals: esquerda, direita, esquerda, direita. Legenda sempre
+     no lado vazio, alinhada à margem desse lado. */
+  main { position: relative; z-index: 2; background: var(--black); }
+  .manifesto { padding: 14vh var(--m) 12vh; }
+  .lead { font-size: clamp(22px, 2.6vw, 38px); font-weight: 400; letter-spacing: -.01em; line-height: 1.15; margin-bottom: 2.4vw; max-width: 18em; }
+  .row { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 32px; }
+  .row.r { flex-direction: row-reverse; }
   .row > b {
-    grid-row: 1; display: block; font-weight: 700; font-size: clamp(54px, 12.6vw, 192px); line-height: .84; letter-spacing: -.035em; text-transform: uppercase; white-space: nowrap;
-    padding-bottom: .04em;
+    display: block; font-weight: 700; font-size: clamp(44px, 12.6vw, 192px); line-height: .84; letter-spacing: -.035em; text-transform: uppercase; white-space: nowrap;
+    padding-bottom: .04em; position: relative; z-index: 1;
     background: repeating-linear-gradient(120deg, var(--c) 0 var(--lw), transparent var(--lw) 7px);
     -webkit-background-clip: text; background-clip: text; color: transparent;
     transition: --lw 1.5s cubic-bezier(.16,1,.3,1), --c 1.5s cubic-bezier(.16,1,.3,1);
   }
   .row.in > b { --lw: 7px; --c: #FFFFFF; }
-  /* legenda no vão (a coluna vazia da linha) */
-  .cap { grid-row: 1; font-size: 15px; line-height: 1.45; max-width: 15em; }
-  .row.at-in .cap { grid-column: 1; padding-right: 24px; }
-  .row.at-0 .cap { grid-column: 2; justify-self: end; }
-  .cap .mono { display: block; color: rgba(255,255,255,.55); margin-bottom: 6px; }
+  .cap { flex: 0 0 auto; width: 15em; font-size: 15px; line-height: 1.45; }
+  .cap .mono { display: block; color: rgba(255,255,255,.55); margin-bottom: 4px; }
   .cap s { text-decoration-thickness: 1.5px; }
-  .cap em { font-style: normal; color: rgba(255,255,255,.6); display: block; }
 
-  .norm { margin: 9vh 0 9vh var(--in); max-width: 15em; font-size: clamp(22px, 2.6vw, 38px); line-height: 1.15; letter-spacing: -.01em; }
+  .norm { margin: 10vh 0 10vh auto; width: min(15em, 100%); font-size: clamp(22px, 2.6vw, 38px); line-height: 1.15; letter-spacing: -.01em; }
   .norm em { font-style: normal; color: rgba(255,255,255,.6); }
 
-  /* fio do Canals: da margem esquerda até o fim da última palavra, atrás dela */
-  .one .rule { grid-row: 1; grid-column: 1 / -1; align-self: center; width: 92%; height: clamp(6px, .7vw, 10px); background: var(--yellow); margin-top: .5vw; }
-  .one > b { position: relative; z-index: 1; }
-  .still .row > b { transition: none; }
-  .one.in .rule { transform-origin: left; animation: draw 1.2s cubic-bezier(.16,1,.3,1) both; }
+  /* "por um.": texto amarelo, fio vermelho atrás dele (cores distintas = leitura) */
+  .one .rule { position: absolute; left: 0; right: 0; top: 50%; height: clamp(6px, .7vw, 10px); margin-top: .3vw; background: var(--red); z-index: 0; transform-origin: left; transform: scaleX(0); }
+  .one.in .rule { animation: draw 1.2s .15s cubic-bezier(.16,1,.3,1) both; }
   @keyframes draw { from { transform: scaleX(0) } to { transform: scaleX(1) } }
   .one.y.in > b { --c: var(--yellow); }
 
-  .note { margin: 7vh 0 0 var(--in); max-width: 26em; font-size: 17px; line-height: 1.5; color: rgba(255,255,255,.85); }
+  .note { margin: 8vh 0 0 auto; width: min(26em, 100%); font-size: 17px; line-height: 1.5; color: rgba(255,255,255,.85); }
   .end { padding: 16vh var(--m) 24vh; color: rgba(255,255,255,.6); font-size: 15px; }
+
+  .still .row > b { transition: none; }
+  .still .one .rule { animation: none; transform: none; }
 
   @media (max-width: 700px) {
     :root { --m: 16px; }
     .head ul li.opt { display: none; }
     .head ul { gap: 16px; }
-    .manifesto { --in: 12%; }
-    .row { grid-template-columns: 1fr; }
-    .row.at-in > b { grid-column: 1; margin-left: var(--in); }
-    .row .cap { grid-row: 2; grid-column: 1 !important; justify-self: start !important; margin: 6px 0 14px var(--in); padding: 0; }
-    .lead, .norm, .note { margin-left: 0; }
-    .proto { bottom: 16px; max-width: 90vw; }
+    .row, .row.r { flex-direction: column; align-items: flex-start; gap: 6px; margin-bottom: 18px; }
+    .row.r { align-items: flex-end; }
+    .row.r .cap { text-align: right; }
+    .cap { width: auto; }
+    .proto { max-width: 92vw; bottom: 80px; }
   }
   @media (prefers-reduced-motion: reduce) {
     .row > b { transition: none; --lw: 7px; --c: #FFFFFF; }
     .one.y > b { --c: var(--yellow); }
-    .one .rule { animation: none !important; }
+    .one .rule { animation: none !important; transform: none; }
+    .cue svg .run { animation: none; }
+    .loader { transition: none; }
   }
 </style>
 </head>
 <body>
+
+<div class="loader" id="loader" aria-hidden="true">
+  <div class="top mono"><span>Danilo Mariani</span><span>Maringá, PR</span></div>
+  <div class="count" id="count">000</div>
+  <div class="bar" id="bar"></div>
+</div>
 
 <header class="head mono">
   <nav aria-label="Seções">
@@ -123,35 +141,23 @@
   <div class="lang" id="lang"><b>PT</b> / EN</div>
 </header>
 
-<section class="capa" aria-label="Capa">
-  <canvas id="sun" aria-hidden="true"></canvas>
-  <svg id="name" role="img" aria-label="Danilo Mariani">
-    <defs>
-      <filter id="heat" x="-10%" y="-20%" width="120%" height="140%">
-        <feTurbulence type="fractalNoise" baseFrequency="0.004 0.03" numOctaves="2" seed="3" result="t"/>
-        <feDisplacementMap id="heatDisp" in="SourceGraphic" in2="t" scale="0" xChannelSelector="R" yChannelSelector="G"/>
-      </filter>
-      <clipPath id="clip1"><rect id="r1" x="0" y="0" width="0" height="100%"/></clipPath>
-      <clipPath id="clip2"><rect id="r2" x="0" y="0" width="0" height="100%"/></clipPath>
-    </defs>
-    <g id="nameG" filter="url(#heat)">
-      <text id="t1" clip-path="url(#clip1)">DANILO</text>
-      <text id="t2" clip-path="url(#clip2)">Mariani</text>
-    </g>
-  </svg>
+<section class="capa" id="capa" aria-label="Capa">
+  <h1 class="sr">Danilo Mariani</h1>
+  <canvas id="gl" aria-hidden="true"></canvas>
 </section>
+
+<div class="cue mono" id="cue" aria-hidden="true">
+  <svg viewBox="0 0 14 44" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M7 0v44" opacity=".25"/><path class="run" d="M7 0v44"/><path d="M2 38l5 6 5-6"/></svg>
+  <span>Role para montar a página</span>
+</div>
 
 <div class="proto" role="group" aria-label="Controles do protótipo">
   <span class="tag">Protótipo</span>
-  <button data-v="B" aria-pressed="true">Nome B</button>
-  <button data-v="A" aria-pressed="false">Nome A</button>
+  <button data-pos="bottom" aria-pressed="true">Sol embaixo</button>
+  <button data-pos="side" aria-pressed="false">Sol ao lado</button>
   <button data-act="swap" aria-pressed="false">Trocar cores</button>
-  <button data-src="0" aria-pressed="true">Sol raios</button>
-  <button data-src="1" aria-pressed="false">Sol pintado</button>
-  <button data-act="pos" aria-pressed="false">Sol em cima</button>
-  <button data-act="shadow" aria-pressed="false">Sombra no sol</button>
-  <button data-act="replay">Reescrever</button>
-  <button data-act="freeze" aria-pressed="false">Congelar sol</button>
+  <button data-act="intro">Ver intro de novo</button>
+  <button data-act="freeze" aria-pressed="false">Congelar</button>
   <span class="tag" id="fps"></span>
 </div>
 
@@ -159,16 +165,16 @@
   <section class="manifesto" id="manifesto" aria-label="Manifesto">
     <p class="lead">Uma marca precisa virar</p>
 
-    <div class="row at-in"><b>Fachada,</b><p class="cap"><span class="mono">Fornecedor 01</span><s>Fotógrafo</s><em>Normalmente, um.</em></p></div>
-    <div class="row at-0"><b>Embalagem,</b></div>
-    <div class="row at-in"><b>Vídeo,</b><p class="cap"><span class="mono">Fornecedores 02 · 03</span><s>Designer</s> · <s>Finalizador</s><em>Normalmente, mais dois.</em></p></div>
-    <div class="row at-0"><b>Post</b><p class="cap"><span class="mono">Fornecedores 04 · 05</span><s>Editor</s> · <s>Desenvolvedor</s><em>E mais dois.</em></p></div>
-    <div class="row at-in"><b>E site.</b></div>
+    <div class="row l"><b>Fachada,</b><p class="cap"><span class="mono">Fornecedor 01</span><s>Fotógrafo</s></p></div>
+    <div class="row r"><b>Embalagem,</b><p class="cap"><span class="mono">Fornecedor 02</span><s>Designer</s></p></div>
+    <div class="row l"><b>Vídeo,</b><p class="cap"><span class="mono">Fornecedor 03</span><s>Finalizador</s></p></div>
+    <div class="row r"><b>Post</b><p class="cap"><span class="mono">Fornecedor 04</span><s>Editor</s></p></div>
+    <div class="row l"><b>E site.</b><p class="cap"><span class="mono">Fornecedor 05</span><s>Desenvolvedor</s></p></div>
 
     <p class="norm">Normalmente isso passa por <em>cinco fornecedores.</em></p>
 
-    <div class="row at-0 one"><b>Aqui passa</b></div>
-    <div class="row at-in one y"><span class="rule" aria-hidden="true"></span><b>Por um.</b></div>
+    <div class="row l one"><b>Aqui passa</b></div>
+    <div class="row r one y"><span class="rule" aria-hidden="true"></span><b>Por um.</b></div>
 
     <p class="note">Fotógrafo, designer, finalizador, editor e desenvolvedor. A marca sai coerente porque sai da mesma mão.</p>
   </section>
@@ -177,22 +183,29 @@
 
 <script id="fs" type="x-shader/x-fragment">#version 300 es
 precision highp float;
-uniform vec2 uRes;       // px do canvas (já com dpr)
+uniform vec2 uRes;        // px do canvas (com dpr)
 uniform float uDpr;
 uniform float uTime;
-uniform vec2 uMouse;     // css px, relativo ao canvas
+uniform vec2 uView;       // viewport em css px
+uniform vec2 uMouse;      // css px
 uniform float uMouseHeat;
 uniform float uScrollHeat;
-uniform vec2 uSun;       // centro do sol (css px) — pra concentrar o calor
-uniform float uR;
-uniform vec4 uSrcRect;   // onde a imagem-fonte fica (css px): x y w h
-uniform float uFadeFrom, uFadeTo;
-uniform vec4 uQuiet;     // retângulo do PT/EN
-uniform sampler2D uSrc;  // imagem-fonte (luminância)
-uniform sampler2D uNoise;// ruído pré-calculado 256²: barato no lugar de fbm por pixel
-uniform sampler2D uMask; // nome borrado: as letras "fazem sombra" no sol
-uniform vec2 uView;      // viewport em css px
-uniform float uMaskOn;
+uniform float uBoost;     // calor extra da intro
+// sol: centro na tela, ângulo, tamanho da imagem em px, onde o centro do sol fica na imagem
+uniform vec2 uSunC;
+uniform float uSunA;
+uniform vec2 uSize;
+uniform vec2 uAnchor;
+uniform float uSunR;
+uniform float uSunAlpha;
+// nome: textura (R = DANILO, G = Mariani), transformação, revelação e "acender"
+uniform sampler2D uName;
+uniform vec3 uNameXf;     // escala, deslocamento x, y  (tela = textura * escala + desloc.)
+uniform vec4 uRev;        // borda de DANILO, borda de Mariani (x em px da textura), calor do nome, hover
+uniform vec3 uC1, uC2;
+uniform vec4 uQuiet;      // retângulo do PT/EN
+uniform sampler2D uSrc;
+uniform sampler2D uNoise; // ruído pronto 256²: barato no lugar de fbm por pixel
 out vec4 outColor;
 
 float n1(vec2 p) { return texture(uNoise, p / 256.0).r; }
@@ -205,46 +218,70 @@ const vec3 C[7] = vec3[7](
   vec3(0.925, 0.384, 0.055), vec3(1.0, 0.761, 0.102), vec3(0.984, 0.902, 0.698));
 const float TH[7] = float[7](0.0, 0.1, 0.22, 0.32, 0.4, 0.64, 0.86);
 
-void main() {
-  vec2 px = vec2(gl_FragCoord.x, uRes.y - gl_FragCoord.y) / uDpr;
-
-  // calor: o ar sobe; mais forte perto do sol, do cursor e com scroll rápido
-  float near = exp(-length(px - uSun) / (uR * 2.4));
-  float mouse = uMouseHeat * exp(-length(px - uMouse) / 200.0);
-  float amp = 5.0 + 26.0 * near + 60.0 * mouse + 28.0 * uScrollHeat;
-  float hy = (fbm(vec2(px.x * 0.005, px.y * 0.011 + uTime * 0.55)) - 0.5) * amp;
-  float hx = (fbm(vec2(px.x * 0.009 + 4.0, px.y * 0.007 - uTime * 0.25)) - 0.5) * amp * 0.25;
-  vec2 q = px + vec2(hx, hy);
-
-  // luz vinda da imagem
-  vec2 uv = (q - uSrcRect.xy) / uSrcRect.zw;
-  vec3 c = texture(uSrc, clamp(uv, 0.0, 1.0)).rgb;
-  float L = dot(c, vec3(0.2126, 0.7152, 0.0722));
-  // curva: puxa os meios-tons pro laranja/vermelho; creme só no miolo
-  L = pow(clamp((L - 0.05) * 1.1, 0.0, 1.0), 1.7);
-  // a imagem some no preto em volta do sol (máscara redonda, sem corte reto)
-  float ds = length(q - uSun) / uR;
-  float inside = (1.0 - smoothstep(1.6, 3.4, ds)) * step(uv.x, 1.0) * step(0.0, uv.y) * step(uv.y, 1.0);
-  L *= inside;
-  L += (fbm(px * 0.08 + 20.0) - 0.5) * 0.05 * inside;      // grão macio
-  L *= 1.0 - uMaskOn * 0.45 * texture(uMask, px / uView).r; // sombra do nome sobre o sol
-  L *= 1.0 - smoothstep(uFadeFrom, uFadeTo, px.y);        // some no manifesto
-  vec2 qd = max(max(uQuiet.xy - px, px - uQuiet.zw), 0.0);
-  L *= mix(0.3, 1.0, smoothstep(0.0, 90.0, length(qd)));  // PT/EN sempre legível
-  L = clamp(L, 0.0, 1.0);
-
+// halftone de linha a 60°: L escolhe a faixa de cor, a espessura da linha faz o meio-tom
+vec3 tone(float L, vec2 px, float shift) {
   int i = 0;
   for (int k = 0; k < 6; k++) { if (L >= TH[k + 1]) i = k + 1; }
   i = min(i, 5);
   float f = clamp((L - TH[i]) / (TH[i + 1] - TH[i]), 0.0, 1.0);
-
-  // linha a 60°, com ondulação lenta e a mesma miragem
   float wave = (fbm(px * 0.0028 + vec2(0.0, uTime * 0.04)) - 0.5) * 16.0;
-  float v = (dot(px, vec2(0.5, 0.8660254)) + wave + hy * 0.6) / 7.0;
+  float v = (dot(px, vec2(0.5, 0.8660254)) + wave + shift) / 7.0;
   float d = abs(fract(v) - 0.5) * 2.0;
   float aa = fwidth(d) * 1.2;
   float k = 1.0 - smoothstep(f - aa, f + aa, d);
-  outColor = vec4(mix(C[i], C[i + 1], k), 1.0);
+  return mix(C[i], C[i + 1], k);
+}
+
+void main() {
+  vec2 px = vec2(gl_FragCoord.x, uRes.y - gl_FragCoord.y) / uDpr;
+
+  // calor: o ar sobe; mais forte perto do sol, do cursor, com scroll e na intro
+  float near = exp(-length(px - uSunC) / (uSunR * 2.4));
+  float mouse = uMouseHeat * exp(-length(px - uMouse) / 200.0);
+  float amp = 5.0 + 26.0 * near + 60.0 * mouse + 28.0 * uScrollHeat + 40.0 * uBoost;
+  float hy = (fbm(vec2(px.x * 0.005, px.y * 0.011 + uTime * 0.55)) - 0.5) * amp;
+  float hx = (fbm(vec2(px.x * 0.009 + 4.0, px.y * 0.007 - uTime * 0.25)) - 0.5) * amp * 0.25;
+  vec2 q = px + vec2(hx, hy);
+
+  // sol: lê a imagem girada/escalada; espelha na borda e o meio sol vira sol inteiro
+  vec2 dv = q - uSunC;
+  float ca = cos(-uSunA), sa = sin(-uSunA);
+  vec2 uv = vec2(dv.x * ca - dv.y * sa, dv.x * sa + dv.y * ca) / uSize + uAnchor;
+  uv.x = uv.x > 1.0 ? 2.0 - uv.x : uv.x;
+  vec3 src = texture(uSrc, clamp(uv, 0.0, 1.0)).rgb;
+  float L = dot(src, vec3(0.2126, 0.7152, 0.0722));
+  L = pow(clamp((L - 0.05) * 1.1, 0.0, 1.0), 1.7);
+  float fall = 1.0 - smoothstep(1.5, 3.2, length(q - uSunC) / uSunR);
+  L *= fall;
+  L += (fbm(px * 0.08 + 20.0) - 0.5) * 0.05 * fall;
+  L *= uSunAlpha;
+  // o nome faz sombra no sol: separa amarelo de amarelo sem contorno
+  vec2 tpS = (px - uNameXf.yz) / uNameXf.x;
+  vec2 sh = textureLod(uName, tpS / uView, 5.0).rg;
+  L *= 1.0 - 0.75 * clamp(max(sh.r, sh.g) * 1.6, 0.0, 1.0) * uRev.x / max(uRev.x, 1.0) * step(0.5, uSunAlpha);
+  vec2 qd = max(max(uQuiet.xy - px, px - uQuiet.zw), 0.0);
+  L *= mix(0.3, 1.0, smoothstep(0.0, 90.0, length(qd)));
+  L = clamp(L, 0.0, 1.0);
+  vec3 col = tone(L, px, hy * 0.6);
+
+  // nome
+  vec2 tp = (px - uNameXf.yz) / uNameXf.x;
+  float nh = uRev.z;
+  vec2 nd = vec2((fbm(vec2(tp.x * 0.012 + 9.0, tp.y * 0.03 + uTime * 0.9)) - 0.5) * 0.3,
+                 (fbm(vec2(tp.x * 0.006, tp.y * 0.02 + uTime * 0.7)) - 0.5)) * nh;
+  vec2 m = texture(uName, (tp + nd) / uView).rg;
+  // revelação da esquerda pra direita, borda tremendo de calor
+  float e1 = uRev.x + (fbm(vec2(3.0, tp.y * 0.02 + uTime * 0.3)) - 0.5) * 70.0;
+  float e2 = uRev.y + (fbm(vec2(7.0, tp.y * 0.02 + uTime * 0.3)) - 0.5) * 70.0;
+  m.r *= 1.0 - smoothstep(e1 - 40.0, e1, tp.x);
+  m.g *= 1.0 - smoothstep(e2 - 40.0, e2, tp.x);
+  // acender: dentro das letras a cor vira linha de fogo, que respira
+  float Lf = 0.42 + 0.56 * fbm(vec2(tp.x * 0.008, tp.y * 0.012 - uTime * 0.9));
+  vec3 fire = tone(Lf, px, hy);
+  float hov = uRev.w;
+  col = mix(col, mix(uC1, fire, hov), m.r);
+  col = mix(col, mix(uC2, fire, hov), m.g);
+  outColor = vec4(col, 1.0);
 }
 </script>
 <script id="vs" type="x-shader/x-vertex">#version 300 es
@@ -254,23 +291,21 @@ in vec2 p; void main() { gl_Position = vec4(p, 0.0, 1.0); }
 <script>
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches
 const q = new URLSearchParams(location.search)
-const state = { v: q.get('v') || 'B', swap: !!q.get('swap'), src: +(q.get('src') || 0), pos: q.get('pos') || 'up', frozen: false }
-const Y = '#FFD21F', W = '#FFFFFF'
+const still = !!q.get('still')
+const state = { pos: q.get('pos') || 'bottom', swap: !!q.get('swap'), frozen: false }
+const hex = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16) / 255)
+const Y = hex('#FFD21F'), W = hex('#FFFFFF')
+const SRC = '../../../fotos%20halftone%20e%20dither%20tool%20/download.png' // sol pintado (provisório até o vídeo do Veo)
+const ANCHOR = [1.0, 0.48] // centro do sol na imagem (ele está cortado na borda direita)
 
-// fontes do sol (refs do Danilo; só locais). c = centro do sol na imagem (0..1)
-const REF = '../../../fotos%20halftone%20e%20dither%20tool%20/'
-const SOURCES = [
-  { url: REF + '63aee05c78a6a89c714229d593510d2e.jpg', c: [0.5, 0.42], hFrac: 1.35, at: { down: [0.86, 0.68], up: [0.9, 0.2] } }, // sol inteiro com raios
-  { url: REF + 'download.png', c: [1.0, 0.48], hFrac: 1.45, at: { down: [1.0, 0.64], up: [1.0, 0.26] } }                     // meio sol na borda direita
-]
+if ('scrollRestoration' in history) history.scrollRestoration = 'manual'
+scrollTo(0, 0)
 
 /* ---------- WebGL ---------- */
-const cv = document.getElementById('sun'), langEl = document.getElementById('lang')
+const cv = document.getElementById('gl'), langEl = document.getElementById('lang')
 const gl = cv.getContext('webgl2', { antialias: false, alpha: false, powerPreference: 'high-performance' })
-let U = {}, srcTex, maskTex, srcImg = { w: 1, h: 1 }, maskOn = 0, maskK = 0
-const mouse = { x: -9999, y: -9999, heat: 0 }
-let scrollHeat = 0, lastY = scrollY, t0 = performance.now(), tNow = 0, visible = true, last = 0
-const DPR = () => Math.min(devicePixelRatio || 1, 1.5) // teto: 1,5x é nítido e custa ~56% de 2x
+let U = {}, srcTex, nameTex, img = { w: 1152, h: 2048 }
+const DPR = () => Math.min(devicePixelRatio || 1, 1.5)
 
 function compile(type, src) { const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) console.error(gl.getShaderInfoLog(s)); return s }
 function makeTex(unit, filter, wrap) {
@@ -287,163 +322,186 @@ if (gl) {
   const b = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, b)
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW)
   const loc = gl.getAttribLocation(prog, 'p'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0)
-  for (const n of ['uRes', 'uDpr', 'uTime', 'uMouse', 'uMouseHeat', 'uScrollHeat', 'uSun', 'uR', 'uSrcRect', 'uFadeFrom', 'uFadeTo', 'uQuiet', 'uSrc', 'uNoise', 'uMask', 'uView', 'uMaskOn']) U[n] = gl.getUniformLocation(prog, n)
-  // ruído: 256² aleatório com filtro linear e repetição = value noise de graça
+  for (const n of ['uRes', 'uDpr', 'uTime', 'uView', 'uMouse', 'uMouseHeat', 'uScrollHeat', 'uBoost', 'uSunC', 'uSunA', 'uSize', 'uAnchor', 'uSunR', 'uSunAlpha',
+    'uName', 'uNameXf', 'uRev', 'uC1', 'uC2', 'uQuiet', 'uSrc', 'uNoise']) U[n] = gl.getUniformLocation(prog, n)
   const N = 256, data = new Uint8Array(N * N * 4)
   for (let i = 0; i < data.length; i++) data[i] = Math.random() * 255
-  makeTex(1, gl.LINEAR, gl.REPEAT)
-  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, N, N, 0, gl.RGBA, gl.UNSIGNED_BYTE, data)
-  gl.uniform1i(U.uNoise, 1)
+  makeTex(1, gl.LINEAR, gl.REPEAT); gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, N, N, 0, gl.RGBA, gl.UNSIGNED_BYTE, data); gl.uniform1i(U.uNoise, 1)
   srcTex = makeTex(0, gl.LINEAR_MIPMAP_LINEAR, gl.CLAMP_TO_EDGE)
-  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array([0, 0, 0, 255]))
-  gl.uniform1i(U.uSrc, 0)
-  maskTex = makeTex(2, gl.LINEAR, gl.CLAMP_TO_EDGE)
-  gl.uniform1i(U.uMask, 2)
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array([0, 0, 0, 255])); gl.uniform1i(U.uSrc, 0)
+  nameTex = makeTex(2, gl.LINEAR_MIPMAP_LINEAR, gl.CLAMP_TO_EDGE); gl.uniform1i(U.uName, 2)
 }
 
-function loadSource(i) {
+function loadSun() {
   return new Promise(res => {
-    const img = new Image()
-    img.onload = () => {
+    const im = new Image()
+    im.onload = () => {
       gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, srcTex)
-      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img); gl.generateMipmap(gl.TEXTURE_2D)
-      srcImg = { w: img.naturalWidth, h: img.naturalHeight }; res()
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, im); gl.generateMipmap(gl.TEXTURE_2D)
+      img = { w: im.naturalWidth, h: im.naturalHeight }; res()
     }
-    img.onerror = () => { console.warn('fonte do sol não encontrada (fica só na máquina do Danilo)'); res() }
-    img.src = SOURCES[i].url
+    im.onerror = () => { console.warn('fonte do sol não encontrada (fica só na máquina do Danilo)'); res() }
+    im.src = SRC
   })
 }
 
-let srcRect = [0, 0, 1, 1], sun = { x: 0, y: 0, R: 100 }
-function place() {
-  const s = SOURCES[state.src], w = innerWidth, h = innerHeight, mobile = w < 700
-  // no celular o sol fica menor e encostado no canto, pra não cobrir o nome
-  const rh = h * s.hFrac * (mobile ? 0.42 : 1), rw = rh * srcImg.w / srcImg.h
-  const at = mobile ? [0.9, state.pos === 'up' ? 0.15 : 0.8] : s.at[state.pos], cx = w * at[0], cy = h * at[1]
-  srcRect = [cx - s.c[0] * rw, cy - s.c[1] * rh, rw, rh]
-  sun = { x: cx, y: cy, R: rw * 0.3 }
+/* ---------- nome: medido pelo contorno das letras, desenhado numa textura ---------- */
+const mctx = document.createElement('canvas').getContext('2d')
+function box(txt, font, ls = 0) { mctx.font = font; mctx.letterSpacing = ls + 'px'; const m = mctx.measureText(txt); return { l: m.actualBoundingBoxLeft, r: m.actualBoundingBoxRight, a: m.actualBoundingBoxAscent, d: m.actualBoundingBoxDescent } }
+let name = null
+function layoutName() {
+  const Wd = innerWidth, H = innerHeight, mobile = Wd < 700
+  const mx = mobile ? 16 : Wd * 50 / 2560
+  // proporções da arte do Danilo (2560×1440): DANILO da margem esquerda até ~84%;
+  // Mariani de ~16% até a margem direita, cruzando a base do DANILO
+  const top = mobile ? H * .3 : H * 0.079
+  const ls = -0.02, right1 = mobile ? 0.9 : 0.84, left2 = mobile ? 0.12 : 0.16
+  const bb = box('DANILO', '800 100px Overused')
+  const f1 = (Wd * right1 - mx) / ((bb.l + bb.r) / 100 + 5 * ls)
+  const b1 = box('DANILO', `800 ${f1}px Overused`, f1 * ls)
+  const b = box('Mariani', '100px Sig'), f2 = 100 * (Wd - mx - left2 * Wd) / (b.l + b.r)
+  const b2 = box('Mariani', `${f2}px Sig`)
+  const d1 = { text: 'DANILO', font: `800 ${f1}px Overused`, ls: f1 * ls, x: mx + b1.l, y: top + b1.a }
+  const d2 = { text: 'Mariani', font: `${f2}px Sig`, ls: 0, x: Wd - mx - b2.r, y: top + b1.a * 0.635 + b2.a }
+  const r1 = [mx, top, Wd * right1, top + b1.a + b1.d]
+  const r2 = [Wd - mx - b2.l - b2.r, d2.y - b2.a, Wd - mx, d2.y + b2.d]
+  name = { d1, d2, r1, r2, box: [Math.min(r1[0], r2[0]), r1[1], Math.max(r1[2], r2[2]), Math.max(r1[3], r2[3])] }
+  if (!gl) return
+  const k = Math.min(devicePixelRatio || 1, 2), c = document.createElement('canvas')
+  c.width = Math.round(Wd * k); c.height = Math.round(H * k)
+  const x = c.getContext('2d'); x.scale(k, k); x.globalCompositeOperation = 'lighter'
+  for (const [d, color] of [[d1, '#f00'], [d2, '#0f0']]) { x.font = d.font; x.letterSpacing = d.ls + 'px'; x.fillStyle = color; x.fillText(d.text, d.x, d.y) }
+  gl.activeTexture(gl.TEXTURE2); gl.bindTexture(gl.TEXTURE_2D, nameTex)
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, c); gl.generateMipmap(gl.TEXTURE_2D)
 }
 
-function resize() {
-  const dpr = DPR()
-  cv.width = Math.round(innerWidth * dpr); cv.height = Math.round(cv.getBoundingClientRect().height * dpr)
-  if (gl) gl.viewport(0, 0, cv.width, cv.height)
-  place(); layoutName(); drawMask(); draw(tNow)
+/* ---------- coreografia ---------- */
+const clamp01 = x => Math.min(1, Math.max(0, x))
+const lerp = (a, b, t) => a + (b - a) * t
+const easeOut = x => 1 - Math.pow(1 - x, 3)
+const easeIO = x => x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2
+const span = (p, a, b) => clamp01((p - a) / (b - a))
+
+// três estados do sol: grande no centro (fim da intro) → posição final (ao lado ou embaixo)
+function sunAt(kind) {
+  const w = innerWidth, h = innerHeight, mobile = w < 700
+  if (kind === 'big') return mobile ? { x: w * .5, y: h * .5, R: w * .46, a: 0 } : { x: w * .5, y: h * .55, R: Math.min(w, h) * .34, a: 0 }
+  if (kind === 'side') return mobile ? { x: w * .95, y: h * .15, R: w * .3, a: 0 } : { x: w, y: h * .26, R: h * .37, a: 0 }
+  return mobile ? { x: w * .5, y: h * 1.0, R: w * .55, a: Math.PI / 2 } : { x: w * .5, y: h * 1.1, R: Math.min(w * .26, h * .4), a: Math.PI / 2 }
+}
+
+const S = { intro: 0, p: 0, ps: 0, hover: 0, shift: 0, boost: 0 }
+const mouse = { x: -9999, y: -9999, heat: 0 }
+let scrollHeat = 0, lastY = scrollY, t0 = performance.now(), tNow = 0, visible = true, last = 0, idleT = performance.now()
+
+function stickyLen() { return document.getElementById('capa').offsetHeight - innerHeight }
+
+function frameState() {
+  const sl = stickyLen()
+  S.p = q.get('p') !== null ? +q.get('p') : clamp01(scrollY / sl)
+  S.ps += (S.p - S.ps) * (reduce ? 1 : 0.18)           // suaviza o scroll
+  S.shift = Math.max(0, scrollY - sl)                      // depois da capa, tudo sobe junto com a página
+  const over = name && mouse.x > name.box[0] && mouse.x < name.box[2] && mouse.y > name.box[1] && mouse.y < name.box[3] && S.ps > .92
+  const hTarget = q.get('hover') ? 1 : (over ? 1 : 0)
+  S.hover += (hTarget - S.hover) * (hTarget > S.hover ? 0.12 : 0.05) // acende rápido, apaga devagar
 }
 
 function draw(t) {
-  if (!gl) return
-  const dpr = cv.width / innerWidth, r = cv.getBoundingClientRect(), lb = langEl.getBoundingClientRect()
-  gl.uniform2f(U.uRes, cv.width, cv.height); gl.uniform1f(U.uDpr, dpr); gl.uniform1f(U.uTime, t)
-  gl.uniform2f(U.uMouse, mouse.x, mouse.y - r.top); gl.uniform1f(U.uMouseHeat, reduce ? 0 : mouse.heat)
-  gl.uniform1f(U.uScrollHeat, reduce ? 0 : scrollHeat)
-  gl.uniform2f(U.uSun, sun.x, sun.y); gl.uniform1f(U.uR, sun.R)
-  gl.uniform4f(U.uSrcRect, ...srcRect)
-  gl.uniform2f(U.uView, innerWidth, innerHeight); gl.uniform1f(U.uMaskOn, maskOn * maskK)
-  gl.uniform1f(U.uFadeFrom, innerHeight * 0.95); gl.uniform1f(U.uFadeTo, innerHeight * 1.18)
-  gl.uniform4f(U.uQuiet, lb.left - 14, lb.top - r.top - 10, lb.right + 14, lb.bottom - r.top + 10)
+  if (!gl || !name) return
+  const w = innerWidth, h = innerHeight
+  const dpr = cv.width / w
+  const zoom = easeOut(S.intro)                           // intro: o sol vem de longe
+  const move = easeIO(span(S.ps, 0.05, 0.85))             // scroll: o sol vai pro lugar
+  const big = sunAt('big'), fin = sunAt(state.pos)
+  const sx = lerp(big.x, fin.x, move), sy = lerp(big.y, fin.y, move) - S.shift
+  const R = lerp(big.R, fin.R, move) * lerp(0.05, 1, zoom)
+  const a = lerp(big.a, fin.a, move)
+  const sizeX = R / 0.45, sizeY = sizeX * img.h / img.w
+  // nome: se escreve com o scroll, começa maior e no centro, assenta na posição final
+  const n1 = easeOut(span(S.ps, 0.1, 0.55)), n2 = easeOut(span(S.ps, 0.32, 0.86))
+  const settle = easeIO(span(S.ps, 0.1, 1))
+  const s = lerp(1.05, 1, settle)
+  const cx = (name.box[0] + name.box[2]) / 2, cy = (name.box[1] + name.box[3]) / 2
+  const px = lerp(w / 2, cx, settle), py = lerp(h * .52, cy, settle) - S.shift
+  const e1 = lerp(name.r1[0] - 80, name.r1[2] + 80, n1), e2 = lerp(name.r2[0] - 80, name.r2[2] + 80, n2)
+  const nameHeat = reduce ? 0 : 4 + 34 * (1 - settle) + 16 * S.hover
+  const c1 = state.swap ? Y : W, c2 = state.swap ? W : Y
+  const lb = langEl.getBoundingClientRect()
+
+  gl.uniform2f(U.uRes, cv.width, cv.height); gl.uniform1f(U.uDpr, dpr); gl.uniform1f(U.uTime, t); gl.uniform2f(U.uView, w, h)
+  gl.uniform2f(U.uMouse, mouse.x, mouse.y); gl.uniform1f(U.uMouseHeat, reduce ? 0 : mouse.heat)
+  gl.uniform1f(U.uScrollHeat, reduce ? 0 : scrollHeat); gl.uniform1f(U.uBoost, reduce ? 0 : S.boost)
+  gl.uniform2f(U.uSunC, sx, sy); gl.uniform1f(U.uSunA, a); gl.uniform2f(U.uSize, sizeX, sizeY); gl.uniform2f(U.uAnchor, ...ANCHOR)
+  gl.uniform1f(U.uSunR, R); gl.uniform1f(U.uSunAlpha, clamp01(zoom * 1.4))
+  gl.uniform3f(U.uNameXf, s, px - cx * s, py - cy * s)
+  gl.uniform4f(U.uRev, e1, e2, nameHeat, S.hover)
+  gl.uniform3f(U.uC1, ...c1); gl.uniform3f(U.uC2, ...c2)
+  gl.uniform4f(U.uQuiet, lb.left - 14, lb.top - 10, lb.right + 14, lb.bottom + 10)
   gl.drawArrays(gl.TRIANGLES, 0, 3)
 }
 
-// orçamento: 30 qps quando tem calor (cursor/scroll), 15 qps em repouso — o
-// calor parado é lento, e cada quadro poupado é GPU livre pro resto da página
+// orçamento de quadros: 60 com scroll/intro, 30 com cursor/hover, 15 parado
 let frames = 0, fpsT = performance.now()
 function loop(now) {
   requestAnimationFrame(loop)
-  if (!visible || state.frozen || reduce) return
+  frameState()
+  const onScreen = S.shift < innerHeight * 1.1
+  cv.style.visibility = onScreen ? 'visible' : 'hidden'
+  if (!visible || !onScreen || state.frozen) return
   mouse.heat *= 0.95
   const dy = Math.abs(scrollY - lastY); lastY = scrollY
   scrollHeat = Math.min(1, scrollHeat * 0.9 + dy * 0.004)
-  const hot = mouse.heat > 0.04 || scrollHeat > 0.04
-  if (now - last < 1000 / (hot ? 30 : 15)) return
-  last = now; tNow = (now - t0) / 1000
+  if (dy > 0) idleT = now
+  const moving = Math.abs(S.p - S.ps) > 0.001 || S.intro < 1 || dy > 0
+  const warm = mouse.heat > 0.04 || scrollHeat > 0.04 || (S.hover > 0.01 && S.hover < 0.99)
+  const fps = reduce ? 60 : moving ? 60 : warm ? 30 : 15
+  if (now - last < 1000 / fps - 1) return
+  last = now; tNow = reduce ? 0 : (now - t0) / 1000
   draw(tNow); frames++
   if (now - fpsT > 1000) { document.getElementById('fps').textContent = frames + ' qps'; frames = 0; fpsT = now }
+  // aviso de scroll: aparece depois da intro sempre que a pessoa para na capa
+  document.getElementById('cue').classList.toggle('on', S.intro >= 1 && now - idleT > 1200 && S.p < 0.98 && !html.classList.contains('lock'))
 }
 addEventListener('pointermove', e => {
   mouse.x = e.clientX; mouse.y = e.clientY
   mouse.heat = Math.min(1, mouse.heat + Math.hypot(e.movementX || 0, e.movementY || 0) * 0.012)
 }, { passive: true })
-new IntersectionObserver(([e]) => { visible = e.isIntersecting }).observe(cv)
 document.addEventListener('visibilitychange', () => { visible = !document.hidden })
 
-/* ---------- assinatura (SVG medido pelo contorno das letras) ---------- */
-const svg = document.getElementById('name'), t1 = document.getElementById('t1'), t2 = document.getElementById('t2')
-const mctx = document.createElement('canvas').getContext('2d')
-function box(txt, font) { mctx.font = font; const m = mctx.measureText(txt); return { l: m.actualBoundingBoxLeft, r: m.actualBoundingBoxRight, a: m.actualBoundingBoxAscent, d: m.actualBoundingBoxDescent } }
-const drawn = {}
-function setText(el, { x, y, size, family, weight = 400, fill, ls = 0 }) {
-  drawn[el.id] = { text: el.textContent, x, y, font: `${weight} ${size}px ${family}`, ls }
-  el.setAttribute('x', x); el.setAttribute('y', y)
-  el.style.font = `${weight} ${size}px ${family}`
-  el.style.letterSpacing = ls + 'px'
-  el.setAttribute('fill', fill)
-}
-
-function layoutName() {
-  const Wd = innerWidth, H = innerHeight, mobile = Wd < 700
-  svg.setAttribute('viewBox', `0 0 ${Wd} ${H}`)
-  const mx = mobile ? 16 : Wd * 50 / 2560
-  const c1 = (state.v === 'B') !== state.swap ? W : Y, c2 = c1 === Y ? W : Y
-  t1.textContent = state.v === 'A' ? 'Danilo' : 'DANILO'
-  if (state.v === 'A') {
-    const my = mobile ? H * .3 : H * 0.1, indent = mobile ? .07 : .197, gap = mobile ? H * .008 : H * .02
-    const b = box('Mariani', '100px Sig'), f = 100 * (Wd - mx - indent * Wd) / (b.l + b.r)
-    const b1 = box('Danilo', `${f}px Sig`), b2 = box('Mariani', `${f}px Sig`)
-    const y1 = my + b1.a
-    setText(t1, { x: mx + b1.l, y: y1, size: f, family: 'Sig', fill: c1 })
-    setText(t2, { x: Wd - mx - b2.r, y: y1 + b1.d + gap + b2.a, size: f, family: 'Sig', fill: c2 })
-    return
-  }
-  // B, nas proporções da arte do Danilo (2560×1440):
-  // DANILO (Overused ExtraBold) da margem esquerda até ~84% da largura;
-  // Mariani (assinatura) de ~16% até a margem direita, cruzando a base do DANILO.
-  const top = mobile ? H * .3 : H * 0.079
-  const ls = -0.02, right1 = mobile ? 0.9 : 0.84, left2 = mobile ? 0.12 : 0.16
-  const bb = box('DANILO', '800 100px Overused')
-  const f1 = (Wd * right1 - mx) / ((bb.l + bb.r) / 100 + 5 * ls)
-  const b1 = box('DANILO', `800 ${f1}px Overused`)
-  setText(t1, { x: mx + b1.l, y: top + b1.a, size: f1, family: 'Overused', weight: 800, fill: c1, ls: f1 * ls })
-  const b = box('Mariani', '100px Sig'), f2 = 100 * (Wd - mx - left2 * Wd) / (b.l + b.r)
-  const b2 = box('Mariani', `${f2}px Sig`)
-  // topo do "Mariani" a 63,5% da altura do DANILO (medido na arte)
-  setText(t2, { x: Wd - mx - b2.r, y: top + b1.a * 0.635 + b2.a, size: f2, family: 'Sig', fill: c2 })
-}
-
-// sombra: o nome desenhado de novo, borrado, em meia resolução (barato)
-function drawMask() {
-  if (!gl) return
-  const k = 0.5, c = document.createElement('canvas')
-  c.width = Math.round(innerWidth * k); c.height = Math.round(innerHeight * k)
-  const x = c.getContext('2d'); x.scale(k, k); x.filter = 'blur(10px)'; x.fillStyle = '#fff'
-  for (const d of Object.values(drawn)) { x.font = d.font; x.letterSpacing = d.ls + 'px'; x.fillText(d.text, d.x, d.y) }
-  gl.activeTexture(gl.TEXTURE2); gl.bindTexture(gl.TEXTURE_2D, maskTex)
-  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, c)
-}
-
-/* escrita: revela da esquerda pra direita com calor que assenta.
-   No site final a máscara segue a ordem do traço; aqui é a aproximação. */
-let writing = 0
-function write() {
-  const id = ++writing
-  const g = document.getElementById('nameG'), disp = document.getElementById('heatDisp'), r1 = document.getElementById('r1'), r2 = document.getElementById('r2')
-  const done = () => { for (const r of [r1, r2]) { r.setAttribute('x', -9999); r.setAttribute('width', 99999) } g.removeAttribute('filter'); maskK = 1 }
-  if (reduce) return done()
-  g.setAttribute('filter', 'url(#heat)')
-  const start = performance.now(), ease = x => 1 - Math.pow(1 - x, 3)
-  const b1 = t1.getBBox(), b2 = t2.getBBox()
+/* ---------- loading (000 → 100) e intro ---------- */
+const html = document.documentElement
+function intro() {
+  // o sol vem lá de trás até a tela, com calor forte que esfria
+  html.classList.add('lock'); scrollTo(0, 0)
+  const start = performance.now(), dur = reduce ? 1 : 2200
   const step = now => {
-    if (id !== writing) return
-    const s = (now - start) / 1000
-    const p1 = Math.min(1, Math.max(0, s / 1.0)), p2 = Math.min(1, Math.max(0, (s - 0.6) / 1.2))
-    r1.setAttribute('x', b1.x - 20); r1.setAttribute('width', (b1.width + 40) * ease(p1))
-    r2.setAttribute('x', b2.x - 20); r2.setAttribute('width', (b2.width + 40) * ease(p2))
-    disp.setAttribute('scale', 40 * Math.pow(1 - Math.min(1, s / 2.2), 2))
-    maskK = ease(Math.min(1, s / 2.2))
-    if (s < 2.2) requestAnimationFrame(step)
-    else done() // tira o filtro: ele custa caro mesmo com escala zero
+    const k = clamp01((now - start) / dur)
+    S.intro = k; S.boost = 1 - k
+    if (k < 1) requestAnimationFrame(step)
+    else { html.classList.remove('lock'); idleT = performance.now() - 900 }
   }
   requestAnimationFrame(step)
+}
+
+// o número sobe com o carregamento real, mas nunca mais rápido que ~1,8 s
+function runLoader(tasks) {
+  const loader = document.getElementById('loader'), count = document.getElementById('count'), bar = document.getElementById('bar')
+  let done = 0, shown = 0
+  const total = tasks.length, start = performance.now(), MIN = reduce ? 200 : 1800
+  html.classList.add('lock')
+  tasks.forEach(t => t.then(() => done++))
+  return new Promise(res => {
+    const tick = now => {
+      const target = Math.min(done / total, easeIO(clamp01((now - start) / MIN)))
+      shown += (target - shown) * 0.2
+      if (target >= 1 && 1 - shown < 0.004) shown = 1
+      const n = Math.round(shown * 100)
+      count.textContent = String(n).padStart(3, '0'); bar.style.width = n + '%'
+      if (shown < 1) return requestAnimationFrame(tick)
+      setTimeout(() => { loader.classList.add('out'); setTimeout(() => { loader.style.display = 'none'; res() }, reduce ? 0 : 500) }, reduce ? 0 : 250)
+    }
+    requestAnimationFrame(tick)
+  })
 }
 
 /* ---------- manifesto: assenta ao entrar ---------- */
@@ -451,32 +509,43 @@ const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting
 document.querySelectorAll('.row').forEach(el => io.observe(el))
 
 /* ---------- painel ---------- */
-function press(sel, el) { document.querySelectorAll(sel).forEach(x => x.setAttribute('aria-pressed', x === el)) }
-document.querySelector('.proto').addEventListener('click', async e => {
+document.querySelector('.proto').addEventListener('click', e => {
   const b = e.target.closest('button'); if (!b) return
-  if (b.dataset.v) { state.v = b.dataset.v; press('[data-v]', b); layoutName(); drawMask(); write() }
-  if (b.dataset.src) { state.src = +b.dataset.src; press('[data-src]', b); await loadSource(state.src); place(); draw(tNow) }
-  if (b.dataset.act === 'swap') { state.swap = !state.swap; b.setAttribute('aria-pressed', state.swap); layoutName(); drawMask() }
-  if (b.dataset.act === 'shadow') { maskOn = maskOn ? 0 : 1; b.setAttribute('aria-pressed', !!maskOn); draw(tNow) }
-  if (b.dataset.act === 'pos') { state.pos = state.pos === 'up' ? 'down' : 'up'; b.setAttribute('aria-pressed', state.pos === 'up'); place(); draw(tNow) }
-  if (b.dataset.act === 'replay') write()
+  if (b.dataset.pos) { state.pos = b.dataset.pos; document.querySelectorAll('[data-pos]').forEach(x => x.setAttribute('aria-pressed', x === b)) }
+  if (b.dataset.act === 'swap') { state.swap = !state.swap; b.setAttribute('aria-pressed', state.swap) }
+  if (b.dataset.act === 'intro') { S.intro = 0; S.ps = 0; scrollTo(0, 0); intro() }
   if (b.dataset.act === 'freeze') { state.frozen = !state.frozen; b.setAttribute('aria-pressed', state.frozen) }
 })
-document.querySelectorAll('[data-v]').forEach(x => x.setAttribute('aria-pressed', x.dataset.v === state.v))
-document.querySelectorAll('[data-src]').forEach(x => x.setAttribute('aria-pressed', +x.dataset.src === state.src))
-document.querySelector('[data-act=pos]').setAttribute('aria-pressed', state.pos === 'up')
+document.querySelectorAll('[data-pos]').forEach(x => x.setAttribute('aria-pressed', x.dataset.pos === state.pos))
 
-Promise.all([document.fonts.load('100px Sig'), document.fonts.load('800 100px Overused'), document.fonts.ready, gl ? loadSource(state.src) : 0]).then(() => {
-  resize(); write(); requestAnimationFrame(loop)
-  if (q.get('still')) { // pra print: pula as animações
-    writing++
-    for (const id of ['r1', 'r2']) { const r = document.getElementById(id); r.setAttribute('x', -9999); r.setAttribute('width', 99999) }
-    document.getElementById('nameG').removeAttribute('filter'); maskK = 1; draw(tNow)
-    document.body.classList.add('still'); document.querySelectorAll('.row').forEach(el => el.classList.add('in'))
-    if (q.get('only') === 'm') document.querySelector('.capa').style.display = 'none' // pra print do manifesto
-  }
-})
+function resize() {
+  const dpr = DPR()
+  cv.width = Math.round(innerWidth * dpr); cv.height = Math.round(innerHeight * dpr)
+  if (gl) gl.viewport(0, 0, cv.width, cv.height)
+  layoutName(); draw(tNow)
+}
 addEventListener('resize', resize)
+
+const tasks = [document.fonts.load('100px Sig'), document.fonts.load('800 100px Overused'), document.fonts.load('700 100px Overused'), gl ? loadSun() : Promise.resolve()]
+const ready = Promise.all(tasks).then(() => document.fonts.ready).then(resize)
+
+if (still) {
+  // pra print: parâmetros controlam o estado (p = progresso do scroll da capa)
+  document.getElementById('loader').style.display = 'none'
+  S.intro = q.get('zoom') !== null ? +q.get('zoom') : 1
+  ready.then(() => {
+    if (q.get('p') !== null) S.ps = +q.get('p')
+    document.body.classList.add('still'); document.querySelectorAll('.row').forEach(el => el.classList.add('in'))
+    if (q.get('only') === 'm') { document.getElementById('capa').style.display = 'none'; cv.style.display = 'none' }
+    requestAnimationFrame(loop)
+  })
+  if (q.get('loader') !== null) { // print do loading parado num número
+    const l = document.getElementById('loader'); l.style.display = ''
+    const n = +q.get('loader'); document.getElementById('count').textContent = String(n).padStart(3, '0'); document.getElementById('bar').style.width = n + '%'
+  }
+} else {
+  runLoader(tasks).then(() => ready).then(() => { requestAnimationFrame(loop); intro() })
+}
 </script>
 </body>
 </html>
